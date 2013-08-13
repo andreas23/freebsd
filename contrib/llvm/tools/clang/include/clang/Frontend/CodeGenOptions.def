@@ -105,6 +105,8 @@ CODEGENOPT(UnrollLoops       , 1, 0) ///< Control whether loops are unrolled.
 CODEGENOPT(UnsafeFPMath      , 1, 0) ///< Allow unsafe floating point optzns.
 CODEGENOPT(UnwindTables      , 1, 0) ///< Emit unwind tables.
 
+CODEGENOPT(SoftBound         , 1, 0) /// SoftBound+CETS pointer based checking
+
   /// Attempt to use register sized accesses to bit-fields in structures, when
   /// possible.
 CODEGENOPT(UseRegisterSizedBitfieldAccess , 1, 0)

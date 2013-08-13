@@ -513,6 +513,13 @@ def detailed_preprocessing_record : Flag<["-"], "detailed-preprocessing-record">
   HelpText<"include a detailed record of preprocessing actions">;
 
 //===----------------------------------------------------------------------===//
+// Memory Safety Options
+//===----------------------------------------------------------------------===//
+
+def softbound: Flag<["-"], "fsoftbound">,
+ HelpText<"Instrument program with SoftBound+CETS style pointer based memory safety checks">;
+
+//===----------------------------------------------------------------------===//
 // OpenCL Options
 //===----------------------------------------------------------------------===//
 

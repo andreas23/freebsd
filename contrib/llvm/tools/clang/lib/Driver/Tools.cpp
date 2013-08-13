@@ -2846,6 +2846,12 @@ void Clang::ConstructJob(Compilation &C, const JobAction &JA,
     CmdArgs.push_back(Args.MakeArgString(Twine(StackProtectorLevel)));
   }
 
+  // Handle the memory safety options
+
+  if (Args.getLastArg(options::OPT_softbound)){
+    CmdArgs.push_back("-fsoftbound");
+  }
+
   // --param ssp-buffer-size=
   for (arg_iterator it = Args.filtered_begin(options::OPT__param),
        ie = Args.filtered_end(); it != ie; ++it) {
@@ -4750,6 +4756,20 @@ void darwin::Link::ConstructJob(Compilation &C, const JobAction &JA,
   Args.AddAllArgs(CmdArgs, options::OPT_T_Group);
   Args.AddAllArgs(CmdArgs, options::OPT_F);
 
+  //
+  // Add in any memory safety libraries.  Even if we're not compiling C++ code,
+  // we need to link in the C++ standard libraries.
+  //
+
+  if (Args.hasArg(options::OPT_softbound)){
+    CmdArgs.push_back("-lsoftbound_rt");
+    CmdArgs.push_back("-lm");
+    if (!Args.hasArg(options::OPT_nostdlib) &&
+        !Args.hasArg(options::OPT_nodefaultlibs)) {
+      getToolChain().AddCXXStdlibLibArgs(Args, CmdArgs);
+    }
+  }
+
   const char *Exec =
     Args.MakeArgString(getToolChain().GetProgramPath("ld"));
   C.addCommand(new Command(JA, *this, Exec, CmdArgs));
@@ -5536,6 +5556,16 @@ void freebsd::Link::ConstructJob(Compilation &C, const JobAction &JA,
 
   AddLinkerInputs(ToolChain, Inputs, Args, CmdArgs);
 
+ //
+ // Add in any memory safety libraries.
+ //
+ if (Args.hasArg(options::OPT_softbound)){
+    CmdArgs.push_back("-lsoftbound_rt");
+    CmdArgs.push_back("-lstdc++");
+    CmdArgs.push_back("-lrt");
+    CmdArgs.push_back("-lm");
+  }
+
   if (!Args.hasArg(options::OPT_nostdlib) &&
       !Args.hasArg(options::OPT_nodefaultlibs)) {
     if (D.CCCIsCXX) {
@@ -6158,6 +6188,15 @@ void gnutools::Link::ConstructJob(Compilation &C, const JobAction &JA,
   }
 
   addProfileRT(getToolChain(), Args, CmdArgs, getToolChain().getTriple());
+
+  // Add in any memory safety libraries.
+  //
+  if (Args.hasArg(options::OPT_softbound)){
+    CmdArgs.push_back("-lsoftbound_rt");
+    CmdArgs.push_back("-lrt");
+    CmdArgs.push_back("-lm");
+    CmdArgs.push_back("-lstdc++");
+  }
 
   C.addCommand(new Command(JA, *this, ToolChain.Linker.c_str(), CmdArgs));
 }
