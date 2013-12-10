@@ -37,6 +37,9 @@
 #include "llvm/Transforms/Instrumentation.h"
 #include "llvm/Transforms/ObjCARC.h"
 #include "llvm/Transforms/Scalar.h"
+#include "SoftBound/InitializeSoftBound.h"
+#include "SoftBound/FixByValAttributes.h"
+#include "SoftBound/SoftBoundCETSPass.h"
 using namespace clang;
 using namespace llvm;
 
@@ -321,6 +324,18 @@ void EmitAssemblyHelper::CreatePasses(TargetMachine *TM) {
   }
 
   PMBuilder.populateModulePassManager(*MPM);
+
+  if (CodeGenOpts.SoftBound) {
+    // Make sure SoftBound+CETS is run after optimization with atleast mem2reg run 
+    MPM->add(new DominatorTree());
+    MPM->add(new DominanceFrontier());
+    MPM->add(new LoopInfo());
+    MPM->add(new InitializeSoftBound());
+    MPM->add(new FixByValAttributesPass());
+    MPM->add(new SoftBoundCETSPass());
+    // run all optimizer passes again
+    PMBuilder.populateModulePassManager(*MPM);
+  }
 }
 
 TargetMachine *EmitAssemblyHelper::CreateTargetMachine(bool MustCreateTM) {
