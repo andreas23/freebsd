@@ -10,6 +10,4 @@ SRCS=	softboundcets.c \
 
 TGHDRS=	Intrinsics
 
-CFLAGS+= "-D__SOFTBOUNDCETS_TRIE"
-
 .include "../clang.lib.mk"
