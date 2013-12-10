@@ -4762,7 +4762,7 @@ void darwin::Link::ConstructJob(Compilation &C, const JobAction &JA,
   //
 
   if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lsoftbound_rt");
+    CmdArgs.push_back("-lllvmsoftboundruntime");
     CmdArgs.push_back("-lm");
     if (!Args.hasArg(options::OPT_nostdlib) &&
         !Args.hasArg(options::OPT_nodefaultlibs)) {
@@ -5560,9 +5560,7 @@ void freebsd::Link::ConstructJob(Compilation &C, const JobAction &JA,
  // Add in any memory safety libraries.
  //
  if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lsoftbound_rt");
-    CmdArgs.push_back("-lstdc++");
-    CmdArgs.push_back("-lrt");
+    CmdArgs.push_back("-lllvmsoftboundruntime");
     CmdArgs.push_back("-lm");
   }
 
@@ -6192,10 +6190,8 @@ void gnutools::Link::ConstructJob(Compilation &C, const JobAction &JA,
   // Add in any memory safety libraries.
   //
   if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lsoftbound_rt");
-    CmdArgs.push_back("-lrt");
+    CmdArgs.push_back("-lllvmsoftboundruntime");
     CmdArgs.push_back("-lm");
-    CmdArgs.push_back("-lstdc++");
   }
 
   C.addCommand(new Command(JA, *this, ToolChain.Linker.c_str(), CmdArgs));
