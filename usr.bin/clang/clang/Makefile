@@ -108,6 +108,7 @@ LIBDEPS=clangfrontendtool \
 	llvmobject \
 	llvmx86utils \
 	llvmcore \
-	llvmsupport
+	llvmsupport \
+	llvmsoftboundcets
 
 .include "../clang.prog.mk"

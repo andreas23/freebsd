@@ -321,19 +321,6 @@ softboundcets_setrlimit(int resource, const struct rlimit* rlim){
   return setrlimit(resource, rlim);
 }
 
-__WEAK_INLINE size_t
-softboundcets_fread_unlocked(void *ptr, size_t size, 
-                             size_t n, FILE *stream){
-  
-  return fread_unlocked(ptr, size, n, stream);
-}
-
-__WEAK_INLINE int 
-softboundcets_fputs_unlocked(const char *s, FILE *stream){
-  return fputs_unlocked(s, stream);
-}
-
-
 __WEAK_INLINE size_t 
 softboundcets_fread(void *ptr, size_t size, size_t nmemb, FILE *stream){
   /* tested */
@@ -587,12 +574,6 @@ __WEAK_INLINE int softboundcets_fstat(int filedes, struct stat* buff){
   return fstat(filedes, buff);
 }
 
-__WEAK_INLINE int softboundcets___lxstat (int __ver, const char *__filename,     
-                                          struct stat *__stat_buf) {
-
-  return __lxstat(__ver, __filename, __stat_buf);
-}
-
 __WEAK_INLINE size_t softboundcets_mbrtowc(wchar_t *pwc, const char *s, 
                                            size_t n, mbstate_t *ps){
   return mbrtowc(pwc, s, n, ps);
@@ -603,15 +584,6 @@ __WEAK_INLINE int softboundcets_mbsinit(const mbstate_t *ps){
   return mbsinit(ps);
 }
 
-
-
-__WEAK_INLINE int softboundcets___fxstat(int ver, int file_des, struct stat * stat_struct){
-  return __fxstat(ver, file_des, stat_struct);
-}
-
-__WEAK_INLINE int softboundcets___fxstatat(int ver, int file_des, const char* filename, struct stat * stat_struct, int flag){
-  return __fxstatat(ver, file_des, filename, stat_struct, flag);
-}
 
 
 __WEAK_INLINE int softboundcets_fflush(FILE* stream){
@@ -671,23 +643,6 @@ __WEAK_INLINE int softboundcets_futimesat(int dirfd, const char *pathname,
                                           const struct timeval times[2]){
   
   return futimesat(dirfd, pathname, times);
-}
-
-__WEAK_INLINE int softboundcets_futimens(int fd, const struct timespec times[2]){
-
-  return futimens(fd, times);
-}
-
-__WEAK_INLINE int 
-softboundcets_utimensat(int dirfd, const char *pathname,
-                        const struct timespec times[2], int flags){
-
-  return utimensat(dirfd, pathname, times, flags);
-}
-
-__WEAK_INLINE size_t 
-softboundcets___ctype_get_mb_cur_max(void){
-  return __ctype_get_mb_cur_max();  
 }
 
 __WEAK_INLINE int 
