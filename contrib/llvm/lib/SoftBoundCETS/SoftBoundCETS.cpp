@@ -4331,9 +4331,12 @@ void SoftBoundCETSPass::gatherBaseBoundPass1 (Function * func) {
 	break;
         
       default:
-        if(isa<PointerType>(v1->getType()))
+        if(isa<PointerType>(v1->getType())) {
+          errs()<< new_inst->getOpcodeName();
+          v1->getType()->dump();
           assert(!isa<PointerType>(v1->getType())&&
                  " Generating Pointer and not being handled");
+        }
       }
     }/* Basic Block iterator Ends */
   } /* Function iterator Ends */

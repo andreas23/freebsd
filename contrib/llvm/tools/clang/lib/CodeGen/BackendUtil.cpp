@@ -38,6 +38,7 @@
 #include "llvm/Transforms/ObjCARC.h"
 #include "llvm/Transforms/Scalar.h"
 #include "SoftBound/InitializeSoftBound.h"
+#include "SoftBound/FixByValAttributes.h"
 #include "SoftBound/SoftBoundCETSPass.h"
 using namespace clang;
 using namespace llvm;
@@ -330,6 +331,7 @@ void EmitAssemblyHelper::CreatePasses(TargetMachine *TM) {
     MPM->add(new DominanceFrontier());
     MPM->add(new LoopInfo());
     MPM->add(new InitializeSoftBound());
+    MPM->add(new FixByValAttributesPass());
     MPM->add(new SoftBoundCETSPass());
     // run all optimizer passes again
     PMBuilder.populateModulePassManager(*MPM);
