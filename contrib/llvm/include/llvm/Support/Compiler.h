@@ -320,6 +320,15 @@
 # define LLVM_MEMORY_SANITIZER_BUILD 0
 #endif
 
+/// \macro LLVM_SOFTBOUNDCETS_BUILD
+/// \brief Whether LLVM itself is built with SoftboundCETS instrumentation.
+#if __has_feature(softboundcets)
+# define LLVM_SOFTBOUNDCETS_BUILD 1
+#else
+# define LLVM_SOFTBOUNDCETS_BUILD 0
+#endif
+
+
 /// \macro LLVM_ADDRESS_SANITIZER_BUILD
 /// \brief Whether LLVM itself is built with AddressSanitizer instrumentation.
 #if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)

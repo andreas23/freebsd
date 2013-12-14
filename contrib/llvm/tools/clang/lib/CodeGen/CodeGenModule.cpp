@@ -652,6 +652,9 @@ void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
       F->addFnAttr(llvm::Attribute::SanitizeMemory);
   }
 
+  if (LangOpts.SoftboundCETS && !D->hasAttr<NoSoftboundCETSAttr>())
+    F->addFnAttr(llvm::Attribute::SoftboundCETS);
+
   unsigned alignment = D->getMaxAlignment() / Context.getCharWidth();
   if (alignment)
     F->setAlignment(alignment);

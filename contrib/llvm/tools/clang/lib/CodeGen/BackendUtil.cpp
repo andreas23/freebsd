@@ -325,13 +325,13 @@ void EmitAssemblyHelper::CreatePasses(TargetMachine *TM) {
 
   PMBuilder.populateModulePassManager(*MPM);
 
-  if (CodeGenOpts.SoftBound) {
+  if (LangOpts.SoftboundCETS) {
     // Make sure SoftBound+CETS is run after optimization with atleast mem2reg run 
     MPM->add(new DominatorTree());
     MPM->add(new DominanceFrontier());
     MPM->add(new LoopInfo());
-    MPM->add(new InitializeSoftBound());
     MPM->add(new FixByValAttributesPass());
+    MPM->add(new InitializeSoftBound());
     MPM->add(new SoftBoundCETSPass());
     // run all optimizer passes again
     PMBuilder.populateModulePassManager(*MPM);
