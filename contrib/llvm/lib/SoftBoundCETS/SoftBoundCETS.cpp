@@ -692,7 +692,8 @@ void SoftBoundCETSPass::transformMain(Module& module) {
   // set the new function attributes 
   new_func->copyAttributesFrom(main_func);
   new_func->setAttributes(AttributeSet::get(main_func->getContext(), ArrayRef<AttributeSet>(param_attrs_vec)));
-    
+  new_func->addFnAttr(llvm::Attribute::SoftboundCETS);
+
   main_func->getParent()->getFunctionList().insert(main_func, new_func);
   main_func->replaceAllUsesWith(new_func);
 
@@ -726,275 +727,12 @@ void SoftBoundCETSPass::transformMain(Module& module) {
 // SoftBound/CETS defined function
 //
 
-bool SoftBoundCETSPass::isFuncDefSoftBound(const std::string &str) {
-  if (m_func_def_softbound.getNumItems() == 0) {
+bool SoftBoundCETSPass::isFuncDefSoftBound(Function* func) {
+  const std::string &str = func->getName();
 
-    m_func_wrappers_available["system"] = true;
-    m_func_wrappers_available["setreuid"] = true;
-    m_func_wrappers_available["mkstemp"] = true;
-    m_func_wrappers_available["getuid"] = true;
-    m_func_wrappers_available["getrlimit"] = true;
-    m_func_wrappers_available["setrlimit"] = true;
-    m_func_wrappers_available["fread"] = true;
-    m_func_wrappers_available["umask"] = true;
-    m_func_wrappers_available["mkdir"] = true;
-    m_func_wrappers_available["chroot"] = true;
-    m_func_wrappers_available["rmdir"] = true;
-    m_func_wrappers_available["stat"] = true;
-    m_func_wrappers_available["fputc"] = true;
-    m_func_wrappers_available["fileno"] = true;
-    m_func_wrappers_available["fgetc"] = true;
-    m_func_wrappers_available["strncmp"] = true;
-    m_func_wrappers_available["log"] = true;
-    m_func_wrappers_available["fwrite"] = true;
-    m_func_wrappers_available["atof"] = true;
-    m_func_wrappers_available["feof"] = true;
-    m_func_wrappers_available["remove"] = true;
-    m_func_wrappers_available["acos"] = true;
-    m_func_wrappers_available["atan2"] = true;
-    m_func_wrappers_available["sqrtf"] = true;
-    m_func_wrappers_available["expf"] = true;
-    m_func_wrappers_available["exp2"] = true;
-    m_func_wrappers_available["floorf"] = true;
-    m_func_wrappers_available["ceil"] = true;
-    m_func_wrappers_available["ceilf"] = true;
-    m_func_wrappers_available["floor"] = true;
-    m_func_wrappers_available["sqrt"] = true;
-    m_func_wrappers_available["fabs"] = true;
-    m_func_wrappers_available["abs"] = true;
-    m_func_wrappers_available["srand"] = true;
-    m_func_wrappers_available["srand48"] = true;
-    m_func_wrappers_available["pow"] = true;
-    m_func_wrappers_available["fabsf"] = true;
-    m_func_wrappers_available["tan"] = true;
-    m_func_wrappers_available["tanf"] = true;
-    m_func_wrappers_available["tanl"] = true;
-    m_func_wrappers_available["log10"] = true;
-    m_func_wrappers_available["sin"] = true;
-    m_func_wrappers_available["sinf"] = true;
-    m_func_wrappers_available["sinl"] = true;
-    m_func_wrappers_available["cos"] = true;
-    m_func_wrappers_available["cosf"] = true;
-    m_func_wrappers_available["cosl"] = true;
-    m_func_wrappers_available["exp"] = true;
-    m_func_wrappers_available["ldexp"] = true;
-    m_func_wrappers_available["tmpfile"] = true;
-    m_func_wrappers_available["ferror"] = true;
-    m_func_wrappers_available["ftell"] = true;
-    m_func_wrappers_available["fstat"] = true;
-    m_func_wrappers_available["fflush"] = true;
-    m_func_wrappers_available["fputs"] = true;
-    m_func_wrappers_available["fopen"] = true;
-    m_func_wrappers_available["fdopen"] = true;
-    m_func_wrappers_available["fseek"] = true;
-    m_func_wrappers_available["ftruncate"] = true;
-    m_func_wrappers_available["popen"] = true;
-    m_func_wrappers_available["fclose"] = true;
-    m_func_wrappers_available["pclose"] = true;
-    m_func_wrappers_available["rewind"] = true;
-    m_func_wrappers_available["readdir"] = true;
-    m_func_wrappers_available["opendir"] = true;
-    m_func_wrappers_available["closedir"] = true;
-    m_func_wrappers_available["rename"] = true;
-    m_func_wrappers_available["sleep"] = true;
-    m_func_wrappers_available["getcwd"] = true;
-    m_func_wrappers_available["chown"] = true;
-    m_func_wrappers_available["isatty"] = true;
-    m_func_wrappers_available["chdir"] = true;
-    m_func_wrappers_available["strcmp"] = true;
-    m_func_wrappers_available["strcasecmp"] = true;
-    m_func_wrappers_available["strncasecmp"] = true;
-    m_func_wrappers_available["strlen"] = true;
-    m_func_wrappers_available["strpbrk"] = true;
-    m_func_wrappers_available["gets"] = true;
-    m_func_wrappers_available["fgets"] = true;
-    m_func_wrappers_available["perror"] = true;
-    m_func_wrappers_available["strspn"] = true;
-    m_func_wrappers_available["strcspn"] = true;
-    m_func_wrappers_available["memcmp"] = true;
-    m_func_wrappers_available["memchr"] = true;
-    m_func_wrappers_available["rindex"] = true;
-    m_func_wrappers_available["strtoul"] = true;
-    m_func_wrappers_available["strtod"] = true;
-    m_func_wrappers_available["strtol"] = true;
-    m_func_wrappers_available["strchr"] = true;
-    m_func_wrappers_available["strrchr"] = true;
-    m_func_wrappers_available["strcpy"] = true;
-    m_func_wrappers_available["abort"] = true;
-    m_func_wrappers_available["rand"] = true;
-    m_func_wrappers_available["atoi"] = true;
-    m_func_wrappers_available["puts"] = true;
-    m_func_wrappers_available["exit"] = true;
-    m_func_wrappers_available["strtok"] = true;
-    m_func_wrappers_available["strdup"] = true;
-    m_func_wrappers_available["__strdup"] = true;
-    m_func_wrappers_available["strcat"] = true;
-    m_func_wrappers_available["strncat"] = true;
-    m_func_wrappers_available["strncpy"] = true;
-    m_func_wrappers_available["strstr"] = true;
-    m_func_wrappers_available["signal"] = true;
-    m_func_wrappers_available["clock"] = true;
-    m_func_wrappers_available["atol"] = true;
-    m_func_wrappers_available["realloc"] = true;
-    m_func_wrappers_available["calloc"] = true;
-    m_func_wrappers_available["malloc"] = true;
-    m_func_wrappers_available["mmap"] = true;
-
-    m_func_wrappers_available["putchar"] = true;
-    m_func_wrappers_available["times"] = true;
-    m_func_wrappers_available["strftime"] = true;
-    m_func_wrappers_available["localtime"] = true;
-    m_func_wrappers_available["localtime_r"] = true;
-    m_func_wrappers_available["time"] = true;
-    m_func_wrappers_available["drand48"] = true;
-    m_func_wrappers_available["free"] = true;
-    m_func_wrappers_available["lrand48"] = true;
-    m_func_wrappers_available["asctime"] = true;
-    m_func_wrappers_available["asctime_r"] = true;
-    m_func_wrappers_available["gmtime"] = true;
-    m_func_wrappers_available["gmtime_r"] = true;
-    m_func_wrappers_available["ctime"] = true;
-    m_func_wrappers_available["ctime_r"] = true;
-    m_func_wrappers_available["difftime"] = true;
-    m_func_wrappers_available["toupper"] = true;
-    m_func_wrappers_available["tolower"] = true;
-    m_func_wrappers_available["setbuf"] = true;
-    m_func_wrappers_available["getenv"] = true;
-    m_func_wrappers_available["atexit"] = true;
-    m_func_wrappers_available["strerror"] = true;
-    m_func_wrappers_available["unlink"] = true;
-    m_func_wrappers_available["close"] = true;
-    m_func_wrappers_available["open"] = true;
-    m_func_wrappers_available["read"] = true;
-    m_func_wrappers_available["write"] = true;
-    m_func_wrappers_available["lseek"] = true;
-    m_func_wrappers_available["gettimeofday"] = true;
-    m_func_wrappers_available["select"] = true;
-    m_func_wrappers_available["__errno_location"] = true;
-    m_func_wrappers_available["__ctype_b_loc"] = true;
-    m_func_wrappers_available["__ctype_toupper_loc"] = true;
-    m_func_wrappers_available["__ctype_tolower_loc"] = true;
-    m_func_wrappers_available["qsort"] = true;
-    
-    m_func_wrappers_available["asprintf"] = true;
-    m_func_wrappers_available["vasprintf"] = true;
-    m_func_wrappers_available["__vasprintf_chk"] = true;
-
-    m_func_def_softbound["__softboundcets_introspect_metadata"] = true;
-    m_func_def_softbound["__softboundcets_copy_metadata"] = true;
-    m_func_def_softbound["__softboundcets_allocate_shadow_stack_space"] = true;
-    m_func_def_softbound["__softboundcets_load_base_shadow_stack"] = true;
-    m_func_def_softbound["__softboundcets_load_bound_shadow_stack"] = true;
-    m_func_def_softbound["__softboundcets_load_key_shadow_stack"] = true;
-    m_func_def_softbound["__softboundcets_load_lock_shadow_stack"] = true;
-    m_func_def_softbound["__softboundcets_store_base_shadow_stack"] = true;      
-    m_func_def_softbound["__softboundcets_store_bound_shadow_stack"] = true;      
-    m_func_def_softbound["__softboundcets_store_key_shadow_stack"] = true;      
-    m_func_def_softbound["__softboundcets_store_lock_shadow_stack"] = true;      
-    m_func_def_softbound["__softboundcets_deallocate_shadow_stack_space"] = true;
-
-    m_func_def_softbound["__softboundcets_trie_allocate"] = true;
-    m_func_def_softbound["__shrinkBounds"] = true;
-    m_func_def_softbound["__softboundcets_memcopy_check"] = true;
-
-    m_func_def_softbound["__softboundcets_spatial_load_dereference_check"] = true;
-
-    m_func_def_softbound["__softboundcets_spatial_store_dereference_check"] = true;
-    m_func_def_softbound["__softboundcets_spatial_call_dereference_check"] = true;
-    m_func_def_softbound["__softboundcets_temporal_load_dereference_check"] = true;
-    m_func_def_softbound["__softboundcets_temporal_store_dereference_check"] = true;
-    m_func_def_softbound["__softboundcets_stack_memory_allocation"] = true;
-    m_func_def_softbound["__softboundcets_memory_allocation"] = true;
-    m_func_def_softbound["__softboundcets_get_global_lock"] = true;
-    m_func_def_softbound["__softboundcets_add_to_free_map"] = true;
-    m_func_def_softbound["__softboundcets_check_remove_from_free_map"] = true;
-    m_func_def_softbound["__softboundcets_allocation_secondary_trie_allocate"] = true;
-    m_func_def_softbound["__softboundcets_allocation_secondary_trie_allocate_range"] = true;
-    m_func_def_softbound["__softboundcets_allocate_lock_location"] = true;
-    m_func_def_softbound["__softboundcets_memory_deallocation"] = true;
-    m_func_def_softbound["__softboundcets_stack_memory_deallocation"] = true;
-
-    m_func_def_softbound["__softboundcets_metadata_load"] = true;
-    m_func_def_softbound["__softboundcets_metadata_store"] = true;
-    m_func_def_softbound["__hashProbeAddrOfPtr"] = true;
-    m_func_def_softbound["__memcopyCheck"] = true;
-    m_func_def_softbound["__memcopyCheck_i64"] = true;
-
-    m_func_def_softbound["__softboundcets_global_init"] = true;      
-    m_func_def_softbound["__softboundcets_init"] = true;      
-    m_func_def_softbound["__softboundcets_abort"] = true;      
-    m_func_def_softbound["__softboundcets_printf"] = true;
-    
-    m_func_def_softbound["__softboundcets_stub"] = true;
-    m_func_def_softbound["safe_mmap"] = true;
-    m_func_def_softbound["safe_calloc"] = true;
-    m_func_def_softbound["safe_malloc"] = true;
-    m_func_def_softbound["safe_free"] = true;
-
-    m_func_def_softbound["__assert_fail"] = true;
-    m_func_def_softbound["assert"] = true;
-    m_func_def_softbound["__strspn_c2"] = true;
-    m_func_def_softbound["__strcspn_c2"] = true;
-    m_func_def_softbound["__strtol_internal"] = true;
-    m_func_def_softbound["__stroul_internal"] = true;
-    m_func_def_softbound["ioctl"] = true;
-    m_func_def_softbound["error"] = true;
-    m_func_def_softbound["__strtod_internal"] = true;
-    m_func_def_softbound["__strtoul_internal"] = true;
-    
-    
-    m_func_def_softbound["fflush_unlocked"] = true;
-    m_func_def_softbound["full_write"] = true;
-    m_func_def_softbound["safe_read"] = true;
-    m_func_def_softbound["_IO_getc"] = true;
-    m_func_def_softbound["_IO_putc"] = true;
-    m_func_def_softbound["__xstat"] = true;
-
-    m_func_def_softbound["select"] = true;
-    m_func_def_softbound["_setjmp"] = true;
-    m_func_def_softbound["longjmp"] = true;
-    m_func_def_softbound["fork"] = true;
-    m_func_def_softbound["pipe"] = true;
-    m_func_def_softbound["dup2"] = true;
-    m_func_def_softbound["execv"] = true;
-    m_func_def_softbound["compare_pic_by_pic_num_desc"] = true;
-     
-    m_func_def_softbound["wprintf"] = true;
-    m_func_def_softbound["vfprintf"] = true;
-    m_func_def_softbound["vsprintf"] = true;
-    m_func_def_softbound["fprintf"] = true;
-    m_func_def_softbound["printf"] = true;
-    m_func_def_softbound["sprintf"] = true;
-    m_func_def_softbound["snprintf"] = true;
-
-    m_func_def_softbound["scanf"] = true;
-    m_func_def_softbound["fscanf"] = true;
-    m_func_def_softbound["sscanf"] = true;   
-
-    m_func_def_softbound["__fpending"] = true;
-    m_func_def_softbound["fcntl"] = true;
-
-    m_func_def_softbound["vsnprintf"] = true;
-    m_func_def_softbound["fwrite_unlocked"] = true;
-    m_func_def_softbound["__overflow"] = true;
-    m_func_def_softbound["__uflow"] = true;
-    m_func_def_softbound["execlp"] = true;
-    m_func_def_softbound["execl"] = true;
-    m_func_def_softbound["waitpid"] = true;
-    m_func_def_softbound["dup"] = true;
-    m_func_def_softbound["setuid"] = true;
-    
-    m_func_def_softbound["_exit"] = true;
-    m_func_def_softbound["funlockfile"] = true;
-    m_func_def_softbound["flockfile"] = true;
-
-    m_func_def_softbound["__option_is_short"] = true;
-    
-
-  }
-
+  errs()<< "isfuncdefsoftbound: " << str << "\n";
   // Is the function name in the above list?
-  if (m_func_def_softbound.count(str) > 0) {
+  if (str.find("__softboundcets") == 0) {
     return true;
   }
 
@@ -1008,35 +746,13 @@ bool SoftBoundCETSPass::isFuncDefSoftBound(const std::string &str) {
     return true;
   }
 
-  return false;
-}
-
-// 
-// Method: identifyFuncToTrans
-//
-// Description: This function traverses the module and identifies the
-// functions that need to be transformed by SoftBound/CETS
-//
-
-void SoftBoundCETSPass::identifyFuncToTrans(Module& module) {
-    
-  for (Module::iterator fb_it = module.begin(), fe_it = module.end(); 
-      fb_it != fe_it; ++fb_it) {
-
-    Function* func = dyn_cast<Function>(fb_it);
-    assert(func && " Not a function");
-
-    // Check if the function is defined in the module
-    if (!func->isDeclaration()) {
-      if (isFuncDefSoftBound(func->getName())) 
-        continue;
-      
-      m_func_softboundcets_transform[func->getName()] = true;
-      if (hasPtrArgRetType(func)) {
-        m_func_to_transform[func->getName()] = true;
-      }
-    }
+  if (! func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
+                                           Attribute::SoftboundCETS)) {
+    errs()<< "nosoftboundattribute: " << str << "\n";
+    return true;
   }
+
+  return false;
 }
 
 //
@@ -2491,24 +2207,6 @@ SoftBoundCETSPass::getAssociatedLock(Value* pointer_operand, Value* func_lock){
   return pointer_lock;
 }
 
-// 
-// Method: transformFunctionName
-//
-// Description:
-//
-// This function returns the transformed name for the function. This
-// function appends softboundcets_ to the input string.
-
-
-std::string 
-SoftBoundCETSPass::transformFunctionName(const std::string &str) { 
-
-  // If the function name starts with this prefix, don't just
-  // concatenate, but instead transform the string
-  return "softboundcets_" + str; 
-}
-
-
 void SoftBoundCETSPass::addMemcopyMemsetCheck(CallInst* call_inst, 
                                               Function* called_func) {
 
@@ -3453,95 +3151,6 @@ void SoftBoundCETSPass::addDereferenceChecks(Function* func) {
 
 
 
-void SoftBoundCETSPass::renameFunctions(Module& module){
-    
-  bool change = false;
-
-  do{
-    change = false;
-    for(Module::iterator ff_begin = module.begin(), ff_end = module.end();
-        ff_begin != ff_end; ++ff_begin){
-        
-      Function* func_ptr = dyn_cast<Function>(ff_begin);
-
-      if(m_func_transformed.count(func_ptr->getName()) || 
-         isFuncDefSoftBound(func_ptr->getName())){
-        continue;
-      }
-        
-      m_func_transformed[func_ptr->getName()] = true;
-      m_func_transformed[transformFunctionName(func_ptr->getName())] = true;
-      bool is_external = func_ptr->isDeclaration();
-      renameFunctionName(func_ptr, module, is_external);
-      change = true;
-      break;
-    }
-  }while(change);
-}
-
-  
-/* Renames a function by changing the function name to softboundcets_*
-   for only those functions have wrappers
- */
-  
-void SoftBoundCETSPass:: renameFunctionName(Function* func, 
-                                            Module& module, 
-                                            bool external) {
-    
-  Type* ret_type = func->getReturnType();
-  const FunctionType* fty = func->getFunctionType();
-  std::vector<Type*> params;
-
-  if(!m_func_wrappers_available.count(func->getName()))
-    return;
-
-  if(func->getName() == "softboundcets_pseudo_main")
-    return;
-
-  SmallVector<AttributeSet, 8> param_attrs_vec;
-
-#if 0
-
-  const AttributeSet& pal = func->getAttributes();
-  param_attrs_vec.push_back(AttributeSet::get(func->getContext(), pal.getRetAttributes()));
-#endif
-
-  int arg_index = 1;
-
-  for(Function::arg_iterator i = func->arg_begin(), e = func->arg_end();
-      i != e; ++i, arg_index++) {
-
-    params.push_back(i->getType());
-#if 0
-    if(Attributes attrs = pal.getParamAttributes(arg_index))
-      param_attrs_vec.push_back(AttributeWithIndex::get(params.size(), attrs));
-#endif
-  }
-
-  FunctionType* nfty = FunctionType::get(ret_type, params, fty->isVarArg());
-  Function* new_func = Function::Create(nfty, func->getLinkage(), transformFunctionName(func->getName()));
-  new_func->copyAttributesFrom(func);
-  new_func->setAttributes(AttributeSet::get(func->getContext(), ArrayRef<AttributeSet>(param_attrs_vec)));
-  func->getParent()->getFunctionList().insert(func, new_func);
-    
-  if(!external) {
-    SmallVector<Value*, 16> call_args;      
-    new_func->getBasicBlockList().splice(new_func->begin(), func->getBasicBlockList());      
-    Function::arg_iterator arg_i2 = new_func->arg_begin();      
-    for(Function::arg_iterator arg_i = func->arg_begin(), arg_e = func->arg_end(); 
-        arg_i != arg_e; ++arg_i) {
-        
-      arg_i->replaceAllUsesWith(arg_i2);
-      arg_i2->takeName(arg_i);        
-      ++arg_i2;
-      arg_index++;
-    }
-  }
-  func->replaceAllUsesWith(new_func);                            
-  func->eraseFromParent();
-}
-
-
 void SoftBoundCETSPass::handleAlloca (AllocaInst* alloca_inst,
                                             Value* alloca_key,
                                             Value* alloca_lock,
@@ -3711,11 +3320,7 @@ void SoftBoundCETSPass::handleStore(StoreInst* store_inst) {
 // Currently just a placeholder for functions introduced by us
 bool SoftBoundCETSPass::checkIfFunctionOfInterest(Function* func) {
 
-  if (! func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
-                                           Attribute::SoftboundCETS))
-    return false;
-
-  if(isFuncDefSoftBound(func->getName()))
+  if(isFuncDefSoftBound(func))
     return false;
 
   if(func->isDeclaration())
@@ -3881,7 +3486,7 @@ void SoftBoundCETSPass::handleCall(CallInst* call_inst) {
     addMemcopyMemsetCheck(call_inst, func);
   }
 
-  if(func && isFuncDefSoftBound(func->getName())){
+  if(func && isFuncDefSoftBound(func)  ){
 
     if(spatial_safety){
       associateBaseBound(call_inst, m_void_null_ptr, m_void_null_ptr);
@@ -4691,8 +4296,6 @@ bool SoftBoundCETSPass::runOnModule(Module& module) {
   initializeSoftBoundVariables(module);
   transformMain(module);
 
-  identifyFuncToTrans(module);
-
   identifyInitialGlobals(module);
   addBaseBoundGlobals(module);
   
@@ -4728,30 +4331,13 @@ bool SoftBoundCETSPass::runOnModule(Module& module) {
         introduceGlobalLockFunction(func_ptr->begin()->begin());
       m_func_global_lock[func_ptr->getName()] = func_global_lock;      
     }
-      
+
     gatherBaseBoundPass1(func_ptr);
     gatherBaseBoundPass2(func_ptr);
-    addDereferenceChecks(func_ptr);            
+    addDereferenceChecks(func_ptr);
   }
 
-  renameFunctions(module);
   DEBUG(errs()<<"Done with SoftBoundCETSPass\n");
-  
-  /* print the external functions not wrapped */
 
-  for(Module::iterator ff_begin = module.begin(), ff_end = module.end();
-      ff_begin != ff_end; ++ff_begin){
-    Function* func_ptr = dyn_cast<Function>(ff_begin);
-    assert(func_ptr && "not a function??");
-
-    if(func_ptr->isDeclaration()){
-      if(!isFuncDefSoftBound(func_ptr->getName()) && 
-         !(m_func_wrappers_available.count(func_ptr->getName()))){
-        DEBUG(errs()<<"External function not wrapped:"<<
-              func_ptr->getName()<<"\n");
-      }
-
-    }    
-  }
   return true;
 }
