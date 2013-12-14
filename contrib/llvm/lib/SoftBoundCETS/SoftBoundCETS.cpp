@@ -685,14 +685,15 @@ void SoftBoundCETSPass::transformMain(Module& module) {
   FunctionType* nfty = FunctionType::get(ret_type, params, fty->isVarArg());
   Function* new_func = NULL;
 
-  // create the new function 
-  new_func = Function::Create(nfty, main_func->getLinkage(), 
+  // create the new function
+  new_func = Function::Create(nfty, main_func->getLinkage(),
                               "softboundcets_pseudo_main");
 
   // set the new function attributes 
   new_func->copyAttributesFrom(main_func);
   new_func->setAttributes(AttributeSet::get(main_func->getContext(), ArrayRef<AttributeSet>(param_attrs_vec)));
-  new_func->addFnAttr(llvm::Attribute::SoftboundCETS);
+  new_func->addFnAttr(llvm::Attribute::SoftboundCETSInstrumentBody);
+  new_func->addFnAttr(llvm::Attribute::SoftboundCETSCallingConvention);
 
   main_func->getParent()->getFunctionList().insert(main_func, new_func);
   main_func->replaceAllUsesWith(new_func);
@@ -718,40 +719,14 @@ void SoftBoundCETSPass::transformMain(Module& module) {
   main_func->eraseFromParent();
 }
 
-//
-// Method: isFuncDefSoftBound
-//
-// Description: 
-//
-// This function checks if the input function name is a
-// SoftBound/CETS defined function
-//
 
-bool SoftBoundCETSPass::isFuncDefSoftBound(Function* func) {
-  const std::string &str = func->getName();
-
-  errs()<< "isfuncdefsoftbound: " << str << "\n";
-  // Is the function name in the above list?
-  if (str.find("__softboundcets") == 0) {
+bool SoftBoundCETSPass::isFuncSoftBoundCallingConvention (Function* func) {
+  if (func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
+                                         Attribute::SoftboundCETSCallingConvention)) {
+    errs() << "calling  convention is softbound: " << func->getName() << "\n";
     return true;
   }
-
-  // FIXME: handling new intrinsics which have isoc99 in their name
-  if (str.find("isoc99") != std::string::npos){
-    return true;
-  }
-
-  // If the function is an llvm intrinsic, don't transform it
-  if (str.find("llvm.") == 0) {
-    return true;
-  }
-
-  if (! func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
-                                           Attribute::SoftboundCETS)) {
-    errs()<< "nosoftboundattribute: " << str << "\n";
-    return true;
-  }
-
+  errs() << "calling  convention is NOT softbound: " << func->getName() << "\n";
   return false;
 }
 
@@ -3317,25 +3292,26 @@ void SoftBoundCETSPass::handleStore(StoreInst* store_inst) {
   
 }
 
-// Currently just a placeholder for functions introduced by us
 bool SoftBoundCETSPass::checkIfFunctionOfInterest(Function* func) {
-
-  if(isFuncDefSoftBound(func))
-    return false;
 
   if(func->isDeclaration())
     return false;
 
-
-  /* TODO: URGENT: Need to do base and bound propagation in variable
-   * argument functions
-   */
-#if 0
-  if(func.isVarArg())
+  if (! func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
+                                         Attribute::SoftboundCETSCallingConvention)) {
+    errs() << "function body NOT of interest, due to calling conventions: " << func->getName() << "\n";
     return false;
-#endif
+  }
 
-  return true;
+
+  if (func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
+                                         Attribute::SoftboundCETSInstrumentBody)) {
+    errs() << "function body of interest: " << func->getName() << "\n";
+    return true;
+  }
+
+  errs() << "function body not of interest: " << func->getName() << "\n";
+  return false;
 }
 
 
@@ -3462,16 +3438,6 @@ void SoftBoundCETSPass::handleCall(CallInst* call_inst) {
   // Function* func = call_inst->getCalledFunction();
   Value* mcall = call_inst;
 
-#if 0
-  CallingConv::ID id = call_inst->getCallingConv();
-
-
-  if(id == CallingConv::Fast){
-    printf("fast calling convention not handled\n");
-    exit(1);
-  }
-#endif 
-    
   Function* func = call_inst->getCalledFunction();
   if(func && ((func->getName().find("llvm.memcpy") == 0) || 
               (func->getName().find("llvm.memmove") == 0))){
@@ -3486,7 +3452,7 @@ void SoftBoundCETSPass::handleCall(CallInst* call_inst) {
     addMemcopyMemsetCheck(call_inst, func);
   }
 
-  if(func && isFuncDefSoftBound(func)  ){
+  if(func && ! isFuncSoftBoundCallingConvention(func)  ){
 
     if(spatial_safety){
       associateBaseBound(call_inst, m_void_null_ptr, m_void_null_ptr);
