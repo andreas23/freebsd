@@ -3711,6 +3711,10 @@ void SoftBoundCETSPass::handleStore(StoreInst* store_inst) {
 // Currently just a placeholder for functions introduced by us
 bool SoftBoundCETSPass::checkIfFunctionOfInterest(Function* func) {
 
+  if (! func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
+                                           Attribute::SoftboundCETS))
+    return false;
+
   if(isFuncDefSoftBound(func->getName()))
     return false;
 

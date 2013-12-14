@@ -5554,8 +5554,9 @@ void freebsd::Link::ConstructJob(Compilation &C, const JobAction &JA,
  // Add in any memory safety libraries.
  //
  if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lllvmsoftboundruntime");
+    CmdArgs.push_back("-lc");
     CmdArgs.push_back("-lm");
+    CmdArgs.push_back("-lllvmsoftboundruntime");
   }
 
   if (!Args.hasArg(options::OPT_nostdlib) &&

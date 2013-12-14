@@ -1284,6 +1284,7 @@ static void ParseLangArgs(LangOptions &Opts, ArgList &Args, InputKind IK,
   Opts.DebuggerCastResultToId = Args.hasArg(OPT_fdebugger_cast_result_to_id);
   Opts.DebuggerObjCLiteral = Args.hasArg(OPT_fdebugger_objc_literal);
   Opts.ApplePragmaPack = Args.hasArg(OPT_fapple_pragma_pack);
+  Opts.SoftboundCETS = Args.hasArg(OPT_softbound);
   Opts.CurrentModule = Args.getLastArgValue(OPT_fmodule_name);
 
   // Check if -fopenmp is specified.
