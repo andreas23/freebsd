@@ -207,7 +207,7 @@ class SoftBoundCETSPass: public ModulePass {
   void gatherBaseBoundPass2(Function*);
   void addDereferenceChecks(Function*);
   bool checkIfFunctionOfInterest(Function*);
-  bool isFuncDefSoftBound(Function*);
+  bool isFuncSoftBoundCallingConvention(Function*);
   void runForEachFunctionIndirectCallPass(Function&);
   void indirectCallInstPass(Module&);
   bool checkStructTypeWithGEP(BasicBlock*, std::map<Value*, int> &, 

@@ -101,7 +101,8 @@ public:
     SanitizeAddress,       ///< AddressSanitizer is on.
     SanitizeThread,        ///< ThreadSanitizer is on.
     SanitizeMemory,        ///< MemorySanitizer is on.
-    SoftboundCETS,         ///< SoftboundCETS is on.
+    SoftboundCETSCallingConvention,         ///< SoftboundCETS is on.
+    SoftboundCETSInstrumentBody,         ///< SoftboundCETS is on, and function body shall be instrumented.
     UWTable,               ///< Function must be in a unwind table
     ZExt,                  ///< Zero extended before/after call
 

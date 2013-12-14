@@ -652,8 +652,8 @@ void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
       F->addFnAttr(llvm::Attribute::SanitizeMemory);
   }
 
-  //  if (LangOpts.SoftboundCETS && !D->hasAttr<NoSoftboundCETSAttr>())
-  //    F->addFnAttr(llvm::Attribute::SoftboundCETS);
+  if (LangOpts.SoftboundCETS && !D->hasAttr<NoSoftboundCETSInstrumentBodyAttr>())
+      F->addFnAttr(llvm::Attribute::SoftboundCETSInstrumentBody);
 
   unsigned alignment = D->getMaxAlignment() / Context.getCharWidth();
   if (alignment)
@@ -728,8 +728,8 @@ void CodeGenModule::SetFunctionAttributes(GlobalDecl GD,
     }
   }
 
-  if (LangOpts.SoftboundCETS && !FD->hasAttr<NoSoftboundCETSAttr>())
-    F->addFnAttr(llvm::Attribute::SoftboundCETS);
+  if (LangOpts.SoftboundCETS && !FD->hasAttr<NoSoftboundCETSCallingConventionAttr>())
+    F->addFnAttr(llvm::Attribute::SoftboundCETSCallingConvention);
 
   if (const SectionAttr *SA = FD->getAttr<SectionAttr>())
     F->setSection(SA->getName());

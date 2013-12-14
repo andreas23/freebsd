@@ -796,8 +796,12 @@ def NoSanitizeMemory : InheritableAttr {
   let Spellings = [GNU<"no_sanitize_memory">];
 }
 
-def NoSoftboundCETS : InheritableAttr {
-  let Spellings = [GNU<"no_softboundcets">];
+def NoSoftboundCETSCallingConvention : InheritableAttr {
+  let Spellings = [GNU<"no_softboundcets_calling_convention">];
+}
+
+def NoSoftboundCETSInstrumentBody : InheritableAttr {
+  let Spellings = [GNU<"no_softboundcets_instrument_body">];
 }
 
 // C/C++ Thread safety attributes (e.g. for deadlock, data race checking)

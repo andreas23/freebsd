@@ -5,8 +5,7 @@
 LIB=	llvmsoftboundruntime
 
 SRCDIR=	runtime/SoftBoundRuntime
-SRCS=	softboundcets.c \
-	softboundcets-wrappers.c
+SRCS=	softboundcets.c
 
 TGHDRS=	Intrinsics
 

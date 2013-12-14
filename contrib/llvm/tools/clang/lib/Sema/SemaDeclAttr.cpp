@@ -646,7 +646,7 @@ static void handleNoSanitizeAddressAttr(Sema &S, Decl *D,
                                    Attr.getAttributeSpellingListIndex()));
 }
 
-static void handleNoSoftboundCETSAttr(Sema &S, Decl *D,
+static void handleNoSoftboundCETSInstrumentBodyAttr(Sema &S, Decl *D,
                                       const AttributeList &Attr) {
   assert(!Attr.isInvalid());
 
@@ -660,7 +660,25 @@ static void handleNoSoftboundCETSAttr(Sema &S, Decl *D,
   }
 
   D->addAttr(::new (S.Context)
-             NoSoftboundCETSAttr(Attr.getRange(), S.Context,
+             NoSoftboundCETSInstrumentBodyAttr(Attr.getRange(), S.Context,
+                                   Attr.getAttributeSpellingListIndex()));
+}
+
+static void handleNoSoftboundCETSCallingConventionAttr(Sema &S, Decl *D,
+                                      const AttributeList &Attr) {
+  assert(!Attr.isInvalid());
+
+  if (!checkAttributeNumArgs(S, Attr, 0))
+    return;
+
+  if (!isa<FunctionDecl>(D) && !isa<FunctionTemplateDecl>(D)) {
+    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type)
+      << Attr.getName() << ExpectedFunctionOrMethod;
+    return;
+  }
+
+  D->addAttr(::new (S.Context)
+             NoSoftboundCETSCallingConventionAttr(Attr.getRange(), S.Context,
                                    Attr.getAttributeSpellingListIndex()));
 }
 
@@ -4961,8 +4979,11 @@ static void ProcessInheritableDeclAttr(Sema &S, Scope *scope, Decl *D,
   case AttributeList::AT_NoSanitizeAddress:
     handleNoSanitizeAddressAttr(S, D, Attr);
     break;
-  case AttributeList::AT_NoSoftboundCETS:
-    handleNoSoftboundCETSAttr(S, D, Attr);
+  case AttributeList::AT_NoSoftboundCETSCallingConvention:
+    handleNoSoftboundCETSCallingConventionAttr(S, D, Attr);
+    break;
+  case AttributeList::AT_NoSoftboundCETSInstrumentBody:
+    handleNoSoftboundCETSInstrumentBodyAttr(S, D, Attr);
     break;
   case AttributeList::AT_NoThreadSafetyAnalysis:
     handleNoThreadSafetyAnalysis(S, D, Attr);

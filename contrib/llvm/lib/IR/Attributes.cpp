@@ -396,6 +396,8 @@ uint64_t AttributeImpl::getAttrMask(Attribute::AttrKind Val) {
   case Attribute::SanitizeMemory:  return 1ULL << 37;
   case Attribute::NoBuiltin:       return 1ULL << 38;
   case Attribute::Returned:        return 1ULL << 39;
+  case Attribute::SoftboundCETSCallingConvention:  return 1ULL << 40;
+  case Attribute::SoftboundCETSInstrumentBody:  return 1ULL << 41;
   }
   llvm_unreachable("Unsupported attribute type");
 }
