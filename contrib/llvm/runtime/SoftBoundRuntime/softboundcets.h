@@ -267,11 +267,6 @@ extern __SOFTBOUNDCETS_NORETURN void __softboundcets_abort();
 extern void __softboundcets_printf(const char* str, ...);
 extern size_t* __softboundcets_global_lock; 
 
-void* __softboundcets_safe_calloc(size_t, size_t);
-void* __softboundcets_safe_malloc(size_t);
-void __softboundcets_safe_free(void*);
-
-void * __softboundcets_safe_mmap(void* addr, size_t length, int prot, int flags, int fd, off_t offset);
 __WEAK_INLINE void __softboundcets_allocation_secondary_trie_allocate(void* addr_of_ptr);
 __WEAK_INLINE void __softboundcets_add_to_free_map(size_t ptr_key, void* ptr) ;
 
@@ -446,7 +441,7 @@ __WEAK_INLINE __softboundcets_trie_entry_t* __softboundcets_trie_allocate(){
   
   __softboundcets_trie_entry_t* secondary_entry;
   size_t length = (__SOFTBOUNDCETS_TRIE_SECONDARY_TABLE_ENTRIES) * sizeof(__softboundcets_trie_entry_t);
-  secondary_entry = __softboundcets_safe_mmap(0, length, PROT_READ| PROT_WRITE, SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
+  secondary_entry = mmap(0, length, PROT_READ| PROT_WRITE, SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
   //assert(secondary_entry != (void*)-1); 
   //printf("snd trie table %p %lx\n", secondary_entry, length);
   return secondary_entry;
