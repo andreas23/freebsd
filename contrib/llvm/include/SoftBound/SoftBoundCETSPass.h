@@ -190,25 +190,6 @@ class SoftBoundCETSPass: public ModulePass {
 
   std::map<GlobalVariable*, int> m_initial_globals;
   
-  /* Map of all functions for which Softboundcets Transformation must
-   * be invoked
-   */
-  StringMap<bool> m_func_softboundcets_transform;
-  
-  /* Map of all functions that need to be transformed as they have as
-   * they either hava pointer arguments or pointer return type and are
-   * defined in the module
-   */
-  StringMap<bool> m_func_to_transform;
-  
-  /* Map of all functions defined by Softboundcets */
-  StringMap<bool> m_func_def_softbound;
-
-  StringMap<bool> m_func_wrappers_available;
-  
-  /* Map of all functions transformed */
-  StringMap<bool> m_func_transformed;
-  
   StringMap<Value*> m_func_global_lock;
   
   /* Boolean indicating whether bitcode generated is for 64bit or
@@ -226,8 +207,7 @@ class SoftBoundCETSPass: public ModulePass {
   void gatherBaseBoundPass2(Function*);
   void addDereferenceChecks(Function*);
   bool checkIfFunctionOfInterest(Function*);
-  bool isFuncDefSoftBound(const std::string &str);
-  std::string transformFunctionName(const std::string &str);
+  bool isFuncDefSoftBound(Function*);
   void runForEachFunctionIndirectCallPass(Function&);
   void indirectCallInstPass(Module&);
   bool checkStructTypeWithGEP(BasicBlock*, std::map<Value*, int> &, 
@@ -252,7 +232,6 @@ class SoftBoundCETSPass: public ModulePass {
   void handleExtractValue(ExtractValueInst*);
   void handleSelect(SelectInst*, int);
   void handleIntToPtr(IntToPtrInst*);
-  void identifyFuncToTrans(Module&);
   
   void transformFunctions(Module&);
   bool transformIndividualFunction(Module&);  
@@ -261,8 +240,6 @@ class SoftBoundCETSPass: public ModulePass {
   void transformExternalFunctions(Module&);
   bool transformIndividualExternalFunctions(Module&);
   void transformMain(Module&);
-  void renameFunctions(Module&);
-  void renameFunctionName(Function*, Module&, bool);
   bool checkAndShrinkBounds(GetElementPtrInst*, 
                             Value*);
 
