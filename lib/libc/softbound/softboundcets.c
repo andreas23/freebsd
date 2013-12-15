@@ -132,7 +132,7 @@ void __sbcets_stats_fini() {
 
 NO_SB_CC __WEAK_INLINE void* __softbound_mmap (void*, size_t, int, int, int, off_t);
 NO_SB_CC __WEAK_INLINE void* __softbound_mmap (void* addr, size_t length, int prot, int flags, int fd, off_t offset) {
-  return __sys_mmap(addr, len, prot, flags, fd, offset);
+  return __sys_mmap(addr, length, prot, flags, fd, offset);
 }
 
 
