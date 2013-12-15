@@ -42,7 +42,7 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <softbound.h>
-
+#include "libc_private.h"
 __softboundcets_trie_entry_t** __softboundcets_trie_primary_table;
 
 size_t* __softboundcets_free_map_table = NULL;
