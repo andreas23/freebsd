@@ -130,6 +130,11 @@ void __sbcets_stats_fini() {
 
 #endif
 
+NO_SB_CC __WEAK_INLINE void* __softbound_mmap (void*, size_t, int, int, int, off_t);
+NO_SB_CC __WEAK_INLINE void* __softbound_mmap (void* addr, size_t length, int prot, int flags, int fd, off_t offset) {
+  return __sys_mmap(addr, len, prot, flags, fd, offset);
+}
+
 
 NO_SB_CC __SOFTBOUNDCETS_NORETURN void __softboundcets_abort()
 {
@@ -170,7 +175,7 @@ NO_SB_CC void __softboundcets_init( int is_trie)
 
   size_t temporal_table_length = (__SOFTBOUNDCETS_N_TEMPORAL_ENTRIES)* sizeof(void*);
 
-  __softboundcets_lock_new_location = mmap(0, temporal_table_length, 
+  __softboundcets_lock_new_location = __softbound_mmap(0, temporal_table_length, 
                                            PROT_READ| PROT_WRITE,
                                            SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
   
@@ -179,14 +184,14 @@ NO_SB_CC void __softboundcets_init( int is_trie)
 
 
   size_t stack_temporal_table_length = (__SOFTBOUNDCETS_N_STACK_TEMPORAL_ENTRIES) * sizeof(void*);
-  __softboundcets_stack_temporal_space_begin = mmap(0, stack_temporal_table_length, 
+  __softboundcets_stack_temporal_space_begin = __softbound_mmap(0, stack_temporal_table_length, 
                                                     PROT_READ| PROT_WRITE, 
                                                     SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
   assert(__softboundcets_stack_temporal_space_begin != (void*) -1);
 
 
   size_t global_lock_size = (__SOFTBOUNDCETS_N_GLOBAL_LOCK_SIZE) * sizeof(void*);
-  __softboundcets_global_lock = mmap(0, global_lock_size, 
+  __softboundcets_global_lock = __softbound_mmap(0, global_lock_size, 
                                      PROT_READ|PROT_WRITE, 
                                      SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
   assert(__softboundcets_global_lock != (void*) -1);
@@ -196,7 +201,7 @@ NO_SB_CC void __softboundcets_init( int is_trie)
 
 
   size_t shadow_stack_size = __SOFTBOUNDCETS_SHADOW_STACK_ENTRIES * sizeof(size_t);
-  __softboundcets_shadow_stack_ptr = mmap(0, shadow_stack_size, 
+  __softboundcets_shadow_stack_ptr = __softbound_mmap(0, shadow_stack_size, 
                                           PROT_READ|PROT_WRITE, 
                                           SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
   assert(__softboundcets_shadow_stack_ptr != (void*)-1);
@@ -212,7 +217,7 @@ NO_SB_CC void __softboundcets_init( int is_trie)
 
   if(__SOFTBOUNDCETS_FREE_MAP) {
     size_t length_free_map = (__SOFTBOUNDCETS_N_FREE_MAP_ENTRIES) * sizeof(size_t);
-    __softboundcets_free_map_table = mmap(0, length_free_map, 
+    __softboundcets_free_map_table = __softbound_mmap(0, length_free_map, 
                                           PROT_READ| PROT_WRITE, 
                                           SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
     assert(__softboundcets_free_map_table != (void*) -1);
@@ -221,7 +226,7 @@ NO_SB_CC void __softboundcets_init( int is_trie)
   if(__SOFTBOUNDCETS_TRIE) {
     size_t length_trie = (__SOFTBOUNDCETS_TRIE_PRIMARY_TABLE_ENTRIES) * sizeof(__softboundcets_trie_entry_t*);
 
-    __softboundcets_trie_primary_table = mmap(0, length_trie,
+    __softboundcets_trie_primary_table = __softbound_mmap(0, length_trie,
                                               PROT_READ| PROT_WRITE,
                                               SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
     assert(__softboundcets_trie_primary_table != (void *)-1);
