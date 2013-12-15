@@ -737,4 +737,16 @@
 #define __NO_TLS 1
 #endif
 
+#if __has_feature(softboundcets)
+# define LLVM_SOFTBOUNDCETS_BUILD 1
+#endif
+
+#if defined(LLVM_SOFTBOUNDCETS_BUILD)
+#define NO_SB_CC  __attribute__((no_softboundcets_calling_convention))
+#define NO_SB_IB  __attribute__((no_softboundcets_instrument_body))
+#else
+#define NO_SB_CC
+#define NO_SB_IB
+#endif
+
 #endif /* !_SYS_CDEFS_H_ */
