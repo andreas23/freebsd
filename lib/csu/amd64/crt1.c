@@ -34,6 +34,7 @@ __FBSDID("$FreeBSD$");
 #endif /* lint */
 
 #include <stdlib.h>
+#include <softbound.h>
 
 #include "libc_private.h"
 #include "crtbrand.c"
@@ -51,7 +52,7 @@ extern int etext;
 void _start(char **, void (*)(void));
 
 /* The entry function. */
-void
+NO_SB_CC void
 _start(char **ap, void (*cleanup)(void))
 {
 	int argc;
@@ -62,6 +63,40 @@ _start(char **ap, void (*cleanup)(void))
 	argv = ap + 1;
 	env = ap + 2 + argc;
 	handle_argv(argc, argv, env);
+
+  char** new_argv = argv;
+  int i;
+  char* temp_ptr;
+  int return_value;
+  size_t argv_key;
+  void* argv_loc;
+
+  int* temp = malloc(1);
+  __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
+  __softboundcets_stack_memory_allocation(&argv_loc, &argv_key);
+
+  for(i = 0; i < argc; i++) {
+    __softboundcets_metadata_store(&new_argv[i],
+                                   new_argv[i],
+                                   new_argv[i] + strlen(new_argv[i]) + 1,
+                                   argv_key, argv_loc);
+  }
+
+  /* Santosh: Real Nasty hack because C programmers assume argv[argc]
+   * to be NULL. Also this NUll is a pointer, doing + 1 will make the
+   * size_of_type to fail
+   */
+  temp_ptr = ((char*) &new_argv[argc]) + 8;
+
+  /* &new_argv[0], temp_ptr, argv_key, argv_loc * the metadata */
+
+  __softboundcets_allocate_shadow_stack_space(2);
+
+  __softboundcets_store_base_shadow_stack(&new_argv[0], 1);
+  __softboundcets_store_bound_shadow_stack(temp_ptr, 1);
+  __softboundcets_store_key_shadow_stack(argv_key, 1);
+  __softboundcets_store_lock_shadow_stack(argv_loc, 1);
+
 
 	if (&_DYNAMIC != NULL)
 		atexit(cleanup);
@@ -75,5 +110,11 @@ __asm__("eprol:");
 #endif
 
 	handle_static_init(argc, argv, env);
-	exit(main(argc, argv, env));
+
+        return_value = main(argc, new_argv, env);
+  __softboundcets_deallocate_shadow_stack_space();
+
+  __softboundcets_stack_memory_deallocation(argv_key);
+
+  exit(return_value);
 }

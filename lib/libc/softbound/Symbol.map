@@ -1,0 +1,9 @@
+/*
+ * $FreeBSD$
+ */
+
+FBSDprivate_1.0 {
+  __softboundcets_abort;
+  __softboundcets_init;
+  __softboundcets_printf;
+};

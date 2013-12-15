@@ -85,8 +85,7 @@ SUBDIR=	libclanganalysis \
 	libllvmx86info \
 	libllvmx86instprinter \
 	libllvmx86utils \
-	libllvmsoftboundcets \
-	libllvmsoftboundruntime
+	libllvmsoftboundcets
 
 .if ${MK_CLANG_EXTRAS} != "no"
 SUBDIR+=libllvmdebuginfo

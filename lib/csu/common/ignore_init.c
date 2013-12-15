@@ -28,6 +28,7 @@ __FBSDID("$FreeBSD$");
 
 #include "notes.h"
 
+
 extern int main(int, char **, char **);
 
 extern void (*__preinit_array_start[])(int, char **, char **) __hidden;
@@ -36,8 +37,8 @@ extern void (*__init_array_start[])(int, char **, char **) __hidden;
 extern void (*__init_array_end[])(int, char **, char **) __hidden;
 extern void (*__fini_array_start[])(void) __hidden;
 extern void (*__fini_array_end[])(void) __hidden;
-extern void _fini(void) __hidden;
-extern void _init(void) __hidden;
+NO_SB_CC extern void _fini(void) __hidden;
+NO_SB_CC extern void _init(void) __hidden;
 
 extern int _DYNAMIC;
 #pragma weak _DYNAMIC
@@ -45,6 +46,7 @@ extern int _DYNAMIC;
 char **environ;
 const char *__progname = "";
 
+//FIXME
 static void
 finalizer(void)
 {
@@ -60,7 +62,7 @@ finalizer(void)
 	_fini();
 }
 
-static inline void
+NO_SB_CC static inline void
 handle_static_init(int argc, char **argv, char **env)
 {
 	void (*fn)(int, char **, char **);
@@ -86,7 +88,7 @@ handle_static_init(int argc, char **argv, char **env)
 	}
 }
 
-static inline void
+NO_SB_CC static inline void
 handle_argv(int argc, char *argv[], char **env)
 {
 	const char *s;

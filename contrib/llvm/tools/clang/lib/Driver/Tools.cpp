@@ -4756,20 +4756,6 @@ void darwin::Link::ConstructJob(Compilation &C, const JobAction &JA,
   Args.AddAllArgs(CmdArgs, options::OPT_T_Group);
   Args.AddAllArgs(CmdArgs, options::OPT_F);
 
-  //
-  // Add in any memory safety libraries.  Even if we're not compiling C++ code,
-  // we need to link in the C++ standard libraries.
-  //
-
-  if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lllvmsoftboundruntime");
-    CmdArgs.push_back("-lm");
-    if (!Args.hasArg(options::OPT_nostdlib) &&
-        !Args.hasArg(options::OPT_nodefaultlibs)) {
-      getToolChain().AddCXXStdlibLibArgs(Args, CmdArgs);
-    }
-  }
-
   const char *Exec =
     Args.MakeArgString(getToolChain().GetProgramPath("ld"));
   C.addCommand(new Command(JA, *this, Exec, CmdArgs));
@@ -5556,15 +5542,6 @@ void freebsd::Link::ConstructJob(Compilation &C, const JobAction &JA,
 
   AddLinkerInputs(ToolChain, Inputs, Args, CmdArgs);
 
- //
- // Add in any memory safety libraries.
- //
- if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lc");
-    CmdArgs.push_back("-lm");
-    CmdArgs.push_back("-lllvmsoftboundruntime");
-  }
-
   if (!Args.hasArg(options::OPT_nostdlib) &&
       !Args.hasArg(options::OPT_nodefaultlibs)) {
     if (D.CCCIsCXX) {
@@ -6187,13 +6164,6 @@ void gnutools::Link::ConstructJob(Compilation &C, const JobAction &JA,
   }
 
   addProfileRT(getToolChain(), Args, CmdArgs, getToolChain().getTriple());
-
-  // Add in any memory safety libraries.
-  //
-  if (Args.hasArg(options::OPT_softbound)){
-    CmdArgs.push_back("-lllvmsoftboundruntime");
-    CmdArgs.push_back("-lm");
-  }
 
   C.addCommand(new Command(JA, *this, ToolChain.Linker.c_str(), CmdArgs));
 }

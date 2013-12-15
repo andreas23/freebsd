@@ -40,17 +40,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#if defined(__linux__)
-#include <malloc.h>
-#endif
-#include <string.h>
-#include <ctype.h>
-#include <stdarg.h>
 #include <sys/mman.h>
-#if !defined(__FreeBSD__)
-#include <execinfo.h>
-#endif
-#include "softboundcets.h"
+#include <softbound.h>
 
 __softboundcets_trie_entry_t** __softboundcets_trie_primary_table;
 
@@ -84,7 +75,6 @@ size_t* __softboundcets_global_lock = 0;
 size_t* __softboundcets_temporal_space_begin = 0;
 size_t* __softboundcets_stack_temporal_space_begin = NULL;
 
-void* malloc_address = NULL;
 
 #ifdef __SBCETS_STATS_MODE
 
@@ -141,30 +131,16 @@ void __sbcets_stats_fini() {
 #endif
 
 
-__SOFTBOUNDCETS_NORETURN void __softboundcets_abort()
+NO_SB_CC __SOFTBOUNDCETS_NORETURN void __softboundcets_abort()
 {
   fprintf(stderr, "\nSoftboundcets: Memory safety violation detected\n\nBacktrace:\n");
-
-  // Based on code from the backtrace man page
-  size_t size;
-  void *array[100];
-  
-#if !defined (__FreeBSD__)
-  size = backtrace(array, 100);
-  backtrace_symbols_fd(array, size, fileno(stderr));
-#endif
-  
   fprintf(stderr, "\n\n");
-
   abort();
 }
 
 static int softboundcets_initialized = 0;
 
-__NO_INLINE void __softboundcets_stub(void) {
-  return;
-}
-void __softboundcets_init( int is_trie) 
+NO_SB_CC void __softboundcets_init( int is_trie) 
 {
   if (__SOFTBOUNDCETS_DEBUG) {
     __softboundcets_printf("Running __softboundcets_init for module\n");
@@ -245,164 +221,25 @@ void __softboundcets_init( int is_trie)
   if(__SOFTBOUNDCETS_TRIE) {
     size_t length_trie = (__SOFTBOUNDCETS_TRIE_PRIMARY_TABLE_ENTRIES) * sizeof(__softboundcets_trie_entry_t*);
 
-    __softboundcets_trie_primary_table = mmap(0, length_trie, 
-                                              PROT_READ| PROT_WRITE, 
+    __softboundcets_trie_primary_table = mmap(0, length_trie,
+                                              PROT_READ| PROT_WRITE,
                                               SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
-    assert(__softboundcets_trie_primary_table != (void *)-1);  
-    
+    assert(__softboundcets_trie_primary_table != (void *)-1);
+
     int* temp = malloc(1);
     __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
-    
+
     return;
   }
 
 
 }
 
-static void softboundcets_init_ctype(){  
-#if defined(__linux__)
+NO_SB_CC void __softboundcets_printf(const char* str, ...) {
+  /*  va_list args;
 
-  char* ptr;
-  char* base_ptr;
-
-  ptr = (void*) __ctype_b_loc();
-  base_ptr = (void*) (*(__ctype_b_loc()));
-  __softboundcets_allocation_secondary_trie_allocate(base_ptr);
-
-#ifdef __SOFTBOUNDCETS_SPATIAL
-  __softboundcets_metadata_store(ptr, ((char*) base_ptr - 129), 
-                                 ((char*) base_ptr + 256));
-
-#elif __SOFTBOUNDCETS_TEMPORAL
-  __softboundcets_metadata_store(ptr, 1, __softboundcets_global_lock);
-
-#elif __SOFTBOUNDCETS_SPATIAL_TEMPORAL
-  __softboundcets_metadata_store(ptr, ((char*) base_ptr - 129), 
-                                 ((char*) base_ptr + 256), 1, 
-                                 __softboundcets_global_lock);
-
-#else  
-  __softboundcets_metadata_store(ptr, ((char*) base_ptr - 129), 
-                                 ((char*) base_ptr + 256), 1, 
-                                 __softboundcets_global_lock);
-  
-#endif
-
-#endif // __linux ends 
-}
-
-
-void __softboundcets_printf(const char* str, ...)
-{
-  va_list args;
-  
   va_start(args, str);
   vfprintf(stderr, str, args);
   va_end(args);
-}
-
-extern int softboundcets_pseudo_main(int argc, char **argv);
-
-int main(int argc, char **argv){
-
-#if __WORDSIZE == 32
-  exit(1);
-#endif
-  
-  char** new_argv = argv;
-  int i;
-  char* temp_ptr;
-  int return_value;
-  size_t argv_key;
-  void* argv_loc;
-
-  int* temp = malloc(1);
-  malloc_address = temp;
-  __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
-
-  __softboundcets_stack_memory_allocation(&argv_loc, &argv_key);
-
-#if defined(__linux__)
-  mallopt(M_MMAP_MAX, 0);
-#endif
-
-  for(i = 0; i < argc; i++) { 
-
-#ifdef __SOFTBOUNDCETS_SPATIAL
-
-    __softboundcets_metadata_store(&new_argv[i], 
-                                   new_argv[i], 
-                                   new_argv[i] + strlen(new_argv[i]) + 1);
-    
-#elif __SOFTBOUNDCETS_TEMPORAL
-    //    printf("performing metadata store\n");
-    __softboundcets_metadata_store(&new_argv[i],  
-                                   argv_key, argv_loc);
-    
-#elif __SOFTBOUNDCETS_SPATIAL_TEMPORAL
-
-    __softboundcets_metadata_store(&new_argv[i], 
-                                   new_argv[i], 
-                                   new_argv[i] + strlen(new_argv[i]) + 1, 
-                                   argv_key, argv_loc);
-
-#else
-
-    __softboundcets_metadata_store(&new_argv[i], 
-                                   new_argv[i], 
-                                   new_argv[i] + strlen(new_argv[i]) + 1, 
-                                   argv_key, argv_loc);
-
-#endif
-
-
-  }
-
-  //  printf("before init_ctype\n");
-  softboundcets_init_ctype();
-
-  /* Santosh: Real Nasty hack because C programmers assume argv[argc]
-   * to be NULL. Also this NUll is a pointer, doing + 1 will make the
-   * size_of_type to fail
-   */
-  temp_ptr = ((char*) &new_argv[argc]) + 8;
-
-  /* &new_argv[0], temp_ptr, argv_key, argv_loc * the metadata */
-
-  __softboundcets_allocate_shadow_stack_space(2);
-
-#ifdef __SOFTBOUNDCETS_SPATIAL
-
-  __softboundcets_store_base_shadow_stack(&new_argv[0], 1);
-  __softboundcets_store_bound_shadow_stack(temp_ptr, 1);
-
-#elif __SOFTBOUNDCETS_TEMPORAL
-
-  //  printf("before writing to shadow stack\n");
-  __softboundcets_store_key_shadow_stack(argv_key, 1);
-  __softboundcets_store_lock_shadow_stack(argv_loc, 1);
-
-#elif __SOFTBOUNDCETS_SPATIAL_TEMPORAL
-
-  __softboundcets_store_base_shadow_stack(&new_argv[0], 1);
-  __softboundcets_store_bound_shadow_stack(temp_ptr, 1);
-  __softboundcets_store_key_shadow_stack(argv_key, 1);
-  __softboundcets_store_lock_shadow_stack(argv_loc, 1);
-
-#else
-
-  __softboundcets_store_base_shadow_stack(&new_argv[0], 1);
-  __softboundcets_store_bound_shadow_stack(temp_ptr, 1);
-  __softboundcets_store_key_shadow_stack(argv_key, 1);
-  __softboundcets_store_lock_shadow_stack(argv_loc, 1);
-
-#endif
-  
-  //  printf("before calling program main\n");
-  return_value = softboundcets_pseudo_main(argc, new_argv);
-  __softboundcets_deallocate_shadow_stack_space();
-
-  __softboundcets_stack_memory_deallocation(argv_key);
-
-  return return_value;
+  */
 }
