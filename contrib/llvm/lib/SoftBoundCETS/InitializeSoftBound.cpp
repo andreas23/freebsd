@@ -245,17 +245,6 @@ void InitializeSoftBound:: constructCheckHandlers(Module & module){
                                void_ptr_ty, void_ptr_ty, NULL);
   }
 
-  if(!spatial_safety && temporal_safety){
-
-    module.getOrInsertFunction("__softboundcets_temporal_load_dereference_check", 
-                               void_ty, void_ptr_ty, size_ty, NULL);
-    
-    module.getOrInsertFunction("__softboundcets_temporal_store_dereference_check", 
-                               void_ty, void_ptr_ty, size_ty, NULL);
-
-
-  }
-
   Function* global_init = (Function *) module.getOrInsertFunction("__softboundcets_global_init", 
                                                                   void_ty, NULL);
 

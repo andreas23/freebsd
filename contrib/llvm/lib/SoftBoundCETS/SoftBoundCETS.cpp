@@ -4140,6 +4140,9 @@ void SoftBoundCETSPass::addBaseBoundGlobals(Module& M){
     if(gv->getName() == "llvm.global_ctors"){
       continue;
     }
+    if(gv->getName() == "llvm.global_dtors"){
+      continue;
+    }
     
     if(!gv->hasInitializer())
       continue;
