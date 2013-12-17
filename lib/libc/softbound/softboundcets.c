@@ -225,7 +225,7 @@ NO_SB_CC void __softboundcets_init( int is_trie)
                                               SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
     assert(__softboundcets_trie_primary_table != (void *)-1);
 
-    int* temp = malloc(1);
+    int* temp = __malloc(1);
     __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
 
     return;
