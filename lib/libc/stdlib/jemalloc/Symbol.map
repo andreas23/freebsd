@@ -10,6 +10,10 @@ FBSD_1.0 {
 	calloc;
 	realloc;
 	free;
+        __softboundcets_malloc;
+        __softboundcets_realloc;
+        __softboundcets_calloc;
+        __softboundcets_free;
 	malloc_usable_size;
 };
 

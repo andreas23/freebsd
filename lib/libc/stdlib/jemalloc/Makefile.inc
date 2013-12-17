@@ -4,7 +4,7 @@
 
 JEMALLOCSRCS:= jemalloc.c arena.c atomic.c base.c bitmap.c chunk.c \
 	chunk_dss.c chunk_mmap.c ckh.c ctl.c extent.c hash.c huge.c mb.c \
-	mutex.c prof.c quarantine.c rtree.c stats.c tcache.c util.c tsd.c
+	mutex.c prof.c quarantine.c rtree.c stats.c tcache.c util.c tsd.c softbound.c
 
 SYM_MAPS+=${.CURDIR}/stdlib/jemalloc/Symbol.map
 

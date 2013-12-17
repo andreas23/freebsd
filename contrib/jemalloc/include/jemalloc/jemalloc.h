@@ -73,6 +73,13 @@ NO_SB_CC JEMALLOC_EXPORT int	je_mallctlnametomib(const char *name, size_t *mibp,
 NO_SB_CC JEMALLOC_EXPORT int	je_mallctlbymib(const size_t *mib, size_t miblen,
     void *oldp, size_t *oldlenp, void *newp, size_t newlen);
 
+
+NO_SB_CC JEMALLOC_EXPORT void* __softboundcets_realloc(void* ptr, size_t size);
+NO_SB_CC JEMALLOC_EXPORT void* __softboundcets_calloc(size_t nmemb, size_t size);
+NO_SB_CC JEMALLOC_EXPORT void* __softboundcets_malloc(size_t size);
+NO_SB_CC JEMALLOC_EXPORT void __softboundcets_free(void* ptr);
+
+
 #ifdef JEMALLOC_EXPERIMENTAL
 NO_SB_CC JEMALLOC_EXPORT int	je_allocm(void **ptr, size_t *rsize, size_t size,
     int flags) JEMALLOC_ATTR(nonnull(1));

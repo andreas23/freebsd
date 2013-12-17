@@ -99,15 +99,18 @@ extern int __isthreaded;
 #define	pthread_mutex_lock	_pthread_mutex_lock
 #define	pthread_mutex_unlock	_pthread_mutex_unlock
 
+#ifdef JEMALLOC_SOFTBOUND_
+__weak_reference(__softboundcets_malloc, malloc);
+__weak_reference(__softboundcets_calloc, calloc);
+__weak_reference(__softboundcets_realloc, realloc);
+__weak_reference(__softboundcets_free, free);
+#endif
+
 #ifdef JEMALLOC_C_
 /*
  * Define 'weak' symbols so that an application can have its own versions
  * of malloc, calloc, realloc, free, et al.
  */
-__weak_reference(__malloc, malloc);
-__weak_reference(__calloc, calloc);
-__weak_reference(__realloc, realloc);
-__weak_reference(__free, free);
 __weak_reference(__posix_memalign, posix_memalign);
 __weak_reference(__malloc_usable_size, malloc_usable_size);
 __weak_reference(__allocm, allocm);

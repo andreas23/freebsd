@@ -71,7 +71,7 @@ _start(char **ap, void (*cleanup)(void))
   size_t argv_key;
   void* argv_loc;
 
-  int* temp = malloc(1);
+  int* temp = __malloc(1);
   __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
   __softboundcets_stack_memory_allocation(&argv_loc, &argv_key);
 
