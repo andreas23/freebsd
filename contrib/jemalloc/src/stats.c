@@ -44,16 +44,16 @@ size_t	stats_cactive = 0;
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static void	stats_arena_bins_print(void (*write_cb)(void *, const char *),
+NO_SB_CC static void	stats_arena_bins_print(void (*write_cb)(void *, const char *),
     void *cbopaque, unsigned i);
-static void	stats_arena_lruns_print(void (*write_cb)(void *, const char *),
+NO_SB_CC static void	stats_arena_lruns_print(void (*write_cb)(void *, const char *),
     void *cbopaque, unsigned i);
-static void	stats_arena_print(void (*write_cb)(void *, const char *),
+NO_SB_CC static void	stats_arena_print(void (*write_cb)(void *, const char *),
     void *cbopaque, unsigned i, bool bins, bool large);
 
 /******************************************************************************/
 
-static void
+NO_SB_CC static void
 stats_arena_bins_print(void (*write_cb)(void *, const char *), void *cbopaque,
     unsigned i)
 {
@@ -155,7 +155,7 @@ stats_arena_bins_print(void (*write_cb)(void *, const char *), void *cbopaque,
 	}
 }
 
-static void
+NO_SB_CC static void
 stats_arena_lruns_print(void (*write_cb)(void *, const char *), void *cbopaque,
     unsigned i)
 {
@@ -201,7 +201,7 @@ stats_arena_lruns_print(void (*write_cb)(void *, const char *), void *cbopaque,
 		malloc_cprintf(write_cb, cbopaque, "[%zu]\n", j - gap_start);
 }
 
-static void
+NO_SB_CC static void
 stats_arena_print(void (*write_cb)(void *, const char *), void *cbopaque,
     unsigned i, bool bins, bool large)
 {
@@ -265,7 +265,7 @@ stats_arena_print(void (*write_cb)(void *, const char *), void *cbopaque,
 		stats_arena_lruns_print(write_cb, cbopaque, i);
 }
 
-void
+NO_SB_CC void
 stats_print(void (*write_cb)(void *, const char *), void *cbopaque,
     const char *opts)
 {

@@ -4,14 +4,14 @@
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static void	*pages_map(void *addr, size_t size);
-static void	pages_unmap(void *addr, size_t size);
-static void	*chunk_alloc_mmap_slow(size_t size, size_t alignment,
+NO_SB_CC static void	*pages_map(void *addr, size_t size);
+NO_SB_CC static void	pages_unmap(void *addr, size_t size);
+NO_SB_CC static void	*chunk_alloc_mmap_slow(size_t size, size_t alignment,
     bool *zero);
 
 /******************************************************************************/
 
-static void *
+NO_SB_CC static void *
 pages_map(void *addr, size_t size)
 {
 	void *ret;
@@ -30,7 +30,7 @@ pages_map(void *addr, size_t size)
 	 * We don't use MAP_FIXED here, because it can cause the *replacement*
 	 * of existing mappings, and we only want to create new mappings.
 	 */
-	ret = mmap(addr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
+	ret = __softbound_mmap(addr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
 	    -1, 0);
 	assert(ret != NULL);
 
@@ -57,7 +57,7 @@ pages_map(void *addr, size_t size)
 	return (ret);
 }
 
-static void
+NO_SB_CC static void
 pages_unmap(void *addr, size_t size)
 {
 
@@ -82,7 +82,7 @@ pages_unmap(void *addr, size_t size)
 	}
 }
 
-static void *
+NO_SB_CC static void *
 pages_trim(void *addr, size_t alloc_size, size_t leadsize, size_t size)
 {
 	void *ret = (void *)((uintptr_t)addr + leadsize);
@@ -113,7 +113,7 @@ pages_trim(void *addr, size_t alloc_size, size_t leadsize, size_t size)
 #endif
 }
 
-bool
+NO_SB_CC bool
 pages_purge(void *addr, size_t length)
 {
 	bool unzeroed;
@@ -139,7 +139,7 @@ pages_purge(void *addr, size_t length)
 	return (unzeroed);
 }
 
-static void *
+NO_SB_CC static void *
 chunk_alloc_mmap_slow(size_t size, size_t alignment, bool *zero)
 {
 	void *ret, *pages;
@@ -163,7 +163,7 @@ chunk_alloc_mmap_slow(size_t size, size_t alignment, bool *zero)
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 chunk_alloc_mmap(size_t size, size_t alignment, bool *zero)
 {
 	void *ret;
@@ -199,7 +199,7 @@ chunk_alloc_mmap(size_t size, size_t alignment, bool *zero)
 	return (ret);
 }
 
-bool
+NO_SB_CC bool
 chunk_dealloc_mmap(void *chunk, size_t size)
 {
 

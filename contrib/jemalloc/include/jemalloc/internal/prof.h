@@ -212,20 +212,20 @@ extern uint64_t	prof_interval;
  */
 extern bool	prof_promote;
 
-void	bt_init(prof_bt_t *bt, void **vec);
-void	prof_backtrace(prof_bt_t *bt, unsigned nignore);
-prof_thr_cnt_t	*prof_lookup(prof_bt_t *bt);
-void	prof_idump(void);
-bool	prof_mdump(const char *filename);
-void	prof_gdump(void);
-prof_tdata_t	*prof_tdata_init(void);
-void	prof_tdata_cleanup(void *arg);
-void	prof_boot0(void);
-void	prof_boot1(void);
-bool	prof_boot2(void);
-void	prof_prefork(void);
-void	prof_postfork_parent(void);
-void	prof_postfork_child(void);
+NO_SB_CC void	bt_init(prof_bt_t *bt, void **vec);
+NO_SB_CC void	prof_backtrace(prof_bt_t *bt, unsigned nignore);
+NO_SB_CC prof_thr_cnt_t	*prof_lookup(prof_bt_t *bt);
+NO_SB_CC void	prof_idump(void);
+NO_SB_CC bool	prof_mdump(const char *filename);
+NO_SB_CC void	prof_gdump(void);
+NO_SB_CC prof_tdata_t	*prof_tdata_init(void);
+NO_SB_CC void	prof_tdata_cleanup(void *arg);
+NO_SB_CC void	prof_boot0(void);
+NO_SB_CC void	prof_boot1(void);
+NO_SB_CC bool	prof_boot2(void);
+NO_SB_CC void	prof_prefork(void);
+NO_SB_CC void	prof_postfork_parent(void);
+NO_SB_CC void	prof_postfork_child(void);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/
@@ -284,26 +284,26 @@ void	prof_postfork_child(void);
 } while (0)
 
 #ifndef JEMALLOC_ENABLE_INLINE
-malloc_tsd_protos(JEMALLOC_ATTR(unused), prof_tdata, prof_tdata_t *)
+malloc_tsd_protos(NO_SB_CC JEMALLOC_ATTR(unused), prof_tdata, prof_tdata_t *)
 
-prof_tdata_t	*prof_tdata_get(bool create);
-void	prof_sample_threshold_update(prof_tdata_t *prof_tdata);
-prof_ctx_t	*prof_ctx_get(const void *ptr);
-void	prof_ctx_set(const void *ptr, prof_ctx_t *ctx);
-bool	prof_sample_accum_update(size_t size);
-void	prof_malloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt);
-void	prof_realloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt,
+NO_SB_CC prof_tdata_t	*prof_tdata_get(bool create);
+NO_SB_CC void	prof_sample_threshold_update(prof_tdata_t *prof_tdata);
+NO_SB_CC prof_ctx_t	*prof_ctx_get(const void *ptr);
+NO_SB_CC void	prof_ctx_set(const void *ptr, prof_ctx_t *ctx);
+NO_SB_CC bool	prof_sample_accum_update(size_t size);
+NO_SB_CC void	prof_malloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt);
+NO_SB_CC void	prof_realloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt,
     size_t old_size, prof_ctx_t *old_ctx);
-void	prof_free(const void *ptr, size_t size);
+NO_SB_CC void	prof_free(const void *ptr, size_t size);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_PROF_C_))
 /* Thread-specific backtrace cache, used to reduce bt2ctx contention. */
 malloc_tsd_externs(prof_tdata, prof_tdata_t *)
-malloc_tsd_funcs(JEMALLOC_INLINE, prof_tdata, prof_tdata_t *, NULL,
+malloc_tsd_funcs(NO_SB_CC JEMALLOC_INLINE, prof_tdata, prof_tdata_t *, NULL,
     prof_tdata_cleanup)
 
-JEMALLOC_INLINE prof_tdata_t *
+NO_SB_CC JEMALLOC_INLINE prof_tdata_t *
 prof_tdata_get(bool create)
 {
 	prof_tdata_t *prof_tdata;
@@ -317,7 +317,7 @@ prof_tdata_get(bool create)
 	return (prof_tdata);
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 prof_sample_threshold_update(prof_tdata_t *prof_tdata)
 {
 	uint64_t r;
@@ -351,7 +351,7 @@ prof_sample_threshold_update(prof_tdata_t *prof_tdata)
 	    + (uint64_t)1U;
 }
 
-JEMALLOC_INLINE prof_ctx_t *
+NO_SB_CC JEMALLOC_INLINE prof_ctx_t *
 prof_ctx_get(const void *ptr)
 {
 	prof_ctx_t *ret;
@@ -370,7 +370,7 @@ prof_ctx_get(const void *ptr)
 	return (ret);
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 prof_ctx_set(const void *ptr, prof_ctx_t *ctx)
 {
 	arena_chunk_t *chunk;
@@ -386,7 +386,7 @@ prof_ctx_set(const void *ptr, prof_ctx_t *ctx)
 		huge_prof_ctx_set(ptr, ctx);
 }
 
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 prof_sample_accum_update(size_t size)
 {
 	prof_tdata_t *prof_tdata;
@@ -415,7 +415,7 @@ prof_sample_accum_update(size_t size)
 	}
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 prof_malloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt)
 {
 
@@ -460,7 +460,7 @@ prof_malloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt)
 		prof_ctx_set(ptr, (prof_ctx_t *)(uintptr_t)1U);
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 prof_realloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt,
     size_t old_size, prof_ctx_t *old_ctx)
 {
@@ -535,7 +535,7 @@ prof_realloc(const void *ptr, size_t size, prof_thr_cnt_t *cnt,
 	mb_write(); /* Not strictly necessary. */
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 prof_free(const void *ptr, size_t size)
 {
 	prof_ctx_t *ctx = prof_ctx_get(ptr);

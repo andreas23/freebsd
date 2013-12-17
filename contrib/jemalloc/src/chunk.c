@@ -33,15 +33,15 @@ size_t		arena_maxclass; /* Max size class for arenas. */
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static void	*chunk_recycle(extent_tree_t *chunks_szad,
+NO_SB_CC static void	*chunk_recycle(extent_tree_t *chunks_szad,
     extent_tree_t *chunks_ad, size_t size, size_t alignment, bool base,
     bool *zero);
-static void	chunk_record(extent_tree_t *chunks_szad,
+NO_SB_CC static void	chunk_record(extent_tree_t *chunks_szad,
     extent_tree_t *chunks_ad, void *chunk, size_t size);
 
 /******************************************************************************/
 
-static void *
+NO_SB_CC static void *
 chunk_recycle(extent_tree_t *chunks_szad, extent_tree_t *chunks_ad, size_t size,
     size_t alignment, bool base, bool *zero)
 {
@@ -141,7 +141,7 @@ chunk_recycle(extent_tree_t *chunks_szad, extent_tree_t *chunks_ad, size_t size,
  * takes advantage of this to avoid demanding zeroed chunks, but taking
  * advantage of them if they are returned.
  */
-void *
+NO_SB_CC void *
 chunk_alloc(size_t size, size_t alignment, bool base, bool *zero,
     dss_prec_t dss_prec)
 {
@@ -209,7 +209,7 @@ label_return:
 	return (ret);
 }
 
-static void
+NO_SB_CC static void
 chunk_record(extent_tree_t *chunks_szad, extent_tree_t *chunks_ad, void *chunk,
     size_t size)
 {
@@ -297,7 +297,7 @@ label_return:
 		base_node_dealloc(prev);
 }
 
-void
+NO_SB_CC void
 chunk_unmap(void *chunk, size_t size)
 {
 	assert(chunk != NULL);
@@ -311,7 +311,7 @@ chunk_unmap(void *chunk, size_t size)
 		chunk_record(&chunks_szad_mmap, &chunks_ad_mmap, chunk, size);
 }
 
-void
+NO_SB_CC void
 chunk_dealloc(void *chunk, size_t size, bool unmap)
 {
 
@@ -333,7 +333,7 @@ chunk_dealloc(void *chunk, size_t size, bool unmap)
 		chunk_unmap(chunk, size);
 }
 
-bool
+NO_SB_CC bool
 chunk_boot(void)
 {
 
@@ -364,7 +364,7 @@ chunk_boot(void)
 	return (false);
 }
 
-void
+NO_SB_CC void
 chunk_prefork(void)
 {
 
@@ -374,7 +374,7 @@ chunk_prefork(void)
 	chunk_dss_prefork();
 }
 
-void
+NO_SB_CC void
 chunk_postfork_parent(void)
 {
 
@@ -384,7 +384,7 @@ chunk_postfork_parent(void)
 	malloc_mutex_postfork_parent(&chunks_mtx);
 }
 
-void
+NO_SB_CC void
 chunk_postfork_child(void)
 {
 

@@ -14,7 +14,7 @@
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-void	mb_write(void);
+NO_SB_CC void	mb_write(void);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_MB_C_))
@@ -28,7 +28,7 @@ void	mb_write(void);
  * architecture that does not need memory barriers (everything through at least
  * i686), an "optimizer barrier" is necessary.
  */
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 mb_write(void)
 {
 
@@ -55,7 +55,7 @@ mb_write(void)
 #endif
 }
 #elif (defined(__amd64__) || defined(__x86_64__))
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 mb_write(void)
 {
 
@@ -66,7 +66,7 @@ mb_write(void)
 	    );
 }
 #elif defined(__powerpc__)
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 mb_write(void)
 {
 
@@ -77,7 +77,7 @@ mb_write(void)
 	    );
 }
 #elif defined(__sparc64__)
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 mb_write(void)
 {
 
@@ -99,7 +99,7 @@ mb_write(void)
  * This is much slower than a simple memory barrier, but the semantics of mutex
  * unlock make this work.
  */
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 mb_write(void)
 {
 	malloc_mutex_t mtx;

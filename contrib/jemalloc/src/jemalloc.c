@@ -63,7 +63,7 @@ static bool			malloc_initializer = NO_INITIALIZER;
 #ifdef _WIN32
 static malloc_mutex_t	init_lock;
 
-JEMALLOC_ATTR(constructor)
+NO_SB_CC JEMALLOC_ATTR(constructor)
 static void WINAPI
 _init_init_lock(void)
 {
@@ -74,7 +74,7 @@ _init_init_lock(void)
 #ifdef _MSC_VER
 #  pragma section(".CRT$XCU", read)
 JEMALLOC_SECTION(".CRT$XCU") JEMALLOC_ATTR(used)
-static const void (WINAPI *init_init_lock)(void) = _init_init_lock;
+NO_SB_CC static const void (WINAPI *init_init_lock)(void) = _init_init_lock;
 #endif
 
 #else
@@ -106,15 +106,15 @@ typedef struct {
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static void	stats_print_atexit(void);
-static unsigned	malloc_ncpus(void);
-static bool	malloc_conf_next(char const **opts_p, char const **k_p,
+NO_SB_CC static void	stats_print_atexit(void);
+NO_SB_CC static unsigned	malloc_ncpus(void);
+NO_SB_CC static bool	malloc_conf_next(char const **opts_p, char const **k_p,
     size_t *klen_p, char const **v_p, size_t *vlen_p);
-static void	malloc_conf_error(const char *msg, const char *k, size_t klen,
+NO_SB_CC static void	malloc_conf_error(const char *msg, const char *k, size_t klen,
     const char *v, size_t vlen);
-static void	malloc_conf_init(void);
-static bool	malloc_init_hard(void);
-static int	imemalign(void **memptr, size_t alignment, size_t size,
+NO_SB_CC static void	malloc_conf_init(void);
+NO_SB_CC static bool	malloc_init_hard(void);
+NO_SB_CC static int	imemalign(void **memptr, size_t alignment, size_t size,
     size_t min_alignment);
 
 /******************************************************************************/
@@ -123,7 +123,7 @@ static int	imemalign(void **memptr, size_t alignment, size_t size,
  */
 
 /* Create a new arena and insert it into the arenas array at index ind. */
-arena_t *
+NO_SB_CC arena_t *
 arenas_extend(unsigned ind)
 {
 	arena_t *ret;
@@ -149,7 +149,7 @@ arenas_extend(unsigned ind)
 }
 
 /* Slow path, called only by choose_arena(). */
-arena_t *
+NO_SB_CC arena_t *
 choose_arena_hard(void)
 {
 	arena_t *ret;
@@ -209,7 +209,7 @@ choose_arena_hard(void)
 	return (ret);
 }
 
-static void
+NO_SB_CC static void
 stats_print_atexit(void)
 {
 
@@ -253,7 +253,7 @@ stats_print_atexit(void)
  * Begin initialization functions.
  */
 
-static unsigned
+NO_SB_CC static unsigned
 malloc_ncpus(void)
 {
 	unsigned ret;
@@ -276,7 +276,7 @@ malloc_ncpus(void)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 arenas_cleanup(void *arg)
 {
 	arena_t *arena = *(arena_t **)arg;
@@ -286,7 +286,7 @@ arenas_cleanup(void *arg)
 	malloc_mutex_unlock(&arenas_lock);
 }
 
-static JEMALLOC_ATTR(always_inline) void
+NO_SB_CC JEMALLOC_ATTR(always_inline) void
 malloc_thread_init(void)
 {
 
@@ -303,7 +303,7 @@ malloc_thread_init(void)
 		quarantine_alloc_hook();
 }
 
-static JEMALLOC_ATTR(always_inline) bool
+NO_SB_CC JEMALLOC_ATTR(always_inline) bool
 malloc_init(void)
 {
 
@@ -314,7 +314,7 @@ malloc_init(void)
 	return (false);
 }
 
-static bool
+NO_SB_CC static bool
 malloc_conf_next(char const **opts_p, char const **k_p, size_t *klen_p,
     char const **v_p, size_t *vlen_p)
 {
@@ -390,7 +390,7 @@ malloc_conf_next(char const **opts_p, char const **k_p, size_t *klen_p,
 	return (false);
 }
 
-static void
+NO_SB_CC static void
 malloc_conf_error(const char *msg, const char *k, size_t klen, const char *v,
     size_t vlen)
 {
@@ -399,7 +399,7 @@ malloc_conf_error(const char *msg, const char *k, size_t klen, const char *v,
 	    (int)vlen, v);
 }
 
-static void
+NO_SB_CC static void
 malloc_conf_init(void)
 {
 	unsigned i;
@@ -665,7 +665,7 @@ malloc_conf_init(void)
 	}
 }
 
-static bool
+NO_SB_CC static bool
 malloc_init_hard(void)
 {
 	arena_t *init_arenas[1];
@@ -857,7 +857,7 @@ malloc_init_hard(void)
  * Begin malloc(3)-compatible functions.
  */
 
-void *
+NO_SB_CC void *
 je_malloc(size_t size)
 {
 	void *ret;
@@ -920,7 +920,7 @@ JEMALLOC_ATTR(nonnull(1))
  */
 JEMALLOC_NOINLINE
 #endif
-static int
+NO_SB_CC static int
 imemalign(void **memptr, size_t alignment, size_t size,
     size_t min_alignment)
 {
@@ -1006,7 +1006,7 @@ label_return:
 	return (ret);
 }
 
-int
+NO_SB_CC int
 je_posix_memalign(void **memptr, size_t alignment, size_t size)
 {
 	int ret = imemalign(memptr, alignment, size, sizeof(void *));
@@ -1015,7 +1015,7 @@ je_posix_memalign(void **memptr, size_t alignment, size_t size)
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 je_aligned_alloc(size_t alignment, size_t size)
 {
 	void *ret;
@@ -1030,7 +1030,7 @@ je_aligned_alloc(size_t alignment, size_t size)
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 je_calloc(size_t num, size_t size)
 {
 	void *ret;
@@ -1105,7 +1105,7 @@ label_return:
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 je_realloc(void *ptr, size_t size)
 {
 	void *ret;
@@ -1254,7 +1254,7 @@ label_return:
 	return (ret);
 }
 
-void
+NO_SB_CC void
 je_free(void *ptr)
 {
 
@@ -1288,7 +1288,7 @@ je_free(void *ptr)
  */
 
 #ifdef JEMALLOC_OVERRIDE_MEMALIGN
-void *
+NO_SB_CC void *
 je_memalign(size_t alignment, size_t size)
 {
 	void *ret JEMALLOC_CC_SILENCE_INIT(NULL);
@@ -1299,7 +1299,7 @@ je_memalign(size_t alignment, size_t size)
 #endif
 
 #ifdef JEMALLOC_OVERRIDE_VALLOC
-void *
+NO_SB_CC void *
 je_valloc(size_t size)
 {
 	void *ret JEMALLOC_CC_SILENCE_INIT(NULL);
@@ -1327,10 +1327,10 @@ je_valloc(size_t size)
  * passed an extra argument for the caller return address, which will be
  * ignored.
  */
-JEMALLOC_EXPORT void (* __free_hook)(void *ptr) = je_free;
-JEMALLOC_EXPORT void *(* __malloc_hook)(size_t size) = je_malloc;
-JEMALLOC_EXPORT void *(* __realloc_hook)(void *ptr, size_t size) = je_realloc;
-JEMALLOC_EXPORT void *(* __memalign_hook)(size_t alignment, size_t size) =
+NO_SB_CC JEMALLOC_EXPORT void (* __free_hook)(void *ptr) = je_free;
+NO_SB_CC JEMALLOC_EXPORT void *(* __malloc_hook)(size_t size) = je_malloc;
+NO_SB_CC JEMALLOC_EXPORT void *(* __realloc_hook)(void *ptr, size_t size) = je_realloc;
+NO_SB_CC JEMALLOC_EXPORT void *(* __memalign_hook)(size_t alignment, size_t size) =
     je_memalign;
 #endif
 
@@ -1342,7 +1342,7 @@ JEMALLOC_EXPORT void *(* __memalign_hook)(size_t alignment, size_t size) =
  * Begin non-standard functions.
  */
 
-size_t
+NO_SB_CC size_t
 je_malloc_usable_size(JEMALLOC_USABLE_SIZE_CONST void *ptr)
 {
 	size_t ret;
@@ -1358,7 +1358,7 @@ je_malloc_usable_size(JEMALLOC_USABLE_SIZE_CONST void *ptr)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 je_malloc_stats_print(void (*write_cb)(void *, const char *), void *cbopaque,
     const char *opts)
 {
@@ -1366,7 +1366,7 @@ je_malloc_stats_print(void (*write_cb)(void *, const char *), void *cbopaque,
 	stats_print(write_cb, cbopaque, opts);
 }
 
-int
+NO_SB_CC int
 je_mallctl(const char *name, void *oldp, size_t *oldlenp, void *newp,
     size_t newlen)
 {
@@ -1377,7 +1377,7 @@ je_mallctl(const char *name, void *oldp, size_t *oldlenp, void *newp,
 	return (ctl_byname(name, oldp, oldlenp, newp, newlen));
 }
 
-int
+NO_SB_CC int
 je_mallctlnametomib(const char *name, size_t *mibp, size_t *miblenp)
 {
 
@@ -1387,7 +1387,7 @@ je_mallctlnametomib(const char *name, size_t *mibp, size_t *miblenp)
 	return (ctl_nametomib(name, mibp, miblenp));
 }
 
-int
+NO_SB_CC int
 je_mallctlbymib(const size_t *mib, size_t miblen, void *oldp, size_t *oldlenp,
   void *newp, size_t newlen)
 {
@@ -1407,7 +1407,11 @@ je_mallctlbymib(const size_t *mib, size_t miblen, void *oldp, size_t *oldlenp,
  */
 #ifdef JEMALLOC_EXPERIMENTAL
 
+<<<<<<< HEAD
 static JEMALLOC_ATTR(always_inline) void *
+=======
+NO_SB_CC JEMALLOC_ALWAYS_INLINE_C void *
+>>>>>>> b2455e5... attribute malloc with NO_SB_CC
 iallocm(size_t usize, size_t alignment, bool zero, bool try_tcache,
     arena_t *arena)
 {
@@ -1423,7 +1427,7 @@ iallocm(size_t usize, size_t alignment, bool zero, bool try_tcache,
 		return (imallocx(usize, try_tcache, arena));
 }
 
-int
+NO_SB_CC int
 je_allocm(void **ptr, size_t *rsize, size_t size, int flags)
 {
 	void *p;
@@ -1503,7 +1507,7 @@ label_oom:
 	return (ALLOCM_ERR_OOM);
 }
 
-int
+NO_SB_CC int
 je_rallocm(void **ptr, size_t *rsize, size_t size, size_t extra, int flags)
 {
 	void *p, *q;
@@ -1652,7 +1656,7 @@ je_sallocm(const void *ptr, size_t *rsize, int flags)
 	return (ALLOCM_SUCCESS);
 }
 
-int
+NO_SB_CC int
 je_dallocm(void *ptr, int flags)
 {
 	size_t usize;
@@ -1688,7 +1692,7 @@ je_dallocm(void *ptr, int flags)
 	return (ALLOCM_SUCCESS);
 }
 
-int
+NO_SB_CC int
 je_nallocm(size_t *rsize, size_t size, int flags)
 {
 	size_t usize;
@@ -1733,7 +1737,7 @@ je_nallocm(size_t *rsize, size_t size, int flags)
  * a library constructor that runs before jemalloc's runs.
  */
 JEMALLOC_ATTR(constructor)
-static void
+NO_SB_CC static void
 jemalloc_constructor(void)
 {
 
@@ -1741,10 +1745,10 @@ jemalloc_constructor(void)
 }
 
 #ifndef JEMALLOC_MUTEX_INIT_CB
-void
+NO_SB_CC void
 jemalloc_prefork(void)
 #else
-JEMALLOC_EXPORT void
+NO_SB_CC JEMALLOC_EXPORT void
 _malloc_prefork(void)
 #endif
 {
@@ -1770,10 +1774,10 @@ _malloc_prefork(void)
 }
 
 #ifndef JEMALLOC_MUTEX_INIT_CB
-void
+NO_SB_CC void
 jemalloc_postfork_parent(void)
 #else
-JEMALLOC_EXPORT void
+NO_SB_CC JEMALLOC_EXPORT void
 _malloc_postfork(void)
 #endif
 {
@@ -1798,7 +1802,7 @@ _malloc_postfork(void)
 	ctl_postfork_parent();
 }
 
-void
+NO_SB_CC void
 jemalloc_postfork_child(void)
 {
 	unsigned i;
@@ -1825,7 +1829,7 @@ jemalloc_postfork_child(void)
  * is that these avoid accessing TLS variables.
  */
 
-static void *
+NO_SB_CC static void *
 a0alloc(size_t size, bool zero)
 {
 
@@ -1841,21 +1845,21 @@ a0alloc(size_t size, bool zero)
 		return (huge_malloc(size, zero));
 }
 
-void *
+NO_SB_CC void *
 a0malloc(size_t size)
 {
 
 	return (a0alloc(size, false));
 }
 
-void *
+NO_SB_CC void *
 a0calloc(size_t num, size_t size)
 {
 
 	return (a0alloc(num * size, true));
 }
 
-void
+NO_SB_CC void
 a0free(void *ptr)
 {
 	arena_chunk_t *chunk;

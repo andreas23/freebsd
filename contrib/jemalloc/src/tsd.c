@@ -9,7 +9,7 @@ static malloc_tsd_cleanup_t cleanups[MALLOC_TSD_CLEANUPS_MAX];
 
 /******************************************************************************/
 
-void *
+NO_SB_CC void *
 malloc_tsd_malloc(size_t size)
 {
 
@@ -17,14 +17,14 @@ malloc_tsd_malloc(size_t size)
 	return (arena_malloc(arenas[0], size, false, false));
 }
 
-void
+NO_SB_CC void
 malloc_tsd_dalloc(void *wrapper)
 {
 
 	idalloc(wrapper);
 }
 
-void
+NO_SB_CC void
 malloc_tsd_no_cleanup(void *arg)
 {
 
@@ -35,7 +35,7 @@ malloc_tsd_no_cleanup(void *arg)
 #ifndef _WIN32
 JEMALLOC_EXPORT
 #endif
-void
+NO_SB_CC void
 _malloc_thread_cleanup(void)
 {
 	bool pending[MALLOC_TSD_CLEANUPS_MAX], again;
@@ -57,7 +57,7 @@ _malloc_thread_cleanup(void)
 }
 #endif
 
-void
+NO_SB_CC void
 malloc_tsd_cleanup_register(bool (*f)(void))
 {
 
@@ -66,7 +66,7 @@ malloc_tsd_cleanup_register(bool (*f)(void))
 	ncleanups++;
 }
 
-void
+NO_SB_CC void
 malloc_tsd_boot(void)
 {
 
@@ -74,7 +74,7 @@ malloc_tsd_boot(void)
 }
 
 #ifdef _WIN32
-static BOOL WINAPI
+NO_SB_CC static BOOL WINAPI
 _tls_callback(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 

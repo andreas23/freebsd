@@ -17,13 +17,13 @@ malloc_tsd_data(, quarantine, quarantine_t *, NULL)
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static quarantine_t	*quarantine_grow(quarantine_t *quarantine);
-static void	quarantine_drain_one(quarantine_t *quarantine);
-static void	quarantine_drain(quarantine_t *quarantine, size_t upper_bound);
+NO_SB_CC static quarantine_t	*quarantine_grow(quarantine_t *quarantine);
+NO_SB_CC static void	quarantine_drain_one(quarantine_t *quarantine);
+NO_SB_CC static void	quarantine_drain(quarantine_t *quarantine, size_t upper_bound);
 
 /******************************************************************************/
 
-quarantine_t *
+NO_SB_CC quarantine_t *
 quarantine_init(size_t lg_maxobjs)
 {
 	quarantine_t *quarantine;
@@ -42,7 +42,7 @@ quarantine_init(size_t lg_maxobjs)
 	return (quarantine);
 }
 
-static quarantine_t *
+NO_SB_CC static quarantine_t *
 quarantine_grow(quarantine_t *quarantine)
 {
 	quarantine_t *ret;
@@ -76,7 +76,7 @@ quarantine_grow(quarantine_t *quarantine)
 	return (ret);
 }
 
-static void
+NO_SB_CC static void
 quarantine_drain_one(quarantine_t *quarantine)
 {
 	quarantine_obj_t *obj = &quarantine->objs[quarantine->first];
@@ -88,7 +88,7 @@ quarantine_drain_one(quarantine_t *quarantine)
 	    quarantine->lg_maxobjs) - 1);
 }
 
-static void
+NO_SB_CC static void
 quarantine_drain(quarantine_t *quarantine, size_t upper_bound)
 {
 
@@ -96,7 +96,7 @@ quarantine_drain(quarantine_t *quarantine, size_t upper_bound)
 		quarantine_drain_one(quarantine);
 }
 
-void
+NO_SB_CC void
 quarantine(void *ptr)
 {
 	quarantine_t *quarantine;
@@ -149,7 +149,7 @@ quarantine(void *ptr)
 	}
 }
 
-void
+NO_SB_CC void
 quarantine_cleanup(void *arg)
 {
 	quarantine_t *quarantine = *(quarantine_t **)arg;
@@ -177,7 +177,7 @@ quarantine_cleanup(void *arg)
 	}
 }
 
-bool
+NO_SB_CC bool
 quarantine_boot(void)
 {
 

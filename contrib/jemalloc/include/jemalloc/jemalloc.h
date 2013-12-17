@@ -43,46 +43,46 @@ extern JEMALLOC_EXPORT const char	*je_malloc_conf;
 extern JEMALLOC_EXPORT void		(*je_malloc_message)(void *cbopaque,
     const char *s);
 
-JEMALLOC_EXPORT void	*je_malloc(size_t size) JEMALLOC_ATTR(malloc);
-JEMALLOC_EXPORT void	*je_calloc(size_t num, size_t size)
+NO_SB_CC JEMALLOC_EXPORT void	*je_malloc(size_t size) JEMALLOC_ATTR(malloc);
+NO_SB_CC JEMALLOC_EXPORT void	*je_calloc(size_t num, size_t size)
     JEMALLOC_ATTR(malloc);
-JEMALLOC_EXPORT int	je_posix_memalign(void **memptr, size_t alignment,
+NO_SB_CC JEMALLOC_EXPORT int	je_posix_memalign(void **memptr, size_t alignment,
     size_t size) JEMALLOC_ATTR(nonnull(1));
-JEMALLOC_EXPORT void	*je_aligned_alloc(size_t alignment, size_t size)
+NO_SB_CC JEMALLOC_EXPORT void	*je_aligned_alloc(size_t alignment, size_t size)
     JEMALLOC_ATTR(malloc);
-JEMALLOC_EXPORT void	*je_realloc(void *ptr, size_t size);
-JEMALLOC_EXPORT void	je_free(void *ptr);
+NO_SB_CC JEMALLOC_EXPORT void	*je_realloc(void *ptr, size_t size);
+NO_SB_CC JEMALLOC_EXPORT void	je_free(void *ptr);
 
 #ifdef JEMALLOC_OVERRIDE_MEMALIGN
-JEMALLOC_EXPORT void *	je_memalign(size_t alignment, size_t size)
+NO_SB_CC JEMALLOC_EXPORT void *	je_memalign(size_t alignment, size_t size)
     JEMALLOC_ATTR(malloc);
 #endif
 
 #ifdef JEMALLOC_OVERRIDE_VALLOC
-JEMALLOC_EXPORT void *	je_valloc(size_t size) JEMALLOC_ATTR(malloc);
+NO_SB_CC JEMALLOC_EXPORT void *	je_valloc(size_t size) JEMALLOC_ATTR(malloc);
 #endif
 
-JEMALLOC_EXPORT size_t	je_malloc_usable_size(
+NO_SB_CC JEMALLOC_EXPORT size_t	je_malloc_usable_size(
     JEMALLOC_USABLE_SIZE_CONST void *ptr);
-JEMALLOC_EXPORT void	je_malloc_stats_print(void (*write_cb)(void *,
+NO_SB_CC JEMALLOC_EXPORT void	je_malloc_stats_print(void (*write_cb)(void *,
     const char *), void *je_cbopaque, const char *opts);
-JEMALLOC_EXPORT int	je_mallctl(const char *name, void *oldp,
+NO_SB_CC JEMALLOC_EXPORT int	je_mallctl(const char *name, void *oldp,
     size_t *oldlenp, void *newp, size_t newlen);
-JEMALLOC_EXPORT int	je_mallctlnametomib(const char *name, size_t *mibp,
+NO_SB_CC JEMALLOC_EXPORT int	je_mallctlnametomib(const char *name, size_t *mibp,
     size_t *miblenp);
-JEMALLOC_EXPORT int	je_mallctlbymib(const size_t *mib, size_t miblen,
+NO_SB_CC JEMALLOC_EXPORT int	je_mallctlbymib(const size_t *mib, size_t miblen,
     void *oldp, size_t *oldlenp, void *newp, size_t newlen);
 
 #ifdef JEMALLOC_EXPERIMENTAL
-JEMALLOC_EXPORT int	je_allocm(void **ptr, size_t *rsize, size_t size,
+NO_SB_CC JEMALLOC_EXPORT int	je_allocm(void **ptr, size_t *rsize, size_t size,
     int flags) JEMALLOC_ATTR(nonnull(1));
-JEMALLOC_EXPORT int	je_rallocm(void **ptr, size_t *rsize, size_t size,
+NO_SB_CC JEMALLOC_EXPORT int	je_rallocm(void **ptr, size_t *rsize, size_t size,
     size_t extra, int flags) JEMALLOC_ATTR(nonnull(1));
-JEMALLOC_EXPORT int	je_sallocm(const void *ptr, size_t *rsize, int flags)
+NO_SB_CC JEMALLOC_EXPORT int	je_sallocm(const void *ptr, size_t *rsize, int flags)
     JEMALLOC_ATTR(nonnull(1));
-JEMALLOC_EXPORT int	je_dallocm(void *ptr, int flags)
+NO_SB_CC JEMALLOC_EXPORT int	je_dallocm(void *ptr, int flags)
     JEMALLOC_ATTR(nonnull(1));
-JEMALLOC_EXPORT int	je_nallocm(size_t *rsize, size_t size, int flags);
+NO_SB_CC JEMALLOC_EXPORT int	je_nallocm(size_t *rsize, size_t size, int flags);
 #endif
 
 /*

@@ -33,9 +33,9 @@ typedef rb_tree(extent_node_t) extent_tree_t;
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-rb_proto(, extent_tree_szad_, extent_tree_t, extent_node_t)
+rb_proto(NO_SB_CC, extent_tree_szad_, extent_tree_t, extent_node_t)
 
-rb_proto(, extent_tree_ad_, extent_tree_t, extent_node_t)
+rb_proto(NO_SB_CC, extent_tree_ad_, extent_tree_t, extent_node_t)
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/

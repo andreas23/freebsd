@@ -21,7 +21,7 @@ static malloc_mutex_t	*postponed_mutexes = NULL;
 #endif
 
 #if defined(JEMALLOC_LAZY_LOCK) && !defined(_WIN32)
-static void	pthread_create_once(void);
+NO_SB_CC static void	pthread_create_once(void);
 #endif
 
 /******************************************************************************/
@@ -31,10 +31,10 @@ static void	pthread_create_once(void);
  */
 
 #if defined(JEMALLOC_LAZY_LOCK) && !defined(_WIN32)
-static int (*pthread_create_fptr)(pthread_t *__restrict, const pthread_attr_t *,
+NO_SB_CC static int (*pthread_create_fptr)(pthread_t *__restrict, const pthread_attr_t *,
     void *(*)(void *), void *__restrict);
 
-static void
+NO_SB_CC static void
 pthread_create_once(void)
 {
 
@@ -48,7 +48,7 @@ pthread_create_once(void)
 	isthreaded = true;
 }
 
-JEMALLOC_EXPORT int
+NO_SB_CC JEMALLOC_EXPORT int
 pthread_create(pthread_t *__restrict thread,
     const pthread_attr_t *__restrict attr, void *(*start_routine)(void *),
     void *__restrict arg)
@@ -64,13 +64,13 @@ pthread_create(pthread_t *__restrict thread,
 /******************************************************************************/
 
 #ifdef JEMALLOC_MUTEX_INIT_CB
-JEMALLOC_EXPORT int	_pthread_mutex_init_calloc_cb(pthread_mutex_t *mutex,
+NO_SB_CC JEMALLOC_EXPORT int	_pthread_mutex_init_calloc_cb(pthread_mutex_t *mutex,
     void *(calloc_cb)(size_t, size_t));
 
 __weak_reference(_pthread_mutex_init_calloc_cb_stub,
     _pthread_mutex_init_calloc_cb);
 
-int
+NO_SB_CC int
 _pthread_mutex_init_calloc_cb_stub(pthread_mutex_t *mutex,
     void *(calloc_cb)(size_t, size_t))
 {
@@ -79,7 +79,7 @@ _pthread_mutex_init_calloc_cb_stub(pthread_mutex_t *mutex,
 }
 #endif
 
-bool
+NO_SB_CC bool
 malloc_mutex_init(malloc_mutex_t *mutex)
 {
 
@@ -113,21 +113,21 @@ malloc_mutex_init(malloc_mutex_t *mutex)
 	return (false);
 }
 
-void
+NO_SB_CC void
 malloc_mutex_prefork(malloc_mutex_t *mutex)
 {
 
 	malloc_mutex_lock(mutex);
 }
 
-void
+NO_SB_CC void
 malloc_mutex_postfork_parent(malloc_mutex_t *mutex)
 {
 
 	malloc_mutex_unlock(mutex);
 }
 
-void
+NO_SB_CC void
 malloc_mutex_postfork_child(malloc_mutex_t *mutex)
 {
 
@@ -143,7 +143,7 @@ malloc_mutex_postfork_child(malloc_mutex_t *mutex)
 #endif
 }
 
-bool
+NO_SB_CC bool
 mutex_boot(void)
 {
 

@@ -45,23 +45,23 @@ struct malloc_mutex_s {
 extern bool isthreaded;
 #endif
 
-bool	malloc_mutex_init(malloc_mutex_t *mutex);
-void	malloc_mutex_prefork(malloc_mutex_t *mutex);
-void	malloc_mutex_postfork_parent(malloc_mutex_t *mutex);
-void	malloc_mutex_postfork_child(malloc_mutex_t *mutex);
-bool	mutex_boot(void);
+NO_SB_CC bool	malloc_mutex_init(malloc_mutex_t *mutex);
+NO_SB_CC void	malloc_mutex_prefork(malloc_mutex_t *mutex);
+NO_SB_CC void	malloc_mutex_postfork_parent(malloc_mutex_t *mutex);
+NO_SB_CC void	malloc_mutex_postfork_child(malloc_mutex_t *mutex);
+NO_SB_CC bool	mutex_boot(void);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-void	malloc_mutex_lock(malloc_mutex_t *mutex);
-void	malloc_mutex_unlock(malloc_mutex_t *mutex);
+NO_SB_CC void	malloc_mutex_lock(malloc_mutex_t *mutex);
+NO_SB_CC void	malloc_mutex_unlock(malloc_mutex_t *mutex);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_MUTEX_C_))
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 malloc_mutex_lock(malloc_mutex_t *mutex)
 {
 
@@ -76,7 +76,7 @@ malloc_mutex_lock(malloc_mutex_t *mutex)
 	}
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 malloc_mutex_unlock(malloc_mutex_t *mutex)
 {
 

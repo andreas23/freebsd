@@ -40,54 +40,54 @@ const uint8_t	small_size2bin[] = {
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static void	arena_avail_insert(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_avail_insert(arena_t *arena, arena_chunk_t *chunk,
     size_t pageind, size_t npages, bool maybe_adjac_pred,
     bool maybe_adjac_succ);
-static void	arena_avail_remove(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_avail_remove(arena_t *arena, arena_chunk_t *chunk,
     size_t pageind, size_t npages, bool maybe_adjac_pred,
     bool maybe_adjac_succ);
-static void	arena_run_split(arena_t *arena, arena_run_t *run, size_t size,
+NO_SB_CC static void	arena_run_split(arena_t *arena, arena_run_t *run, size_t size,
     bool large, size_t binind, bool zero);
-static arena_chunk_t *arena_chunk_alloc(arena_t *arena);
-static void	arena_chunk_dealloc(arena_t *arena, arena_chunk_t *chunk);
-static arena_run_t	*arena_run_alloc_helper(arena_t *arena, size_t size,
+NO_SB_CC static arena_chunk_t *arena_chunk_alloc(arena_t *arena);
+NO_SB_CC static void	arena_chunk_dealloc(arena_t *arena, arena_chunk_t *chunk);
+NO_SB_CC static arena_run_t	*arena_run_alloc_helper(arena_t *arena, size_t size,
     bool large, size_t binind, bool zero);
-static arena_run_t *arena_run_alloc(arena_t *arena, size_t size, bool large,
+NO_SB_CC static arena_run_t *arena_run_alloc(arena_t *arena, size_t size, bool large,
     size_t binind, bool zero);
-static arena_chunk_t	*chunks_dirty_iter_cb(arena_chunk_tree_t *tree,
+NO_SB_CC static arena_chunk_t	*chunks_dirty_iter_cb(arena_chunk_tree_t *tree,
     arena_chunk_t *chunk, void *arg);
-static void	arena_purge(arena_t *arena, bool all);
-static void	arena_run_dalloc(arena_t *arena, arena_run_t *run, bool dirty,
+NO_SB_CC static void	arena_purge(arena_t *arena, bool all);
+NO_SB_CC static void	arena_run_dalloc(arena_t *arena, arena_run_t *run, bool dirty,
     bool cleaned);
-static void	arena_run_trim_head(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_run_trim_head(arena_t *arena, arena_chunk_t *chunk,
     arena_run_t *run, size_t oldsize, size_t newsize);
-static void	arena_run_trim_tail(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_run_trim_tail(arena_t *arena, arena_chunk_t *chunk,
     arena_run_t *run, size_t oldsize, size_t newsize, bool dirty);
-static arena_run_t	*arena_bin_runs_first(arena_bin_t *bin);
-static void	arena_bin_runs_insert(arena_bin_t *bin, arena_run_t *run);
-static void	arena_bin_runs_remove(arena_bin_t *bin, arena_run_t *run);
-static arena_run_t *arena_bin_nonfull_run_tryget(arena_bin_t *bin);
-static arena_run_t *arena_bin_nonfull_run_get(arena_t *arena, arena_bin_t *bin);
-static void	*arena_bin_malloc_hard(arena_t *arena, arena_bin_t *bin);
-static void	arena_dissociate_bin_run(arena_chunk_t *chunk, arena_run_t *run,
+NO_SB_CC static arena_run_t	*arena_bin_runs_first(arena_bin_t *bin);
+NO_SB_CC static void	arena_bin_runs_insert(arena_bin_t *bin, arena_run_t *run);
+NO_SB_CC static void	arena_bin_runs_remove(arena_bin_t *bin, arena_run_t *run);
+NO_SB_CC static arena_run_t *arena_bin_nonfull_run_tryget(arena_bin_t *bin);
+NO_SB_CC static arena_run_t *arena_bin_nonfull_run_get(arena_t *arena, arena_bin_t *bin);
+NO_SB_CC static void	*arena_bin_malloc_hard(arena_t *arena, arena_bin_t *bin);
+NO_SB_CC static void	arena_dissociate_bin_run(arena_chunk_t *chunk, arena_run_t *run,
     arena_bin_t *bin);
-static void	arena_dalloc_bin_run(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_dalloc_bin_run(arena_t *arena, arena_chunk_t *chunk,
     arena_run_t *run, arena_bin_t *bin);
-static void	arena_bin_lower_run(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_bin_lower_run(arena_t *arena, arena_chunk_t *chunk,
     arena_run_t *run, arena_bin_t *bin);
-static void	arena_ralloc_large_shrink(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static void	arena_ralloc_large_shrink(arena_t *arena, arena_chunk_t *chunk,
     void *ptr, size_t oldsize, size_t size);
-static bool	arena_ralloc_large_grow(arena_t *arena, arena_chunk_t *chunk,
+NO_SB_CC static bool	arena_ralloc_large_grow(arena_t *arena, arena_chunk_t *chunk,
     void *ptr, size_t oldsize, size_t size, size_t extra, bool zero);
-static bool	arena_ralloc_large(void *ptr, size_t oldsize, size_t size,
+NO_SB_CC static bool	arena_ralloc_large(void *ptr, size_t oldsize, size_t size,
     size_t extra, bool zero);
-static size_t	bin_info_run_size_calc(arena_bin_info_t *bin_info,
+NO_SB_CC static size_t	bin_info_run_size_calc(arena_bin_info_t *bin_info,
     size_t min_run_size);
-static void	bin_info_init(void);
+NO_SB_CC static void	bin_info_init(void);
 
 /******************************************************************************/
 
-static inline int
+NO_SB_CC static inline int
 arena_run_comp(arena_chunk_map_t *a, arena_chunk_map_t *b)
 {
 	uintptr_t a_mapelm = (uintptr_t)a;
@@ -100,10 +100,10 @@ arena_run_comp(arena_chunk_map_t *a, arena_chunk_map_t *b)
 }
 
 /* Generate red-black tree functions. */
-rb_gen(static UNUSED, arena_run_tree_, arena_run_tree_t, arena_chunk_map_t,
+rb_gen(NO_SB_CC static UNUSED, arena_run_tree_, arena_run_tree_t, arena_chunk_map_t,
     u.rb_link, arena_run_comp)
 
-static inline int
+NO_SB_CC static inline int
 arena_avail_comp(arena_chunk_map_t *a, arena_chunk_map_t *b)
 {
 	int ret;
@@ -132,10 +132,10 @@ arena_avail_comp(arena_chunk_map_t *a, arena_chunk_map_t *b)
 }
 
 /* Generate red-black tree functions. */
-rb_gen(static UNUSED, arena_avail_tree_, arena_avail_tree_t, arena_chunk_map_t,
+rb_gen(NO_SB_CC static UNUSED, arena_avail_tree_, arena_avail_tree_t, arena_chunk_map_t,
     u.rb_link, arena_avail_comp)
 
-static inline int
+NO_SB_CC static inline int
 arena_chunk_dirty_comp(arena_chunk_t *a, arena_chunk_t *b)
 {
 
@@ -202,10 +202,10 @@ arena_chunk_dirty_comp(arena_chunk_t *a, arena_chunk_t *b)
 }
 
 /* Generate red-black tree functions. */
-rb_gen(static UNUSED, arena_chunk_dirty_, arena_chunk_tree_t, arena_chunk_t,
+rb_gen(NO_SB_CC static UNUSED, arena_chunk_dirty_, arena_chunk_tree_t, arena_chunk_t,
     dirty_link, arena_chunk_dirty_comp)
 
-static inline bool
+NO_SB_CC static inline bool
 arena_avail_adjac_pred(arena_chunk_t *chunk, size_t pageind)
 {
 	bool ret;
@@ -220,7 +220,7 @@ arena_avail_adjac_pred(arena_chunk_t *chunk, size_t pageind)
 	return (ret);
 }
 
-static inline bool
+NO_SB_CC static inline bool
 arena_avail_adjac_succ(arena_chunk_t *chunk, size_t pageind, size_t npages)
 {
 	bool ret;
@@ -236,7 +236,7 @@ arena_avail_adjac_succ(arena_chunk_t *chunk, size_t pageind, size_t npages)
 	return (ret);
 }
 
-static inline bool
+NO_SB_CC static inline bool
 arena_avail_adjac(arena_chunk_t *chunk, size_t pageind, size_t npages)
 {
 
@@ -244,7 +244,7 @@ arena_avail_adjac(arena_chunk_t *chunk, size_t pageind, size_t npages)
 	    arena_avail_adjac_succ(chunk, pageind, npages));
 }
 
-static void
+NO_SB_CC static void
 arena_avail_insert(arena_t *arena, arena_chunk_t *chunk, size_t pageind,
     size_t npages, bool maybe_adjac_pred, bool maybe_adjac_succ)
 {
@@ -277,7 +277,7 @@ arena_avail_insert(arena_t *arena, arena_chunk_t *chunk, size_t pageind,
 	    pageind));
 }
 
-static void
+NO_SB_CC static void
 arena_avail_remove(arena_t *arena, arena_chunk_t *chunk, size_t pageind,
     size_t npages, bool maybe_adjac_pred, bool maybe_adjac_succ)
 {
@@ -311,7 +311,7 @@ arena_avail_remove(arena_t *arena, arena_chunk_t *chunk, size_t pageind,
 	    pageind));
 }
 
-static inline void *
+NO_SB_CC static inline void *
 arena_run_reg_alloc(arena_run_t *run, arena_bin_info_t *bin_info)
 {
 	void *ret;
@@ -332,7 +332,7 @@ arena_run_reg_alloc(arena_run_t *run, arena_bin_info_t *bin_info)
 	return (ret);
 }
 
-static inline void
+NO_SB_CC static inline void
 arena_run_reg_dalloc(arena_run_t *run, void *ptr)
 {
 	arena_chunk_t *chunk = (arena_chunk_t *)CHUNK_ADDR2BASE(run);
@@ -358,7 +358,7 @@ arena_run_reg_dalloc(arena_run_t *run, void *ptr)
 	run->nfree++;
 }
 
-static inline void
+NO_SB_CC static inline void
 arena_run_zero(arena_chunk_t *chunk, size_t run_ind, size_t npages)
 {
 
@@ -368,7 +368,7 @@ arena_run_zero(arena_chunk_t *chunk, size_t run_ind, size_t npages)
 	    (npages << LG_PAGE));
 }
 
-static inline void
+NO_SB_CC static inline void
 arena_run_page_validate_zeroed(arena_chunk_t *chunk, size_t run_ind)
 {
 	size_t i;
@@ -380,7 +380,7 @@ arena_run_page_validate_zeroed(arena_chunk_t *chunk, size_t run_ind)
 		assert(p[i] == 0);
 }
 
-static void
+NO_SB_CC static void
 arena_run_split(arena_t *arena, arena_run_t *run, size_t size, bool large,
     size_t binind, bool zero)
 {
@@ -513,7 +513,7 @@ arena_run_split(arena_t *arena, arena_run_t *run, size_t size, bool large,
 	    LG_PAGE)), (need_pages << LG_PAGE));
 }
 
-static arena_chunk_t *
+NO_SB_CC static arena_chunk_t *
 arena_chunk_alloc(arena_t *arena)
 {
 	arena_chunk_t *chunk;
@@ -593,7 +593,7 @@ arena_chunk_alloc(arena_t *arena)
 	return (chunk);
 }
 
-static void
+NO_SB_CC static void
 arena_chunk_dealloc(arena_t *arena, arena_chunk_t *chunk)
 {
 	assert(arena_mapbits_allocated_get(chunk, map_bias) == 0);
@@ -625,7 +625,7 @@ arena_chunk_dealloc(arena_t *arena, arena_chunk_t *chunk)
 		arena->spare = chunk;
 }
 
-static arena_run_t *
+NO_SB_CC static arena_run_t *
 arena_run_alloc_helper(arena_t *arena, size_t size, bool large, size_t binind,
     bool zero)
 {
@@ -649,7 +649,7 @@ arena_run_alloc_helper(arena_t *arena, size_t size, bool large, size_t binind,
 	return (NULL);
 }
 
-static arena_run_t *
+NO_SB_CC static arena_run_t *
 arena_run_alloc(arena_t *arena, size_t size, bool large, size_t binind,
     bool zero)
 {
@@ -684,7 +684,7 @@ arena_run_alloc(arena_t *arena, size_t size, bool large, size_t binind,
 	return (arena_run_alloc_helper(arena, size, large, binind, zero));
 }
 
-static inline void
+NO_SB_CC static inline void
 arena_maybe_purge(arena_t *arena)
 {
 	size_t npurgeable, threshold;
@@ -707,7 +707,7 @@ arena_maybe_purge(arena_t *arena)
 	arena_purge(arena, false);
 }
 
-static inline size_t
+NO_SB_CC static inline size_t
 arena_chunk_purge(arena_t *arena, arena_chunk_t *chunk, bool all)
 {
 	size_t npurged;
@@ -855,7 +855,7 @@ arena_chunk_purge(arena_t *arena, arena_chunk_t *chunk, bool all)
 	return (npurged);
 }
 
-static arena_chunk_t *
+NO_SB_CC static arena_chunk_t *
 chunks_dirty_iter_cb(arena_chunk_tree_t *tree, arena_chunk_t *chunk, void *arg)
 {
        size_t *ndirty = (size_t *)arg;
@@ -865,7 +865,7 @@ chunks_dirty_iter_cb(arena_chunk_tree_t *tree, arena_chunk_t *chunk, void *arg)
        return (NULL);
 }
 
-static void
+NO_SB_CC static void
 arena_purge(arena_t *arena, bool all)
 {
 	arena_chunk_t *chunk;
@@ -956,7 +956,7 @@ arena_purge(arena_t *arena, bool all)
 	}
 }
 
-void
+NO_SB_CC void
 arena_purge_all(arena_t *arena)
 {
 
@@ -965,7 +965,7 @@ arena_purge_all(arena_t *arena)
 	malloc_mutex_unlock(&arena->lock);
 }
 
-static void
+NO_SB_CC static void
 arena_run_dalloc(arena_t *arena, arena_run_t *run, bool dirty, bool cleaned)
 {
 	arena_chunk_t *chunk;
@@ -1101,7 +1101,7 @@ arena_run_dalloc(arena_t *arena, arena_run_t *run, bool dirty, bool cleaned)
 		arena_maybe_purge(arena);
 }
 
-static void
+NO_SB_CC static void
 arena_run_trim_head(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
     size_t oldsize, size_t newsize)
 {
@@ -1133,7 +1133,7 @@ arena_run_trim_head(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
 	arena_run_dalloc(arena, run, false, false);
 }
 
-static void
+NO_SB_CC static void
 arena_run_trim_tail(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
     size_t oldsize, size_t newsize, bool dirty)
 {
@@ -1166,7 +1166,7 @@ arena_run_trim_tail(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
 	    dirty, false);
 }
 
-static arena_run_t *
+NO_SB_CC static arena_run_t *
 arena_bin_runs_first(arena_bin_t *bin)
 {
 	arena_chunk_map_t *mapelm = arena_run_tree_first(&bin->runs);
@@ -1187,7 +1187,7 @@ arena_bin_runs_first(arena_bin_t *bin)
 	return (NULL);
 }
 
-static void
+NO_SB_CC static void
 arena_bin_runs_insert(arena_bin_t *bin, arena_run_t *run)
 {
 	arena_chunk_t *chunk = CHUNK_ADDR2BASE(run);
@@ -1199,7 +1199,7 @@ arena_bin_runs_insert(arena_bin_t *bin, arena_run_t *run)
 	arena_run_tree_insert(&bin->runs, mapelm);
 }
 
-static void
+NO_SB_CC static void
 arena_bin_runs_remove(arena_bin_t *bin, arena_run_t *run)
 {
 	arena_chunk_t *chunk = (arena_chunk_t *)CHUNK_ADDR2BASE(run);
@@ -1211,7 +1211,7 @@ arena_bin_runs_remove(arena_bin_t *bin, arena_run_t *run)
 	arena_run_tree_remove(&bin->runs, mapelm);
 }
 
-static arena_run_t *
+NO_SB_CC static arena_run_t *
 arena_bin_nonfull_run_tryget(arena_bin_t *bin)
 {
 	arena_run_t *run = arena_bin_runs_first(bin);
@@ -1223,7 +1223,7 @@ arena_bin_nonfull_run_tryget(arena_bin_t *bin)
 	return (run);
 }
 
-static arena_run_t *
+NO_SB_CC static arena_run_t *
 arena_bin_nonfull_run_get(arena_t *arena, arena_bin_t *bin)
 {
 	arena_run_t *run;
@@ -1278,7 +1278,7 @@ arena_bin_nonfull_run_get(arena_t *arena, arena_bin_t *bin)
 }
 
 /* Re-fill bin->runcur, then call arena_run_reg_alloc(). */
-static void *
+NO_SB_CC static void *
 arena_bin_malloc_hard(arena_t *arena, arena_bin_t *bin)
 {
 	void *ret;
@@ -1327,7 +1327,7 @@ arena_bin_malloc_hard(arena_t *arena, arena_bin_t *bin)
 	return (arena_run_reg_alloc(bin->runcur, bin_info));
 }
 
-void
+NO_SB_CC void
 arena_tcache_fill_small(arena_t *arena, tcache_bin_t *tbin, size_t binind,
     uint64_t prof_accumbytes)
 {
@@ -1368,7 +1368,7 @@ arena_tcache_fill_small(arena_t *arena, tcache_bin_t *tbin, size_t binind,
 	tbin->ncached = i;
 }
 
-void
+NO_SB_CC void
 arena_alloc_junk_small(void *ptr, arena_bin_info_t *bin_info, bool zero)
 {
 
@@ -1384,7 +1384,7 @@ arena_alloc_junk_small(void *ptr, arena_bin_info_t *bin_info, bool zero)
 	}
 }
 
-void
+NO_SB_CC void
 arena_dalloc_junk_small(void *ptr, arena_bin_info_t *bin_info)
 {
 	size_t size = bin_info->reg_size;
@@ -1417,7 +1417,7 @@ arena_dalloc_junk_small(void *ptr, arena_bin_info_t *bin_info)
 	    bin_info->reg_interval);
 }
 
-void *
+NO_SB_CC void *
 arena_malloc_small(arena_t *arena, size_t size, bool zero)
 {
 	void *ret;
@@ -1471,7 +1471,7 @@ arena_malloc_small(arena_t *arena, size_t size, bool zero)
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 arena_malloc_large(arena_t *arena, size_t size, bool zero)
 {
 	void *ret;
@@ -1512,7 +1512,7 @@ arena_malloc_large(arena_t *arena, size_t size, bool zero)
 }
 
 /* Only handles large allocations that require more than page alignment. */
-void *
+NO_SB_CC void *
 arena_palloc(arena_t *arena, size_t size, size_t alignment, bool zero)
 {
 	void *ret;
@@ -1566,7 +1566,7 @@ arena_palloc(arena_t *arena, size_t size, size_t alignment, bool zero)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 arena_prof_promoted(const void *ptr, size_t size)
 {
 	arena_chunk_t *chunk;
@@ -1589,7 +1589,7 @@ arena_prof_promoted(const void *ptr, size_t size)
 	assert(isalloc(ptr, true) == size);
 }
 
-static void
+NO_SB_CC static void
 arena_dissociate_bin_run(arena_chunk_t *chunk, arena_run_t *run,
     arena_bin_t *bin)
 {
@@ -1612,7 +1612,7 @@ arena_dissociate_bin_run(arena_chunk_t *chunk, arena_run_t *run,
 	}
 }
 
-static void
+NO_SB_CC static void
 arena_dalloc_bin_run(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
     arena_bin_t *bin)
 {
@@ -1663,7 +1663,7 @@ arena_dalloc_bin_run(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
 		bin->stats.curruns--;
 }
 
-static void
+NO_SB_CC static void
 arena_bin_lower_run(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
     arena_bin_t *bin)
 {
@@ -1684,7 +1684,7 @@ arena_bin_lower_run(arena_t *arena, arena_chunk_t *chunk, arena_run_t *run,
 		arena_bin_runs_insert(bin, run);
 }
 
-void
+NO_SB_CC void
 arena_dalloc_bin_locked(arena_t *arena, arena_chunk_t *chunk, void *ptr,
     arena_chunk_map_t *mapelm)
 {
@@ -1719,7 +1719,7 @@ arena_dalloc_bin_locked(arena_t *arena, arena_chunk_t *chunk, void *ptr,
 	}
 }
 
-void
+NO_SB_CC void
 arena_dalloc_bin(arena_t *arena, arena_chunk_t *chunk, void *ptr,
     size_t pageind, arena_chunk_map_t *mapelm)
 {
@@ -1734,7 +1734,7 @@ arena_dalloc_bin(arena_t *arena, arena_chunk_t *chunk, void *ptr,
 	malloc_mutex_unlock(&bin->lock);
 }
 
-void
+NO_SB_CC void
 arena_dalloc_small(arena_t *arena, arena_chunk_t *chunk, void *ptr,
     size_t pageind)
 {
@@ -1749,7 +1749,7 @@ arena_dalloc_small(arena_t *arena, arena_chunk_t *chunk, void *ptr,
 	arena_dalloc_bin(arena, chunk, ptr, pageind, mapelm);
 }
 
-void
+NO_SB_CC void
 arena_dalloc_large_locked(arena_t *arena, arena_chunk_t *chunk, void *ptr)
 {
 
@@ -1770,7 +1770,7 @@ arena_dalloc_large_locked(arena_t *arena, arena_chunk_t *chunk, void *ptr)
 	arena_run_dalloc(arena, (arena_run_t *)ptr, true, false);
 }
 
-void
+NO_SB_CC void
 arena_dalloc_large(arena_t *arena, arena_chunk_t *chunk, void *ptr)
 {
 
@@ -1779,7 +1779,7 @@ arena_dalloc_large(arena_t *arena, arena_chunk_t *chunk, void *ptr)
 	malloc_mutex_unlock(&arena->lock);
 }
 
-static void
+NO_SB_CC static void
 arena_ralloc_large_shrink(arena_t *arena, arena_chunk_t *chunk, void *ptr,
     size_t oldsize, size_t size)
 {
@@ -1809,7 +1809,7 @@ arena_ralloc_large_shrink(arena_t *arena, arena_chunk_t *chunk, void *ptr,
 	malloc_mutex_unlock(&arena->lock);
 }
 
-static bool
+NO_SB_CC static bool
 arena_ralloc_large_grow(arena_t *arena, arena_chunk_t *chunk, void *ptr,
     size_t oldsize, size_t size, size_t extra, bool zero)
 {
@@ -1879,7 +1879,7 @@ arena_ralloc_large_grow(arena_t *arena, arena_chunk_t *chunk, void *ptr,
  * Try to resize a large allocation, in order to avoid copying.  This will
  * always fail if growing an object, and the following run is already in use.
  */
-static bool
+NO_SB_CC static bool
 arena_ralloc_large(void *ptr, size_t oldsize, size_t size, size_t extra,
     bool zero)
 {
@@ -1923,7 +1923,7 @@ arena_ralloc_large(void *ptr, size_t oldsize, size_t size, size_t extra,
 	}
 }
 
-void *
+NO_SB_CC void *
 arena_ralloc_no_move(void *ptr, size_t oldsize, size_t size, size_t extra,
     bool zero)
 {
@@ -1959,7 +1959,7 @@ arena_ralloc_no_move(void *ptr, size_t oldsize, size_t size, size_t extra,
 	return (NULL);
 }
 
-void *
+NO_SB_CC void *
 arena_ralloc(arena_t *arena, void *ptr, size_t oldsize, size_t size,
     size_t extra, size_t alignment, bool zero, bool try_tcache_alloc,
     bool try_tcache_dalloc)
@@ -2015,7 +2015,7 @@ arena_ralloc(arena_t *arena, void *ptr, size_t oldsize, size_t size,
 	return (ret);
 }
 
-dss_prec_t
+NO_SB_CC dss_prec_t
 arena_dss_prec_get(arena_t *arena)
 {
 	dss_prec_t ret;
@@ -2026,7 +2026,7 @@ arena_dss_prec_get(arena_t *arena)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 arena_dss_prec_set(arena_t *arena, dss_prec_t dss_prec)
 {
 
@@ -2035,7 +2035,7 @@ arena_dss_prec_set(arena_t *arena, dss_prec_t dss_prec)
 	malloc_mutex_unlock(&arena->lock);
 }
 
-void
+NO_SB_CC void
 arena_stats_merge(arena_t *arena, const char **dss, size_t *nactive,
     size_t *ndirty, arena_stats_t *astats, malloc_bin_stats_t *bstats,
     malloc_large_stats_t *lstats)
@@ -2083,7 +2083,7 @@ arena_stats_merge(arena_t *arena, const char **dss, size_t *nactive,
 	}
 }
 
-bool
+NO_SB_CC bool
 arena_new(arena_t *arena, unsigned ind)
 {
 	unsigned i;
@@ -2148,7 +2148,7 @@ arena_new(arena_t *arena, unsigned ind)
  * bin_info->nregs, bin_info->bitmap_offset, and bin_info->reg0_offset are also
  * calculated here, since these settings are all interdependent.
  */
-static size_t
+NO_SB_CC static size_t
 bin_info_run_size_calc(arena_bin_info_t *bin_info, size_t min_run_size)
 {
 	size_t pad_size;
@@ -2287,7 +2287,7 @@ bin_info_run_size_calc(arena_bin_info_t *bin_info, size_t min_run_size)
 	return (good_run_size);
 }
 
-static void
+NO_SB_CC static void
 bin_info_init(void)
 {
 	arena_bin_info_t *bin_info;
@@ -2302,7 +2302,7 @@ bin_info_init(void)
 #undef SIZE_CLASS
 }
 
-void
+NO_SB_CC void
 arena_boot(void)
 {
 	size_t header_size;
@@ -2334,7 +2334,7 @@ arena_boot(void)
 	bin_info_init();
 }
 
-void
+NO_SB_CC void
 arena_prefork(arena_t *arena)
 {
 	unsigned i;
@@ -2344,7 +2344,7 @@ arena_prefork(arena_t *arena)
 		malloc_mutex_prefork(&arena->bins[i].lock);
 }
 
-void
+NO_SB_CC void
 arena_postfork_parent(arena_t *arena)
 {
 	unsigned i;
@@ -2354,7 +2354,7 @@ arena_postfork_parent(arena_t *arena)
 	malloc_mutex_postfork_parent(&arena->lock);
 }
 
-void
+NO_SB_CC void
 arena_postfork_child(arena_t *arena)
 {
 	unsigned i;

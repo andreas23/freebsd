@@ -18,13 +18,13 @@ size_t			tcache_maxclass;
 
 /******************************************************************************/
 
-size_t	tcache_salloc(const void *ptr)
+NO_SB_CC size_t	tcache_salloc(const void *ptr)
 {
 
 	return (arena_salloc(ptr, false));
 }
 
-void
+NO_SB_CC void
 tcache_event_hard(tcache_t *tcache)
 {
 	size_t binind = tcache->next_gc_bin;
@@ -64,7 +64,7 @@ tcache_event_hard(tcache_t *tcache)
 	tcache->ev_cnt = 0;
 }
 
-void *
+NO_SB_CC void *
 tcache_alloc_small_hard(tcache_t *tcache, tcache_bin_t *tbin, size_t binind)
 {
 	void *ret;
@@ -78,7 +78,7 @@ tcache_alloc_small_hard(tcache_t *tcache, tcache_bin_t *tbin, size_t binind)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 tcache_bin_flush_small(tcache_bin_t *tbin, size_t binind, unsigned rem,
     tcache_t *tcache)
 {
@@ -159,7 +159,7 @@ tcache_bin_flush_small(tcache_bin_t *tbin, size_t binind, unsigned rem,
 		tbin->low_water = tbin->ncached;
 }
 
-void
+NO_SB_CC void
 tcache_bin_flush_large(tcache_bin_t *tbin, size_t binind, unsigned rem,
     tcache_t *tcache)
 {
@@ -238,7 +238,7 @@ tcache_bin_flush_large(tcache_bin_t *tbin, size_t binind, unsigned rem,
 		tbin->low_water = tbin->ncached;
 }
 
-void
+NO_SB_CC void
 tcache_arena_associate(tcache_t *tcache, arena_t *arena)
 {
 
@@ -252,7 +252,7 @@ tcache_arena_associate(tcache_t *tcache, arena_t *arena)
 	tcache->arena = arena;
 }
 
-void
+NO_SB_CC void
 tcache_arena_dissociate(tcache_t *tcache)
 {
 
@@ -265,7 +265,7 @@ tcache_arena_dissociate(tcache_t *tcache)
 	}
 }
 
-tcache_t *
+NO_SB_CC tcache_t *
 tcache_create(arena_t *arena)
 {
 	tcache_t *tcache;
@@ -312,7 +312,7 @@ tcache_create(arena_t *arena)
 	return (tcache);
 }
 
-void
+NO_SB_CC void
 tcache_destroy(tcache_t *tcache)
 {
 	unsigned i;
@@ -369,7 +369,7 @@ tcache_destroy(tcache_t *tcache)
 		idallocx(tcache, false);
 }
 
-void
+NO_SB_CC void
 tcache_thread_cleanup(void *arg)
 {
 	tcache_t *tcache = *(tcache_t **)arg;
@@ -399,7 +399,7 @@ tcache_thread_cleanup(void *arg)
 	}
 }
 
-void
+NO_SB_CC void
 tcache_stats_merge(tcache_t *tcache, arena_t *arena)
 {
 	unsigned i;
@@ -423,7 +423,7 @@ tcache_stats_merge(tcache_t *tcache, arena_t *arena)
 	}
 }
 
-bool
+NO_SB_CC bool
 tcache_boot0(void)
 {
 	unsigned i;
@@ -465,7 +465,7 @@ tcache_boot0(void)
 	return (false);
 }
 
-bool
+NO_SB_CC bool
 tcache_boot1(void)
 {
 

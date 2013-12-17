@@ -25,22 +25,22 @@
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static void	wrtmessage(void *cbopaque, const char *s);
+NO_SB_CC static void	wrtmessage(void *cbopaque, const char *s);
 #define	U2S_BUFSIZE	((1U << (LG_SIZEOF_INTMAX_T + 3)) + 1)
-static char	*u2s(uintmax_t x, unsigned base, bool uppercase, char *s,
+NO_SB_CC static char	*u2s(uintmax_t x, unsigned base, bool uppercase, char *s,
     size_t *slen_p);
 #define	D2S_BUFSIZE	(1 + U2S_BUFSIZE)
-static char	*d2s(intmax_t x, char sign, char *s, size_t *slen_p);
+NO_SB_CC static char	*d2s(intmax_t x, char sign, char *s, size_t *slen_p);
 #define	O2S_BUFSIZE	(1 + U2S_BUFSIZE)
-static char	*o2s(uintmax_t x, bool alt_form, char *s, size_t *slen_p);
+NO_SB_CC static char	*o2s(uintmax_t x, bool alt_form, char *s, size_t *slen_p);
 #define	X2S_BUFSIZE	(2 + U2S_BUFSIZE)
-static char	*x2s(uintmax_t x, bool alt_form, bool uppercase, char *s,
+NO_SB_CC static char	*x2s(uintmax_t x, bool alt_form, bool uppercase, char *s,
     size_t *slen_p);
 
 /******************************************************************************/
 
 /* malloc_message() setup. */
-static void
+NO_SB_CC static void
 wrtmessage(void *cbopaque, const char *s)
 {
 
@@ -56,9 +56,9 @@ wrtmessage(void *cbopaque, const char *s)
 #endif
 }
 
-JEMALLOC_EXPORT void	(*je_malloc_message)(void *, const char *s);
+/* NO_SB_CC */ JEMALLOC_EXPORT void	(*je_malloc_message)(void *, const char *s);
 
-JEMALLOC_ATTR(visibility("hidden"))
+NO_SB_CC JEMALLOC_ATTR(visibility("hidden"))
 void
 wrtmessage_1_0(const char *s1, const char *s2, const char *s3,
     const char *s4)
@@ -70,7 +70,7 @@ wrtmessage_1_0(const char *s1, const char *s2, const char *s3,
 	wrtmessage(NULL, s4);
 }
 
-void	(*__malloc_message_1_0)(const char *s1, const char *s2, const char *s3,
+/* NO_SB_CC */ void	(*__malloc_message_1_0)(const char *s1, const char *s2, const char *s3,
     const char *s4) = wrtmessage_1_0;
 __sym_compat(_malloc_message, __malloc_message_1_0, FBSD_1.0);
 
@@ -78,7 +78,7 @@ __sym_compat(_malloc_message, __malloc_message_1_0, FBSD_1.0);
  * Wrapper around malloc_message() that avoids the need for
  * je_malloc_message(...) throughout the code.
  */
-void
+NO_SB_CC void
 malloc_write(const char *s)
 {
 
@@ -92,7 +92,7 @@ malloc_write(const char *s)
  * glibc provides a non-standard strerror_r() when _GNU_SOURCE is defined, so
  * provide a wrapper.
  */
-int
+NO_SB_CC int
 buferror(char *buf, size_t buflen)
 {
 
@@ -112,7 +112,7 @@ buferror(char *buf, size_t buflen)
 #endif
 }
 
-uintmax_t
+NO_SB_CC uintmax_t
 malloc_strtoumax(const char *nptr, char **endptr, int base)
 {
 	uintmax_t ret, digit;
@@ -215,7 +215,7 @@ malloc_strtoumax(const char *nptr, char **endptr, int base)
 	return (ret);
 }
 
-static char *
+NO_SB_CC static char *
 u2s(uintmax_t x, unsigned base, bool uppercase, char *s, size_t *slen_p)
 {
 	unsigned i;
@@ -258,7 +258,7 @@ u2s(uintmax_t x, unsigned base, bool uppercase, char *s, size_t *slen_p)
 	return (&s[i]);
 }
 
-static char *
+NO_SB_CC static char *
 d2s(intmax_t x, char sign, char *s, size_t *slen_p)
 {
 	bool neg;
@@ -284,7 +284,7 @@ d2s(intmax_t x, char sign, char *s, size_t *slen_p)
 	return (s);
 }
 
-static char *
+NO_SB_CC static char *
 o2s(uintmax_t x, bool alt_form, char *s, size_t *slen_p)
 {
 
@@ -297,7 +297,7 @@ o2s(uintmax_t x, bool alt_form, char *s, size_t *slen_p)
 	return (s);
 }
 
-static char *
+NO_SB_CC static char *
 x2s(uintmax_t x, bool alt_form, bool uppercase, char *s, size_t *slen_p)
 {
 
@@ -310,7 +310,7 @@ x2s(uintmax_t x, bool alt_form, bool uppercase, char *s, size_t *slen_p)
 	return (s);
 }
 
-int
+NO_SB_CC int
 malloc_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 {
 	int ret;
@@ -594,7 +594,7 @@ malloc_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 }
 
 JEMALLOC_ATTR(format(printf, 3, 4))
-int
+NO_SB_CC int
 malloc_snprintf(char *str, size_t size, const char *format, ...)
 {
 	int ret;
@@ -607,7 +607,7 @@ malloc_snprintf(char *str, size_t size, const char *format, ...)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 malloc_vcprintf(void (*write_cb)(void *, const char *), void *cbopaque,
     const char *format, va_list ap)
 {
@@ -633,7 +633,7 @@ malloc_vcprintf(void (*write_cb)(void *, const char *), void *cbopaque,
  * allocation.
  */
 JEMALLOC_ATTR(format(printf, 3, 4))
-void
+NO_SB_CC void
 malloc_cprintf(void (*write_cb)(void *, const char *), void *cbopaque,
     const char *format, ...)
 {
@@ -646,7 +646,7 @@ malloc_cprintf(void (*write_cb)(void *, const char *), void *cbopaque,
 
 /* Print to stderr in such a way as to avoid memory allocation. */
 JEMALLOC_ATTR(format(printf, 1, 2))
-void
+NO_SB_CC void
 malloc_printf(const char *format, ...)
 {
 	va_list ap;

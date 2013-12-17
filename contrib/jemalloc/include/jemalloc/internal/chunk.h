@@ -43,14 +43,14 @@ extern size_t		chunk_npages;
 extern size_t		map_bias; /* Number of arena chunk header pages. */
 extern size_t		arena_maxclass; /* Max size class for arenas. */
 
-void	*chunk_alloc(size_t size, size_t alignment, bool base, bool *zero,
+NO_SB_CC void	*chunk_alloc(size_t size, size_t alignment, bool base, bool *zero,
     dss_prec_t dss_prec);
-void	chunk_unmap(void *chunk, size_t size);
-void	chunk_dealloc(void *chunk, size_t size, bool unmap);
-bool	chunk_boot(void);
-void	chunk_prefork(void);
-void	chunk_postfork_parent(void);
-void	chunk_postfork_child(void);
+NO_SB_CC void	chunk_unmap(void *chunk, size_t size);
+NO_SB_CC void	chunk_dealloc(void *chunk, size_t size, bool unmap);
+NO_SB_CC bool	chunk_boot(void);
+NO_SB_CC void	chunk_prefork(void);
+NO_SB_CC void	chunk_postfork_parent(void);
+NO_SB_CC void	chunk_postfork_child(void);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/

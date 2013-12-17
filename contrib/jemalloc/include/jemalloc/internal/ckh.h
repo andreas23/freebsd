@@ -66,19 +66,19 @@ struct ckh_s {
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-bool	ckh_new(ckh_t *ckh, size_t minitems, ckh_hash_t *hash,
+NO_SB_CC bool	ckh_new(ckh_t *ckh, size_t minitems, ckh_hash_t *hash,
     ckh_keycomp_t *keycomp);
-void	ckh_delete(ckh_t *ckh);
-size_t	ckh_count(ckh_t *ckh);
-bool	ckh_iter(ckh_t *ckh, size_t *tabind, void **key, void **data);
-bool	ckh_insert(ckh_t *ckh, const void *key, const void *data);
-bool	ckh_remove(ckh_t *ckh, const void *searchkey, void **key,
+NO_SB_CC void	ckh_delete(ckh_t *ckh);
+NO_SB_CC size_t	ckh_count(ckh_t *ckh);
+NO_SB_CC bool	ckh_iter(ckh_t *ckh, size_t *tabind, void **key, void **data);
+NO_SB_CC bool	ckh_insert(ckh_t *ckh, const void *key, const void *data);
+NO_SB_CC bool	ckh_remove(ckh_t *ckh, const void *searchkey, void **key,
     void **data);
-bool	ckh_search(ckh_t *ckh, const void *seachkey, void **key, void **data);
-void	ckh_string_hash(const void *key, size_t r_hash[2]);
-bool	ckh_string_keycomp(const void *k1, const void *k2);
-void	ckh_pointer_hash(const void *key, size_t r_hash[2]);
-bool	ckh_pointer_keycomp(const void *k1, const void *k2);
+NO_SB_CC bool	ckh_search(ckh_t *ckh, const void *seachkey, void **key, void **data);
+NO_SB_CC void	ckh_string_hash(const void *key, size_t r_hash[2]);
+NO_SB_CC bool	ckh_string_keycomp(const void *k1, const void *k2);
+NO_SB_CC void	ckh_pointer_hash(const void *key, size_t r_hash[2]);
+NO_SB_CC bool	ckh_pointer_keycomp(const void *k1, const void *k2);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/

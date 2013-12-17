@@ -4,11 +4,11 @@
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static size_t	bits2groups(size_t nbits);
+NO_SB_CC static size_t	bits2groups(size_t nbits);
 
 /******************************************************************************/
 
-static size_t
+NO_SB_CC static size_t
 bits2groups(size_t nbits)
 {
 
@@ -16,7 +16,7 @@ bits2groups(size_t nbits)
 	    !!(nbits & BITMAP_GROUP_NBITS_MASK));
 }
 
-void
+NO_SB_CC void
 bitmap_info_init(bitmap_info_t *binfo, size_t nbits)
 {
 	unsigned i;
@@ -44,14 +44,14 @@ bitmap_info_init(bitmap_info_t *binfo, size_t nbits)
 	binfo->nbits = nbits;
 }
 
-size_t
+NO_SB_CC size_t
 bitmap_info_ngroups(const bitmap_info_t *binfo)
 {
 
 	return (binfo->levels[binfo->nlevels].group_offset << LG_SIZEOF_BITMAP);
 }
 
-size_t
+NO_SB_CC size_t
 bitmap_size(size_t nbits)
 {
 	bitmap_info_t binfo;
@@ -60,7 +60,7 @@ bitmap_size(size_t nbits)
 	return (bitmap_info_ngroups(&binfo));
 }
 
-void
+NO_SB_CC void
 bitmap_init(bitmap_t *bitmap, const bitmap_info_t *binfo)
 {
 	size_t extra;
