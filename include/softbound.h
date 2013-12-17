@@ -168,12 +168,12 @@ static const size_t __SOFTBOUNDCETS_TRIE_SECONDARY_TABLE_ENTRIES = ((size_t) 4 *
 
 #define __WEAK__ __attribute__((__weak__))
 
-#define __WEAK_INLINE __attribute__((__weak__,__always_inline__)) 
+#define __WEAK_INLINE __attribute__((__weak__)) 
 
 #if __WORDSIZE == 32
 #define __METADATA_INLINE 
 #else
-#define __METADATA_INLINE __attribute__((__weak__, __always_inline__))
+#define __METADATA_INLINE __attribute__((__weak__))
 #endif
 
 #define __NO_INLINE __attribute__((__noinline__))
@@ -186,6 +186,18 @@ extern size_t* __softboundcets_temporal_space_begin;
 extern size_t* __softboundcets_stack_temporal_space_begin;
 extern size_t* __softboundcets_free_map_table;
 
+typedef size_t key_type;
+typedef void* lock_type;
+
+NO_SB_CC void
+__softboundcets_read_shadow_stack_metadata_store(char** endptr, int arg_num);
+NO_SB_CC void
+__softboundcets_propagate_metadata_shadow_stack_from(int from_argnum,
+                                                     int to_argnum);
+NO_SB_CC void __softboundcets_store_null_return_metadata (void);
+NO_SB_CC void
+__softboundcets_store_return_metadata(void* base, void* bound, size_t key,
+                                      void* lock);
 
 NO_SB_CC extern void __softboundcets_init(int is_trie);
 NO_SB_CC extern __SOFTBOUNDCETS_NORETURN void __softboundcets_abort();
@@ -376,7 +388,7 @@ NO_SB_CC __WEAK_INLINE __softboundcets_trie_entry_t* __softboundcets_trie_alloca
   
   __softboundcets_trie_entry_t* secondary_entry;
   size_t length = (__SOFTBOUNDCETS_TRIE_SECONDARY_TABLE_ENTRIES) * sizeof(__softboundcets_trie_entry_t);
-  secondary_entry = mmap(0, length, PROT_READ| PROT_WRITE, SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
+  secondary_entry = __softbound_mmap(0, length, PROT_READ| PROT_WRITE, SOFTBOUNDCETS_MMAP_FLAGS, -1, 0);
   //assert(secondary_entry != (void*)-1); 
   //printf("snd trie table %p %lx\n", secondary_entry, length);
   return secondary_entry;

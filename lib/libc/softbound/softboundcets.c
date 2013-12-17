@@ -42,7 +42,7 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <softbound.h>
-#include "libc_private.h"
+
 __softboundcets_trie_entry_t** __softboundcets_trie_primary_table;
 
 size_t* __softboundcets_free_map_table = NULL;
@@ -129,12 +129,6 @@ void __sbcets_stats_fini() {
 }
 
 #endif
-
-NO_SB_CC __WEAK_INLINE void* __softbound_mmap (void*, size_t, int, int, int, off_t);
-NO_SB_CC __WEAK_INLINE void* __softbound_mmap (void* addr, size_t length, int prot, int flags, int fd, off_t offset) {
-  return __sys_mmap(addr, length, prot, flags, fd, offset);
-}
-
 
 NO_SB_CC __SOFTBOUNDCETS_NORETURN void __softboundcets_abort()
 {
@@ -247,4 +241,44 @@ NO_SB_CC void __softboundcets_printf(const char* str, ...) {
   vfprintf(stderr, str, args);
   va_end(args);
   */
+}
+
+NO_SB_CC __WEAK_INLINE void
+__softboundcets_read_shadow_stack_metadata_store(char** endptr, int arg_num){
+    void* nptr_base = __softboundcets_load_base_shadow_stack(arg_num);
+    void* nptr_bound = __softboundcets_load_bound_shadow_stack(arg_num);
+    size_t nptr_key = __softboundcets_load_key_shadow_stack(arg_num);
+    void* nptr_lock = __softboundcets_load_lock_shadow_stack(arg_num);
+    __softboundcets_metadata_store(endptr, nptr_base, nptr_bound, nptr_key,
+                                   nptr_lock);
+}
+
+NO_SB_CC __WEAK_INLINE void
+__softboundcets_propagate_metadata_shadow_stack_from(int from_argnum,
+                                                     int to_argnum){
+  void* base = __softboundcets_load_base_shadow_stack(from_argnum);
+  void* bound = __softboundcets_load_bound_shadow_stack(from_argnum);
+  size_t key = __softboundcets_load_key_shadow_stack(from_argnum);
+  void* lock = __softboundcets_load_lock_shadow_stack(from_argnum);
+  __softboundcets_store_base_shadow_stack(base, to_argnum);
+  __softboundcets_store_bound_shadow_stack(bound, to_argnum);
+  __softboundcets_store_key_shadow_stack(key, to_argnum);
+  __softboundcets_store_lock_shadow_stack(lock, to_argnum);
+}
+
+NO_SB_CC __WEAK_INLINE void __softboundcets_store_null_return_metadata(){
+  __softboundcets_store_base_shadow_stack(NULL, 0);
+  __softboundcets_store_bound_shadow_stack(NULL, 0);
+  __softboundcets_store_key_shadow_stack(0, 0);
+  __softboundcets_store_lock_shadow_stack(NULL, 0);
+}
+
+NO_SB_CC __WEAK_INLINE void
+__softboundcets_store_return_metadata(void* base, void* bound, size_t key,
+                                      void* lock){
+
+  __softboundcets_store_base_shadow_stack(base, 0);
+  __softboundcets_store_bound_shadow_stack(bound, 0);
+  __softboundcets_store_key_shadow_stack(key, 0);
+  __softboundcets_store_lock_shadow_stack(lock, 0);
 }

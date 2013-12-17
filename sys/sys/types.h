@@ -315,6 +315,7 @@ off_t	 lseek(int, off_t, int);
 #endif
 #ifndef _MMAP_DECLARED
 #define	_MMAP_DECLARED
+NO_SB_CC void *	 __softbound_mmap(void *, size_t, int, int, int, off_t);
 void *	 mmap(void *, size_t, int, int, int, off_t);
 #endif
 #ifndef _TRUNCATE_DECLARED

@@ -6,6 +6,10 @@ FBSDprivate_1.0 {
   __softboundcets_abort;
   __softboundcets_init;
   __softboundcets_printf;
+  __softboundcets_read_shadow_stack_metadata_store;
+  __softboundcets_propagate_metadata_shadow_stack_from;
+  __softboundcets_store_null_return_metadata;
+  __softboundcets_store_return_metadata;
   __softboundcets_global_lock;
   __softboundcets_allocation_secondary_trie_allocate;
   __softboundcets_global_init;

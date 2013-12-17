@@ -250,6 +250,7 @@ int	minherit(void *, size_t, int);
 int	mlock(const void *, size_t);
 #ifndef _MMAP_DECLARED
 #define	_MMAP_DECLARED
+NO_SB_CC void *	__softbound_mmap(void *, size_t, int, int, int, off_t);
 void *	mmap(void *, size_t, int, int, int, off_t);
 #endif
 int	mprotect(const void *, size_t, int);
