@@ -38,13 +38,32 @@ __FBSDID("$FreeBSD$");
 #include <sys/syscall.h>
 #include <unistd.h>
 #include "libc_private.h"
+#include <softbound.h>
+
+NO_SB_IB void* mmap(void* addr, size_t length,
+                    int prot, int flags, int fd,
+                    off_t offset) {
+  key_type ptr_key=1;
+  lock_type ptr_lock=__softboundcets_global_lock;
+  char* ret_ptr = __softbound_mmap(addr, length, prot, flags, fd, offset);
+  if(ret_ptr == (void*) -1){
+    __softboundcets_store_null_return_metadata();
+  }
+  else{
+
+    char* ret_bound = ret_ptr + length;
+    __softboundcets_store_return_metadata(ret_ptr, ret_bound,
+                                          ptr_key, ptr_lock);
+  }
+  return ret_ptr;
+}
 
 /*
  * This function provides 64-bit offset padding that
  * is not supplied by GCC 1.X but is supplied by GCC 2.X.
  */
-void *
-mmap(addr, len, prot, flags, fd, offset)
+NO_SB_CC void *
+__softbound_mmap(addr, len, prot, flags, fd, offset)
 	void *	addr;
 	size_t	len;
 	int	prot;
