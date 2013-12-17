@@ -40,8 +40,8 @@
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static bool	ckh_grow(ckh_t *ckh);
-static void	ckh_shrink(ckh_t *ckh);
+NO_SB_CC static bool	ckh_grow(ckh_t *ckh);
+NO_SB_CC static void	ckh_shrink(ckh_t *ckh);
 
 /******************************************************************************/
 
@@ -49,7 +49,7 @@ static void	ckh_shrink(ckh_t *ckh);
  * Search bucket for key and return the cell number if found; SIZE_T_MAX
  * otherwise.
  */
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 ckh_bucket_search(ckh_t *ckh, size_t bucket, const void *key)
 {
 	ckhc_t *cell;
@@ -67,7 +67,7 @@ ckh_bucket_search(ckh_t *ckh, size_t bucket, const void *key)
 /*
  * Search table for key and return cell number if found; SIZE_T_MAX otherwise.
  */
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 ckh_isearch(ckh_t *ckh, const void *key)
 {
 	size_t hashes[2], bucket, cell;
@@ -88,7 +88,7 @@ ckh_isearch(ckh_t *ckh, const void *key)
 	return (cell);
 }
 
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 ckh_try_bucket_insert(ckh_t *ckh, size_t bucket, const void *key,
     const void *data)
 {
@@ -120,7 +120,7 @@ ckh_try_bucket_insert(ckh_t *ckh, size_t bucket, const void *key,
  * eviction/relocation procedure until either success or detection of an
  * eviction/relocation bucket cycle.
  */
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 ckh_evict_reloc_insert(ckh_t *ckh, size_t argbucket, void const **argkey,
     void const **argdata)
 {
@@ -190,7 +190,7 @@ ckh_evict_reloc_insert(ckh_t *ckh, size_t argbucket, void const **argkey,
 	}
 }
 
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 ckh_try_insert(ckh_t *ckh, void const**argkey, void const**argdata)
 {
 	size_t hashes[2], bucket;
@@ -219,7 +219,7 @@ ckh_try_insert(ckh_t *ckh, void const**argkey, void const**argdata)
  * Try to rebuild the hash table from scratch by inserting all items from the
  * old table into the new.
  */
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 ckh_rebuild(ckh_t *ckh, ckhc_t *aTab)
 {
 	size_t count, i, nins;
@@ -242,7 +242,7 @@ ckh_rebuild(ckh_t *ckh, ckhc_t *aTab)
 	return (false);
 }
 
-static bool
+NO_SB_CC static bool
 ckh_grow(ckh_t *ckh)
 {
 	bool ret;
@@ -297,7 +297,7 @@ label_return:
 	return (ret);
 }
 
-static void
+NO_SB_CC static void
 ckh_shrink(ckh_t *ckh)
 {
 	ckhc_t *tab, *ttab;
@@ -344,7 +344,7 @@ ckh_shrink(ckh_t *ckh)
 #endif
 }
 
-bool
+NO_SB_CC bool
 ckh_new(ckh_t *ckh, size_t minitems, ckh_hash_t *hash, ckh_keycomp_t *keycomp)
 {
 	bool ret;
@@ -399,7 +399,7 @@ label_return:
 	return (ret);
 }
 
-void
+NO_SB_CC void
 ckh_delete(ckh_t *ckh)
 {
 
@@ -431,7 +431,7 @@ ckh_count(ckh_t *ckh)
 	return (ckh->count);
 }
 
-bool
+NO_SB_CC bool
 ckh_iter(ckh_t *ckh, size_t *tabind, void **key, void **data)
 {
 	size_t i, ncells;
@@ -451,7 +451,7 @@ ckh_iter(ckh_t *ckh, size_t *tabind, void **key, void **data)
 	return (true);
 }
 
-bool
+NO_SB_CC bool
 ckh_insert(ckh_t *ckh, const void *key, const void *data)
 {
 	bool ret;
@@ -475,7 +475,7 @@ label_return:
 	return (ret);
 }
 
-bool
+NO_SB_CC bool
 ckh_remove(ckh_t *ckh, const void *searchkey, void **key, void **data)
 {
 	size_t cell;
@@ -506,7 +506,7 @@ ckh_remove(ckh_t *ckh, const void *searchkey, void **key, void **data)
 	return (true);
 }
 
-bool
+NO_SB_CC bool
 ckh_search(ckh_t *ckh, const void *searchkey, void **key, void **data)
 {
 	size_t cell;
@@ -525,14 +525,14 @@ ckh_search(ckh_t *ckh, const void *searchkey, void **key, void **data)
 	return (true);
 }
 
-void
+NO_SB_CC void
 ckh_string_hash(const void *key, size_t r_hash[2])
 {
 
 	hash(key, strlen((const char *)key), 0x94122f33U, r_hash);
 }
 
-bool
+NO_SB_CC bool
 ckh_string_keycomp(const void *k1, const void *k2)
 {
 
@@ -542,7 +542,7 @@ ckh_string_keycomp(const void *k1, const void *k2)
     return (strcmp((char *)k1, (char *)k2) ? false : true);
 }
 
-void
+NO_SB_CC void
 ckh_pointer_hash(const void *key, size_t r_hash[2])
 {
 	union {
@@ -555,7 +555,7 @@ ckh_pointer_hash(const void *key, size_t r_hash[2])
 	hash(&u.i, sizeof(u.i), 0xd983396eU, r_hash);
 }
 
-bool
+NO_SB_CC bool
 ckh_pointer_keycomp(const void *k1, const void *k2)
 {
 

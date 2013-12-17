@@ -67,36 +67,36 @@ static bool		prof_booted = false;
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static prof_bt_t	*bt_dup(prof_bt_t *bt);
-static void	bt_destroy(prof_bt_t *bt);
+NO_SB_CC static prof_bt_t	*bt_dup(prof_bt_t *bt);
+NO_SB_CC static void	bt_destroy(prof_bt_t *bt);
 #ifdef JEMALLOC_PROF_LIBGCC
-static _Unwind_Reason_Code	prof_unwind_init_callback(
+NO_SB_CC static _Unwind_Reason_Code	prof_unwind_init_callback(
     struct _Unwind_Context *context, void *arg);
-static _Unwind_Reason_Code	prof_unwind_callback(
+NO_SB_CC static _Unwind_Reason_Code	prof_unwind_callback(
     struct _Unwind_Context *context, void *arg);
 #endif
-static bool	prof_flush(bool propagate_err);
-static bool	prof_write(bool propagate_err, const char *s);
-static bool	prof_printf(bool propagate_err, const char *format, ...)
+NO_SB_CC static bool	prof_flush(bool propagate_err);
+NO_SB_CC static bool	prof_write(bool propagate_err, const char *s);
+NO_SB_CC static bool	prof_printf(bool propagate_err, const char *format, ...)
     JEMALLOC_ATTR(format(printf, 2, 3));
-static void	prof_ctx_sum(prof_ctx_t *ctx, prof_cnt_t *cnt_all,
+NO_SB_CC static void	prof_ctx_sum(prof_ctx_t *ctx, prof_cnt_t *cnt_all,
     size_t *leak_nctx);
-static void	prof_ctx_destroy(prof_ctx_t *ctx);
-static void	prof_ctx_merge(prof_ctx_t *ctx, prof_thr_cnt_t *cnt);
-static bool	prof_dump_ctx(bool propagate_err, prof_ctx_t *ctx,
+NO_SB_CC static void	prof_ctx_destroy(prof_ctx_t *ctx);
+NO_SB_CC static void	prof_ctx_merge(prof_ctx_t *ctx, prof_thr_cnt_t *cnt);
+NO_SB_CC static bool	prof_dump_ctx(bool propagate_err, prof_ctx_t *ctx,
     prof_bt_t *bt);
-static bool	prof_dump_maps(bool propagate_err);
-static bool	prof_dump(bool propagate_err, const char *filename,
+NO_SB_CC static bool	prof_dump_maps(bool propagate_err);
+NO_SB_CC static bool	prof_dump(bool propagate_err, const char *filename,
     bool leakcheck);
-static void	prof_dump_filename(char *filename, char v, int64_t vseq);
-static void	prof_fdump(void);
-static void	prof_bt_hash(const void *key, size_t r_hash[2]);
-static bool	prof_bt_keycomp(const void *k1, const void *k2);
-static malloc_mutex_t	*prof_ctx_mutex_choose(void);
+NO_SB_CC static void	prof_dump_filename(char *filename, char v, int64_t vseq);
+NO_SB_CC static void	prof_fdump(void);
+NO_SB_CC static void	prof_bt_hash(const void *key, size_t r_hash[2]);
+NO_SB_CC static bool	prof_bt_keycomp(const void *k1, const void *k2);
+NO_SB_CC static malloc_mutex_t	*prof_ctx_mutex_choose(void);
 
 /******************************************************************************/
 
-void
+NO_SB_CC void
 bt_init(prof_bt_t *bt, void **vec)
 {
 
@@ -106,7 +106,7 @@ bt_init(prof_bt_t *bt, void **vec)
 	bt->len = 0;
 }
 
-static void
+NO_SB_CC static void
 bt_destroy(prof_bt_t *bt)
 {
 
@@ -115,7 +115,7 @@ bt_destroy(prof_bt_t *bt)
 	idalloc(bt);
 }
 
-static prof_bt_t *
+NO_SB_CC static prof_bt_t *
 bt_dup(prof_bt_t *bt)
 {
 	prof_bt_t *ret;
@@ -141,7 +141,7 @@ bt_dup(prof_bt_t *bt)
 	return (ret);
 }
 
-static inline void
+NO_SB_CC static inline void
 prof_enter(prof_tdata_t *prof_tdata)
 {
 
@@ -153,7 +153,7 @@ prof_enter(prof_tdata_t *prof_tdata)
 	malloc_mutex_lock(&bt2ctx_mtx);
 }
 
-static inline void
+NO_SB_CC static inline void
 prof_leave(prof_tdata_t *prof_tdata)
 {
 	bool idump, gdump;
@@ -176,7 +176,7 @@ prof_leave(prof_tdata_t *prof_tdata)
 }
 
 #ifdef JEMALLOC_PROF_LIBUNWIND
-void
+NO_SB_CC void
 prof_backtrace(prof_bt_t *bt, unsigned nignore)
 {
 	unw_context_t uc;
@@ -211,7 +211,7 @@ prof_backtrace(prof_bt_t *bt, unsigned nignore)
 	}
 }
 #elif (defined(JEMALLOC_PROF_LIBGCC))
-static _Unwind_Reason_Code
+NO_SB_CC static _Unwind_Reason_Code
 prof_unwind_init_callback(struct _Unwind_Context *context, void *arg)
 {
 
@@ -220,7 +220,7 @@ prof_unwind_init_callback(struct _Unwind_Context *context, void *arg)
 	return (_URC_NO_REASON);
 }
 
-static _Unwind_Reason_Code
+NO_SB_CC static _Unwind_Reason_Code
 prof_unwind_callback(struct _Unwind_Context *context, void *arg)
 {
 	prof_unwind_data_t *data = (prof_unwind_data_t *)arg;
@@ -239,7 +239,7 @@ prof_unwind_callback(struct _Unwind_Context *context, void *arg)
 	return (_URC_NO_REASON);
 }
 
-void
+NO_SB_CC void
 prof_backtrace(prof_bt_t *bt, unsigned nignore)
 {
 	prof_unwind_data_t data = {bt, nignore, PROF_BT_MAX};
@@ -249,7 +249,7 @@ prof_backtrace(prof_bt_t *bt, unsigned nignore)
 	_Unwind_Backtrace(prof_unwind_callback, &data);
 }
 #elif (defined(JEMALLOC_PROF_GCC))
-void
+NO_SB_CC void
 prof_backtrace(prof_bt_t *bt, unsigned nignore)
 {
 #define	BT_FRAME(i)							\
@@ -418,7 +418,7 @@ prof_backtrace(prof_bt_t *bt, unsigned nignore)
 #undef BT_FRAME
 }
 #else
-void
+NO_SB_CC void
 prof_backtrace(prof_bt_t *bt, unsigned nignore)
 {
 
@@ -427,7 +427,7 @@ prof_backtrace(prof_bt_t *bt, unsigned nignore)
 }
 #endif
 
-prof_thr_cnt_t *
+NO_SB_CC prof_thr_cnt_t *
 prof_lookup(prof_bt_t *bt)
 {
 	union {
@@ -551,7 +551,7 @@ prof_lookup(prof_bt_t *bt)
 	return (ret.p);
 }
 
-static bool
+NO_SB_CC static bool
 prof_flush(bool propagate_err)
 {
 	bool ret = false;
@@ -574,7 +574,7 @@ prof_flush(bool propagate_err)
 	return (ret);
 }
 
-static bool
+NO_SB_CC static bool
 prof_write(bool propagate_err, const char *s)
 {
 	unsigned i, slen, n;
@@ -605,7 +605,7 @@ prof_write(bool propagate_err, const char *s)
 }
 
 JEMALLOC_ATTR(format(printf, 2, 3))
-static bool
+NO_SB_CC static bool
 prof_printf(bool propagate_err, const char *format, ...)
 {
 	bool ret;
@@ -620,7 +620,7 @@ prof_printf(bool propagate_err, const char *format, ...)
 	return (ret);
 }
 
-static void
+NO_SB_CC static void
 prof_ctx_sum(prof_ctx_t *ctx, prof_cnt_t *cnt_all, size_t *leak_nctx)
 {
 	prof_thr_cnt_t *thr_cnt;
@@ -670,7 +670,7 @@ prof_ctx_sum(prof_ctx_t *ctx, prof_cnt_t *cnt_all, size_t *leak_nctx)
 	malloc_mutex_unlock(ctx->lock);
 }
 
-static void
+NO_SB_CC static void
 prof_ctx_destroy(prof_ctx_t *ctx)
 {
 	prof_tdata_t *prof_tdata;
@@ -712,7 +712,7 @@ prof_ctx_destroy(prof_ctx_t *ctx)
 	}
 }
 
-static void
+NO_SB_CC static void
 prof_ctx_merge(prof_ctx_t *ctx, prof_thr_cnt_t *cnt)
 {
 	bool destroy;
@@ -750,7 +750,7 @@ prof_ctx_merge(prof_ctx_t *ctx, prof_thr_cnt_t *cnt)
 		prof_ctx_destroy(ctx);
 }
 
-static bool
+NO_SB_CC static bool
 prof_dump_ctx(bool propagate_err, prof_ctx_t *ctx, prof_bt_t *bt)
 {
 	unsigned i;
@@ -791,7 +791,7 @@ prof_dump_ctx(bool propagate_err, prof_ctx_t *ctx, prof_bt_t *bt)
 	return (false);
 }
 
-static bool
+NO_SB_CC static bool
 prof_dump_maps(bool propagate_err)
 {
 	int mfd;
@@ -826,7 +826,7 @@ prof_dump_maps(bool propagate_err)
 	return (false);
 }
 
-static bool
+NO_SB_CC static bool
 prof_dump(bool propagate_err, const char *filename, bool leakcheck)
 {
 	prof_tdata_t *prof_tdata;
@@ -918,7 +918,7 @@ label_error:
 }
 
 #define	DUMP_FILENAME_BUFSIZE	(PATH_MAX + 1)
-static void
+NO_SB_CC static void
 prof_dump_filename(char *filename, char v, int64_t vseq)
 {
 
@@ -938,7 +938,7 @@ prof_dump_filename(char *filename, char v, int64_t vseq)
 	prof_dump_seq++;
 }
 
-static void
+NO_SB_CC static void
 prof_fdump(void)
 {
 	char filename[DUMP_FILENAME_BUFSIZE];
@@ -956,7 +956,7 @@ prof_fdump(void)
 	}
 }
 
-void
+NO_SB_CC void
 prof_idump(void)
 {
 	prof_tdata_t *prof_tdata;
@@ -983,7 +983,7 @@ prof_idump(void)
 	}
 }
 
-bool
+NO_SB_CC bool
 prof_mdump(const char *filename)
 {
 	char filename_buf[DUMP_FILENAME_BUFSIZE];
@@ -1006,7 +1006,7 @@ prof_mdump(const char *filename)
 	return (prof_dump(true, filename, false));
 }
 
-void
+NO_SB_CC void
 prof_gdump(void)
 {
 	prof_tdata_t *prof_tdata;
@@ -1033,7 +1033,7 @@ prof_gdump(void)
 	}
 }
 
-static void
+NO_SB_CC static void
 prof_bt_hash(const void *key, size_t r_hash[2])
 {
 	prof_bt_t *bt = (prof_bt_t *)key;
@@ -1043,7 +1043,7 @@ prof_bt_hash(const void *key, size_t r_hash[2])
 	hash(bt->vec, bt->len * sizeof(void *), 0x94122f33U, r_hash);
 }
 
-static bool
+NO_SB_CC static bool
 prof_bt_keycomp(const void *k1, const void *k2)
 {
 	const prof_bt_t *bt1 = (prof_bt_t *)k1;
@@ -1056,7 +1056,7 @@ prof_bt_keycomp(const void *k1, const void *k2)
 	return (memcmp(bt1->vec, bt2->vec, bt1->len * sizeof(void *)) == 0);
 }
 
-static malloc_mutex_t *
+NO_SB_CC static malloc_mutex_t *
 prof_ctx_mutex_choose(void)
 {
 	unsigned nctxs = atomic_add_u(&cum_ctxs, 1);
@@ -1064,7 +1064,7 @@ prof_ctx_mutex_choose(void)
 	return (&ctx_locks[(nctxs - 1) % PROF_NCTX_LOCKS]);
 }
 
-prof_tdata_t *
+NO_SB_CC prof_tdata_t *
 prof_tdata_init(void)
 {
 	prof_tdata_t *prof_tdata;
@@ -1103,7 +1103,7 @@ prof_tdata_init(void)
 	return (prof_tdata);
 }
 
-void
+NO_SB_CC void
 prof_tdata_cleanup(void *arg)
 {
 	prof_thr_cnt_t *cnt;
@@ -1148,7 +1148,7 @@ prof_tdata_cleanup(void *arg)
 	}
 }
 
-void
+NO_SB_CC void
 prof_boot0(void)
 {
 
@@ -1158,7 +1158,7 @@ prof_boot0(void)
 	    sizeof(PROF_PREFIX_DEFAULT));
 }
 
-void
+NO_SB_CC void
 prof_boot1(void)
 {
 
@@ -1186,7 +1186,7 @@ prof_boot1(void)
 	prof_promote = (opt_prof && opt_lg_prof_sample > LG_PAGE);
 }
 
-bool
+NO_SB_CC bool
 prof_boot2(void)
 {
 
@@ -1238,7 +1238,7 @@ prof_boot2(void)
 	return (false);
 }
 
-void
+NO_SB_CC void
 prof_prefork(void)
 {
 
@@ -1252,7 +1252,7 @@ prof_prefork(void)
 	}
 }
 
-void
+NO_SB_CC void
 prof_postfork_parent(void)
 {
 
@@ -1266,7 +1266,7 @@ prof_postfork_parent(void)
 	}
 }
 
-void
+NO_SB_CC void
 prof_postfork_child(void)
 {
 

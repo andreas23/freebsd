@@ -82,23 +82,23 @@
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-int	buferror(char *buf, size_t buflen);
-uintmax_t	malloc_strtoumax(const char *nptr, char **endptr, int base);
-void	malloc_write(const char *s);
+NO_SB_CC int	buferror(char *buf, size_t buflen);
+NO_SB_CC uintmax_t	malloc_strtoumax(const char *nptr, char **endptr, int base);
+NO_SB_CC void	malloc_write(const char *s);
 
 /*
  * malloc_vsnprintf() supports a subset of snprintf(3) that avoids floating
  * point math.
  */
-int	malloc_vsnprintf(char *str, size_t size, const char *format,
+NO_SB_CC int	malloc_vsnprintf(char *str, size_t size, const char *format,
     va_list ap);
-int	malloc_snprintf(char *str, size_t size, const char *format, ...)
+NO_SB_CC int	malloc_snprintf(char *str, size_t size, const char *format, ...)
     JEMALLOC_ATTR(format(printf, 3, 4));
-void	malloc_vcprintf(void (*write_cb)(void *, const char *), void *cbopaque,
+NO_SB_CC void	malloc_vcprintf(void (*write_cb)(void *, const char *), void *cbopaque,
     const char *format, va_list ap);
-void malloc_cprintf(void (*write)(void *, const char *), void *cbopaque,
+NO_SB_CC void malloc_cprintf(void (*write)(void *, const char *), void *cbopaque,
     const char *format, ...) JEMALLOC_ATTR(format(printf, 3, 4));
-void	malloc_printf(const char *format, ...)
+NO_SB_CC void	malloc_printf(const char *format, ...)
     JEMALLOC_ATTR(format(printf, 1, 2));
 
 #endif /* JEMALLOC_H_EXTERNS */
@@ -106,15 +106,15 @@ void	malloc_printf(const char *format, ...)
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-size_t	pow2_ceil(size_t x);
-void	malloc_write(const char *s);
-void	set_errno(int errnum);
-int	get_errno(void);
+NO_SB_CC size_t	pow2_ceil(size_t x);
+NO_SB_CC void	malloc_write(const char *s);
+NO_SB_CC void	set_errno(int errnum);
+NO_SB_CC int	get_errno(void);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_UTIL_C_))
 /* Compute the smallest power of 2 that is >= x. */
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 pow2_ceil(size_t x)
 {
 
@@ -132,7 +132,7 @@ pow2_ceil(size_t x)
 }
 
 /* Sets error code */
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 set_errno(int errnum)
 {
 
@@ -144,7 +144,7 @@ set_errno(int errnum)
 }
 
 /* Get last error code */
-JEMALLOC_INLINE int
+NO_SB_CC JEMALLOC_INLINE int
 get_errno(void)
 {
 

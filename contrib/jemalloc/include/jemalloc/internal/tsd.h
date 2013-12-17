@@ -383,11 +383,11 @@ a_name##_tsd_set(a_type *val)						\
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-void	*malloc_tsd_malloc(size_t size);
-void	malloc_tsd_dalloc(void *wrapper);
-void	malloc_tsd_no_cleanup(void *);
-void	malloc_tsd_cleanup_register(bool (*f)(void));
-void	malloc_tsd_boot(void);
+NO_SB_CC void	*malloc_tsd_malloc(size_t size);
+NO_SB_CC void	malloc_tsd_dalloc(void *wrapper);
+NO_SB_CC void	malloc_tsd_no_cleanup(void *);
+NO_SB_CC void	malloc_tsd_cleanup_register(bool (*f)(void));
+NO_SB_CC void	malloc_tsd_boot(void);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/

@@ -70,16 +70,16 @@ struct ctl_stats_s {
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-int	ctl_byname(const char *name, void *oldp, size_t *oldlenp, void *newp,
+NO_SB_CC int	ctl_byname(const char *name, void *oldp, size_t *oldlenp, void *newp,
     size_t newlen);
-int	ctl_nametomib(const char *name, size_t *mibp, size_t *miblenp);
+NO_SB_CC int	ctl_nametomib(const char *name, size_t *mibp, size_t *miblenp);
 
-int	ctl_bymib(const size_t *mib, size_t miblen, void *oldp, size_t *oldlenp,
+NO_SB_CC int	ctl_bymib(const size_t *mib, size_t miblen, void *oldp, size_t *oldlenp,
     void *newp, size_t newlen);
-bool	ctl_boot(void);
-void	ctl_prefork(void);
-void	ctl_postfork_parent(void);
-void	ctl_postfork_child(void);
+NO_SB_CC bool	ctl_boot(void);
+NO_SB_CC void	ctl_prefork(void);
+NO_SB_CC void	ctl_postfork_parent(void);
+NO_SB_CC void	ctl_postfork_child(void);
 
 #define	xmallctl(name, oldp, oldlenp, newp, newlen) do {		\
 	if (je_mallctl(name, oldp, oldlenp, newp, newlen)		\

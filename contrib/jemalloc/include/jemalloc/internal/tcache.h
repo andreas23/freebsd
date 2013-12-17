@@ -100,54 +100,54 @@ extern size_t			nhbins;
 /* Maximum cached size class. */
 extern size_t			tcache_maxclass;
 
-size_t	tcache_salloc(const void *ptr);
-void	tcache_event_hard(tcache_t *tcache);
-void	*tcache_alloc_small_hard(tcache_t *tcache, tcache_bin_t *tbin,
+NO_SB_CC size_t	tcache_salloc(const void *ptr);
+NO_SB_CC void	tcache_event_hard(tcache_t *tcache);
+NO_SB_CC void	*tcache_alloc_small_hard(tcache_t *tcache, tcache_bin_t *tbin,
     size_t binind);
-void	tcache_bin_flush_small(tcache_bin_t *tbin, size_t binind, unsigned rem,
+NO_SB_CC void	tcache_bin_flush_small(tcache_bin_t *tbin, size_t binind, unsigned rem,
     tcache_t *tcache);
-void	tcache_bin_flush_large(tcache_bin_t *tbin, size_t binind, unsigned rem,
+NO_SB_CC void	tcache_bin_flush_large(tcache_bin_t *tbin, size_t binind, unsigned rem,
     tcache_t *tcache);
-void	tcache_arena_associate(tcache_t *tcache, arena_t *arena);
-void	tcache_arena_dissociate(tcache_t *tcache);
-tcache_t *tcache_create(arena_t *arena);
-void	tcache_destroy(tcache_t *tcache);
-void	tcache_thread_cleanup(void *arg);
-void	tcache_stats_merge(tcache_t *tcache, arena_t *arena);
-bool	tcache_boot0(void);
-bool	tcache_boot1(void);
+NO_SB_CC void	tcache_arena_associate(tcache_t *tcache, arena_t *arena);
+NO_SB_CC void	tcache_arena_dissociate(tcache_t *tcache);
+NO_SB_CC tcache_t *tcache_create(arena_t *arena);
+NO_SB_CC void	tcache_destroy(tcache_t *tcache);
+NO_SB_CC void	tcache_thread_cleanup(void *arg);
+NO_SB_CC void	tcache_stats_merge(tcache_t *tcache, arena_t *arena);
+NO_SB_CC bool	tcache_boot0(void);
+NO_SB_CC bool	tcache_boot1(void);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-malloc_tsd_protos(JEMALLOC_ATTR(unused), tcache, tcache_t *)
-malloc_tsd_protos(JEMALLOC_ATTR(unused), tcache_enabled, tcache_enabled_t)
+malloc_tsd_protos(NO_SB_CC JEMALLOC_ATTR(unused), tcache, tcache_t *)
+malloc_tsd_protos(NO_SB_CC JEMALLOC_ATTR(unused), tcache_enabled, tcache_enabled_t)
 
-void	tcache_event(tcache_t *tcache);
-void	tcache_flush(void);
-bool	tcache_enabled_get(void);
-tcache_t *tcache_get(bool create);
-void	tcache_enabled_set(bool enabled);
-void	*tcache_alloc_easy(tcache_bin_t *tbin);
-void	*tcache_alloc_small(tcache_t *tcache, size_t size, bool zero);
-void	*tcache_alloc_large(tcache_t *tcache, size_t size, bool zero);
-void	tcache_dalloc_small(tcache_t *tcache, void *ptr, size_t binind);
-void	tcache_dalloc_large(tcache_t *tcache, void *ptr, size_t size);
+NO_SB_CC void	tcache_event(tcache_t *tcache);
+NO_SB_CC void	tcache_flush(void);
+NO_SB_CC bool	tcache_enabled_get(void);
+NO_SB_CC tcache_t *tcache_get(bool create);
+NO_SB_CC void	tcache_enabled_set(bool enabled);
+NO_SB_CC void	*tcache_alloc_easy(tcache_bin_t *tbin);
+NO_SB_CC void	*tcache_alloc_small(tcache_t *tcache, size_t size, bool zero);
+NO_SB_CC void	*tcache_alloc_large(tcache_t *tcache, size_t size, bool zero);
+NO_SB_CC void	tcache_dalloc_small(tcache_t *tcache, void *ptr, size_t binind);
+NO_SB_CC void	tcache_dalloc_large(tcache_t *tcache, void *ptr, size_t size);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_TCACHE_C_))
 /* Map of thread-specific caches. */
 malloc_tsd_externs(tcache, tcache_t *)
-malloc_tsd_funcs(JEMALLOC_ALWAYS_INLINE, tcache, tcache_t *, NULL,
+malloc_tsd_funcs(NO_SB_CC JEMALLOC_ALWAYS_INLINE, tcache, tcache_t *, NULL,
     tcache_thread_cleanup)
 /* Per thread flag that allows thread caches to be disabled. */
 malloc_tsd_externs(tcache_enabled, tcache_enabled_t)
-malloc_tsd_funcs(JEMALLOC_ALWAYS_INLINE, tcache_enabled, tcache_enabled_t,
+malloc_tsd_funcs(NO_SB_CC JEMALLOC_ALWAYS_INLINE, tcache_enabled, tcache_enabled_t,
     tcache_enabled_default, malloc_tsd_no_cleanup)
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 tcache_flush(void)
 {
 	tcache_t *tcache;
@@ -162,7 +162,7 @@ tcache_flush(void)
 	tcache_tsd_set(&tcache);
 }
 
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 tcache_enabled_get(void)
 {
 	tcache_enabled_t tcache_enabled;
@@ -178,7 +178,7 @@ tcache_enabled_get(void)
 	return ((bool)tcache_enabled);
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 tcache_enabled_set(bool enabled)
 {
 	tcache_enabled_t tcache_enabled;
@@ -206,7 +206,7 @@ tcache_enabled_set(bool enabled)
 	}
 }
 
-JEMALLOC_ALWAYS_INLINE tcache_t *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE tcache_t *
 tcache_get(bool create)
 {
 	tcache_t *tcache;
@@ -258,7 +258,7 @@ tcache_get(bool create)
 	return (tcache);
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 tcache_event(tcache_t *tcache)
 {
 
@@ -271,7 +271,7 @@ tcache_event(tcache_t *tcache)
 		tcache_event_hard(tcache);
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 tcache_alloc_easy(tcache_bin_t *tbin)
 {
 	void *ret;
@@ -287,7 +287,7 @@ tcache_alloc_easy(tcache_bin_t *tbin)
 	return (ret);
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 tcache_alloc_small(tcache_t *tcache, size_t size, bool zero)
 {
 	void *ret;
@@ -331,7 +331,7 @@ tcache_alloc_small(tcache_t *tcache, size_t size, bool zero)
 	return (ret);
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 tcache_alloc_large(tcache_t *tcache, size_t size, bool zero)
 {
 	void *ret;
@@ -384,7 +384,7 @@ tcache_alloc_large(tcache_t *tcache, size_t size, bool zero)
 	return (ret);
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 tcache_dalloc_small(tcache_t *tcache, void *ptr, size_t binind)
 {
 	tcache_bin_t *tbin;
@@ -408,7 +408,7 @@ tcache_dalloc_small(tcache_t *tcache, void *ptr, size_t binind)
 	tcache_event(tcache);
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 tcache_dalloc_large(tcache_t *tcache, void *ptr, size_t size)
 {
 	size_t binind;

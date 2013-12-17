@@ -35,10 +35,10 @@ struct rtree_s {
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-rtree_t	*rtree_new(unsigned bits);
-void	rtree_prefork(rtree_t *rtree);
-void	rtree_postfork_parent(rtree_t *rtree);
-void	rtree_postfork_child(rtree_t *rtree);
+NO_SB_CC rtree_t	*rtree_new(unsigned bits);
+NO_SB_CC void	rtree_prefork(rtree_t *rtree);
+NO_SB_CC void	rtree_postfork_parent(rtree_t *rtree);
+NO_SB_CC void	rtree_postfork_child(rtree_t *rtree);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/
@@ -46,16 +46,16 @@ void	rtree_postfork_child(rtree_t *rtree);
 
 #ifndef JEMALLOC_ENABLE_INLINE
 #ifndef JEMALLOC_DEBUG
-void	*rtree_get_locked(rtree_t *rtree, uintptr_t key);
+NO_SB_CC void	*rtree_get_locked(rtree_t *rtree, uintptr_t key);
 #endif
-void	*rtree_get(rtree_t *rtree, uintptr_t key);
-bool	rtree_set(rtree_t *rtree, uintptr_t key, void *val);
+NO_SB_CC void	*rtree_get(rtree_t *rtree, uintptr_t key);
+NO_SB_CC bool	rtree_set(rtree_t *rtree, uintptr_t key, void *val);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_RTREE_C_))
 #define	RTREE_GET_GENERATE(f)						\
 /* The least significant bits of the key are ignored. */		\
-JEMALLOC_INLINE void *							\
+NO_SB_CC JEMALLOC_INLINE void *							\
 f(rtree_t *rtree, uintptr_t key)					\
 {									\
 	void *ret;							\
@@ -122,7 +122,7 @@ RTREE_GET_GENERATE(rtree_get)
 #undef RTREE_UNLOCK
 #undef RTREE_GET_VALIDATE
 
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 rtree_set(rtree_t *rtree, uintptr_t key, void *val)
 {
 	uintptr_t subkey;

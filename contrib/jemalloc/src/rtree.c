@@ -1,7 +1,7 @@
 #define	JEMALLOC_RTREE_C_
 #include "jemalloc/internal/jemalloc_internal.h"
 
-rtree_t *
+NO_SB_CC rtree_t *
 rtree_new(unsigned bits)
 {
 	rtree_t *ret;
@@ -45,21 +45,21 @@ rtree_new(unsigned bits)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 rtree_prefork(rtree_t *rtree)
 {
 
 	malloc_mutex_prefork(&rtree->mutex);
 }
 
-void
+NO_SB_CC void
 rtree_postfork_parent(rtree_t *rtree)
 {
 
 	malloc_mutex_postfork_parent(&rtree->mutex);
 }
 
-void
+NO_SB_CC void
 rtree_postfork_child(rtree_t *rtree)
 {
 

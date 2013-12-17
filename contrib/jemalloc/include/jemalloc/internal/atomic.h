@@ -34,42 +34,42 @@ unsigned	atomic_sub_u(unsigned *p, unsigned x);
 /* 64-bit operations. */
 #if (LG_SIZEOF_PTR == 3 || LG_SIZEOF_INT == 3)
 #  ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_add_uint64(uint64_t *p, uint64_t x)
 {
 
 	return (__sync_add_and_fetch(p, x));
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_sub_uint64(uint64_t *p, uint64_t x)
 {
 
 	return (__sync_sub_and_fetch(p, x));
 }
 #elif (defined(_MSC_VER))
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_add_uint64(uint64_t *p, uint64_t x)
 {
 
 	return (InterlockedExchangeAdd64(p, x));
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_sub_uint64(uint64_t *p, uint64_t x)
 {
 
 	return (InterlockedExchangeAdd64(p, -((int64_t)x)));
 }
 #elif (defined(JEMALLOC_OSATOMIC))
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_add_uint64(uint64_t *p, uint64_t x)
 {
 
 	return (OSAtomicAdd64((int64_t)x, (int64_t *)p));
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_sub_uint64(uint64_t *p, uint64_t x)
 {
 
@@ -89,7 +89,7 @@ atomic_add_uint64(uint64_t *p, uint64_t x)
 	return (x);
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_sub_uint64(uint64_t *p, uint64_t x)
 {
 
@@ -103,7 +103,7 @@ atomic_sub_uint64(uint64_t *p, uint64_t x)
 	return (x);
 }
 #  elif (defined(JEMALLOC_ATOMIC9))
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_add_uint64(uint64_t *p, uint64_t x)
 {
 
@@ -116,7 +116,7 @@ atomic_add_uint64(uint64_t *p, uint64_t x)
 	return (atomic_fetchadd_long(p, (unsigned long)x) + x);
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_sub_uint64(uint64_t *p, uint64_t x)
 {
 
@@ -125,14 +125,14 @@ atomic_sub_uint64(uint64_t *p, uint64_t x)
 	return (atomic_fetchadd_long(p, (unsigned long)(-(long)x)) - x);
 }
 #  elif (defined(JE_FORCE_SYNC_COMPARE_AND_SWAP_8))
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_add_uint64(uint64_t *p, uint64_t x)
 {
 
 	return (__sync_add_and_fetch(p, x));
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 atomic_sub_uint64(uint64_t *p, uint64_t x)
 {
 
@@ -146,49 +146,49 @@ atomic_sub_uint64(uint64_t *p, uint64_t x)
 /******************************************************************************/
 /* 32-bit operations. */
 #ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_add_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (__sync_add_and_fetch(p, x));
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_sub_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (__sync_sub_and_fetch(p, x));
 }
 #elif (defined(_MSC_VER))
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_add_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (InterlockedExchangeAdd(p, x));
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_sub_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (InterlockedExchangeAdd(p, -((int32_t)x)));
 }
 #elif (defined(JEMALLOC_OSATOMIC))
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_add_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (OSAtomicAdd32((int32_t)x, (int32_t *)p));
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_sub_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (OSAtomicAdd32(-((int32_t)x), (int32_t *)p));
 }
 #elif (defined(__i386__) || defined(__amd64__) || defined(__x86_64__))
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_add_uint32(uint32_t *p, uint32_t x)
 {
 
@@ -201,7 +201,7 @@ atomic_add_uint32(uint32_t *p, uint32_t x)
 	return (x);
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_sub_uint32(uint32_t *p, uint32_t x)
 {
 
@@ -215,28 +215,28 @@ atomic_sub_uint32(uint32_t *p, uint32_t x)
 	return (x);
 }
 #elif (defined(JEMALLOC_ATOMIC9))
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_add_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (atomic_fetchadd_32(p, x) + x);
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_sub_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (atomic_fetchadd_32(p, (uint32_t)(-(int32_t)x)) - x);
 }
 #elif (defined(JE_FORCE_SYNC_COMPARE_AND_SWAP_4))
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_add_uint32(uint32_t *p, uint32_t x)
 {
 
 	return (__sync_add_and_fetch(p, x));
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 atomic_sub_uint32(uint32_t *p, uint32_t x)
 {
 
@@ -248,7 +248,7 @@ atomic_sub_uint32(uint32_t *p, uint32_t x)
 
 /******************************************************************************/
 /* size_t operations. */
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 atomic_add_z(size_t *p, size_t x)
 {
 
@@ -259,7 +259,7 @@ atomic_add_z(size_t *p, size_t x)
 #endif
 }
 
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 atomic_sub_z(size_t *p, size_t x)
 {
 
@@ -274,7 +274,7 @@ atomic_sub_z(size_t *p, size_t x)
 
 /******************************************************************************/
 /* unsigned operations. */
-JEMALLOC_INLINE unsigned
+NO_SB_CC JEMALLOC_INLINE unsigned
 atomic_add_u(unsigned *p, unsigned x)
 {
 
@@ -285,7 +285,7 @@ atomic_add_u(unsigned *p, unsigned x)
 #endif
 }
 
-JEMALLOC_INLINE unsigned
+NO_SB_CC JEMALLOC_INLINE unsigned
 atomic_sub_u(unsigned *p, unsigned x)
 {
 

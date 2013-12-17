@@ -15,14 +15,14 @@ malloc_mutex_t	huge_mtx;
 /* Tree of chunks that are stand-alone huge allocations. */
 static extent_tree_t	huge;
 
-void *
+NO_SB_CC void *
 huge_malloc(size_t size, bool zero)
 {
 
 	return (huge_palloc(size, chunksize, zero));
 }
 
-void *
+NO_SB_CC void *
 huge_palloc(size_t size, size_t alignment, bool zero)
 {
 	void *ret;
@@ -78,7 +78,7 @@ huge_palloc(size_t size, size_t alignment, bool zero)
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 huge_ralloc_no_move(void *ptr, size_t oldsize, size_t size, size_t extra)
 {
 
@@ -100,7 +100,7 @@ huge_ralloc_no_move(void *ptr, size_t oldsize, size_t size, size_t extra)
 	return (NULL);
 }
 
-void *
+NO_SB_CC void *
 huge_ralloc(void *ptr, size_t oldsize, size_t size, size_t extra,
     size_t alignment, bool zero, bool try_tcache_dalloc)
 {
@@ -186,7 +186,7 @@ huge_ralloc(void *ptr, size_t oldsize, size_t size, size_t extra,
 	return (ret);
 }
 
-void
+NO_SB_CC void
 huge_dalloc(void *ptr, bool unmap)
 {
 	extent_node_t *node, key;
@@ -216,7 +216,7 @@ huge_dalloc(void *ptr, bool unmap)
 	base_node_dealloc(node);
 }
 
-size_t
+NO_SB_CC size_t
 huge_salloc(const void *ptr)
 {
 	size_t ret;
@@ -236,7 +236,7 @@ huge_salloc(const void *ptr)
 	return (ret);
 }
 
-prof_ctx_t *
+NO_SB_CC prof_ctx_t *
 huge_prof_ctx_get(const void *ptr)
 {
 	prof_ctx_t *ret;
@@ -256,7 +256,7 @@ huge_prof_ctx_get(const void *ptr)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 huge_prof_ctx_set(const void *ptr, prof_ctx_t *ctx)
 {
 	extent_node_t *node, key;
@@ -273,7 +273,7 @@ huge_prof_ctx_set(const void *ptr, prof_ctx_t *ctx)
 	malloc_mutex_unlock(&huge_mtx);
 }
 
-bool
+NO_SB_CC bool
 huge_boot(void)
 {
 
@@ -291,21 +291,21 @@ huge_boot(void)
 	return (false);
 }
 
-void
+NO_SB_CC void
 huge_prefork(void)
 {
 
 	malloc_mutex_prefork(&huge_mtx);
 }
 
-void
+NO_SB_CC void
 huge_postfork_parent(void)
 {
 
 	malloc_mutex_postfork_parent(&huge_mtx);
 }
 
-void
+NO_SB_CC void
 huge_postfork_child(void)
 {
 

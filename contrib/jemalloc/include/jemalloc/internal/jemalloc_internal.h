@@ -558,12 +558,12 @@ extern arena_t		**arenas;
 extern unsigned		narenas_total;
 extern unsigned		narenas_auto; /* Read-only after initialization. */
 
-arena_t	*arenas_extend(unsigned ind);
-void	arenas_cleanup(void *arg);
-arena_t	*choose_arena_hard(void);
-void	jemalloc_prefork(void);
-void	jemalloc_postfork_parent(void);
-void	jemalloc_postfork_child(void);
+NO_SB_CC arena_t	*arenas_extend(unsigned ind);
+NO_SB_CC void	arenas_cleanup(void *arg);
+NO_SB_CC arena_t	*choose_arena_hard(void);
+NO_SB_CC void	jemalloc_prefork(void);
+NO_SB_CC void	jemalloc_postfork_parent(void);
+NO_SB_CC void	jemalloc_postfork_child(void);
 
 #include "jemalloc/internal/util.h"
 #include "jemalloc/internal/atomic.h"
@@ -607,7 +607,7 @@ void	jemalloc_postfork_child(void);
 #include "jemalloc/internal/huge.h"
 
 #ifndef JEMALLOC_ENABLE_INLINE
-malloc_tsd_protos(JEMALLOC_ATTR(unused), arenas, arena_t *)
+malloc_tsd_protos(NO_SB_CC JEMALLOC_ATTR(unused), arenas, arena_t *)
 
 size_t	s2u(size_t size);
 size_t	sa2u(size_t size, size_t alignment);
@@ -621,14 +621,14 @@ arena_t	*choose_arena(arena_t *arena);
  * for allocations.
  */
 malloc_tsd_externs(arenas, arena_t *)
-malloc_tsd_funcs(JEMALLOC_ALWAYS_INLINE, arenas, arena_t *, NULL,
+malloc_tsd_funcs(NO_SB_CC JEMALLOC_ALWAYS_INLINE, arenas, arena_t *, NULL,
     arenas_cleanup)
 
 /*
  * Compute usable size that would result from allocating an object with the
  * specified size.
  */
-JEMALLOC_ALWAYS_INLINE size_t
+NO_SB_CC JEMALLOC_ALWAYS_INLINE size_t
 s2u(size_t size)
 {
 
@@ -643,7 +643,7 @@ s2u(size_t size)
  * Compute usable size that would result from allocating an object with the
  * specified size and alignment.
  */
-JEMALLOC_ALWAYS_INLINE size_t
+NO_SB_CC JEMALLOC_ALWAYS_INLINE size_t
 sa2u(size_t size, size_t alignment)
 {
 	size_t usize;
@@ -717,7 +717,7 @@ sa2u(size_t size, size_t alignment)
 	}
 }
 
-JEMALLOC_INLINE unsigned
+NO_SB_CC JEMALLOC_INLINE unsigned
 narenas_total_get(void)
 {
 	unsigned narenas;
@@ -730,7 +730,7 @@ narenas_total_get(void)
 }
 
 /* Choose an arena based on a per-thread value. */
-JEMALLOC_INLINE arena_t *
+NO_SB_CC JEMALLOC_INLINE arena_t *
 choose_arena(arena_t *arena)
 {
 	arena_t *ret;
@@ -764,31 +764,31 @@ choose_arena(arena_t *arena)
 #include "jemalloc/internal/quarantine.h"
 
 #ifndef JEMALLOC_ENABLE_INLINE
-void	*imallocx(size_t size, bool try_tcache, arena_t *arena);
-void	*imalloc(size_t size);
-void	*icallocx(size_t size, bool try_tcache, arena_t *arena);
-void	*icalloc(size_t size);
-void	*ipallocx(size_t usize, size_t alignment, bool zero, bool try_tcache,
+NO_SB_CC void	*imallocx(size_t size, bool try_tcache, arena_t *arena);
+NO_SB_CC void	*imalloc(size_t size);
+NO_SB_CC void	*icallocx(size_t size, bool try_tcache, arena_t *arena);
+NO_SB_CC void	*icalloc(size_t size);
+NO_SB_CC void	*ipallocx(size_t usize, size_t alignment, bool zero, bool try_tcache,
     arena_t *arena);
-void	*ipalloc(size_t usize, size_t alignment, bool zero);
-size_t	isalloc(const void *ptr, bool demote);
-size_t	ivsalloc(const void *ptr, bool demote);
-size_t	u2rz(size_t usize);
-size_t	p2rz(const void *ptr);
-void	idallocx(void *ptr, bool try_tcache);
-void	idalloc(void *ptr);
-void	iqallocx(void *ptr, bool try_tcache);
-void	iqalloc(void *ptr);
-void	*irallocx(void *ptr, size_t size, size_t extra, size_t alignment,
+NO_SB_CC void	*ipalloc(size_t usize, size_t alignment, bool zero);
+NO_SB_CC size_t	isalloc(const void *ptr, bool demote);
+NO_SB_CC size_t	ivsalloc(const void *ptr, bool demote);
+NO_SB_CC size_t	u2rz(size_t usize);
+NO_SB_CC size_t	p2rz(const void *ptr);
+NO_SB_CC void	idallocx(void *ptr, bool try_tcache);
+NO_SB_CC void	idalloc(void *ptr);
+NO_SB_CC void	iqallocx(void *ptr, bool try_tcache);
+NO_SB_CC void	iqalloc(void *ptr);
+NO_SB_CC void	*irallocx(void *ptr, size_t size, size_t extra, size_t alignment,
     bool zero, bool no_move, bool try_tcache_alloc, bool try_tcache_dalloc,
     arena_t *arena);
-void	*iralloc(void *ptr, size_t size, size_t extra, size_t alignment,
+NO_SB_CC void	*iralloc(void *ptr, size_t size, size_t extra, size_t alignment,
     bool zero, bool no_move);
-malloc_tsd_protos(JEMALLOC_ATTR(unused), thread_allocated, thread_allocated_t)
+malloc_tsd_protos(NO_SB_CC JEMALLOC_ATTR(unused), thread_allocated, thread_allocated_t)
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_C_))
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 imallocx(size_t size, bool try_tcache, arena_t *arena)
 {
 
@@ -800,14 +800,14 @@ imallocx(size_t size, bool try_tcache, arena_t *arena)
 		return (huge_malloc(size, false));
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 imalloc(size_t size)
 {
 
 	return (imallocx(size, true, NULL));
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 icallocx(size_t size, bool try_tcache, arena_t *arena)
 {
 
@@ -817,14 +817,14 @@ icallocx(size_t size, bool try_tcache, arena_t *arena)
 		return (huge_malloc(size, true));
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 icalloc(size_t size)
 {
 
 	return (icallocx(size, true, NULL));
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 ipallocx(size_t usize, size_t alignment, bool zero, bool try_tcache,
     arena_t *arena)
 {
@@ -849,7 +849,7 @@ ipallocx(size_t usize, size_t alignment, bool zero, bool try_tcache,
 	return (ret);
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 ipalloc(size_t usize, size_t alignment, bool zero)
 {
 
@@ -861,7 +861,7 @@ ipalloc(size_t usize, size_t alignment, bool zero)
  *   void *ptr = [...]
  *   size_t sz = isalloc(ptr, config_prof);
  */
-JEMALLOC_ALWAYS_INLINE size_t
+NO_SB_CC JEMALLOC_ALWAYS_INLINE size_t
 isalloc(const void *ptr, bool demote)
 {
 	size_t ret;
@@ -880,7 +880,7 @@ isalloc(const void *ptr, bool demote)
 	return (ret);
 }
 
-JEMALLOC_ALWAYS_INLINE size_t
+NO_SB_CC JEMALLOC_ALWAYS_INLINE size_t
 ivsalloc(const void *ptr, bool demote)
 {
 
@@ -891,7 +891,7 @@ ivsalloc(const void *ptr, bool demote)
 	return (isalloc(ptr, demote));
 }
 
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 u2rz(size_t usize)
 {
 	size_t ret;
@@ -905,7 +905,7 @@ u2rz(size_t usize)
 	return (ret);
 }
 
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 p2rz(const void *ptr)
 {
 	size_t usize = isalloc(ptr, false);
@@ -913,7 +913,7 @@ p2rz(const void *ptr)
 	return (u2rz(usize));
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 idallocx(void *ptr, bool try_tcache)
 {
 	arena_chunk_t *chunk;
@@ -927,14 +927,14 @@ idallocx(void *ptr, bool try_tcache)
 		huge_dalloc(ptr, true);
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 idalloc(void *ptr)
 {
 
 	idallocx(ptr, true);
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 iqallocx(void *ptr, bool try_tcache)
 {
 
@@ -944,14 +944,14 @@ iqallocx(void *ptr, bool try_tcache)
 		idallocx(ptr, try_tcache);
 }
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 iqalloc(void *ptr)
 {
 
 	iqallocx(ptr, true);
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 irallocx(void *ptr, size_t size, size_t extra, size_t alignment, bool zero,
     bool no_move, bool try_tcache_alloc, bool try_tcache_dalloc, arena_t *arena)
 {
@@ -1020,7 +1020,7 @@ irallocx(void *ptr, size_t size, size_t extra, size_t alignment, bool zero,
 	}
 }
 
-JEMALLOC_ALWAYS_INLINE void *
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void *
 iralloc(void *ptr, size_t size, size_t extra, size_t alignment, bool zero,
     bool no_move)
 {
@@ -1030,7 +1030,7 @@ iralloc(void *ptr, size_t size, size_t extra, size_t alignment, bool zero,
 }
 
 malloc_tsd_externs(thread_allocated, thread_allocated_t)
-malloc_tsd_funcs(JEMALLOC_ALWAYS_INLINE, thread_allocated, thread_allocated_t,
+malloc_tsd_funcs(NO_SB_CC JEMALLOC_ALWAYS_INLINE, thread_allocated, thread_allocated_t,
     THREAD_ALLOCATED_INITIALIZER, malloc_tsd_no_cleanup)
 #endif
 

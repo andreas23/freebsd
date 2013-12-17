@@ -29,7 +29,7 @@ static void		*dss_max;
 /******************************************************************************/
 
 #ifndef JEMALLOC_HAVE_SBRK
-static void *
+NO_SB_CC static void *
 sbrk(intptr_t increment)
 {
 
@@ -39,7 +39,7 @@ sbrk(intptr_t increment)
 }
 #endif
 
-dss_prec_t
+NO_SB_CC dss_prec_t
 chunk_dss_prec_get(void)
 {
 	dss_prec_t ret;
@@ -52,7 +52,7 @@ chunk_dss_prec_get(void)
 	return (ret);
 }
 
-bool
+NO_SB_CC bool
 chunk_dss_prec_set(dss_prec_t dss_prec)
 {
 
@@ -64,7 +64,7 @@ chunk_dss_prec_set(dss_prec_t dss_prec)
 	return (false);
 }
 
-void *
+NO_SB_CC void *
 chunk_alloc_dss(size_t size, size_t alignment, bool *zero)
 {
 	void *ret;
@@ -137,7 +137,7 @@ chunk_alloc_dss(size_t size, size_t alignment, bool *zero)
 	return (NULL);
 }
 
-bool
+NO_SB_CC bool
 chunk_in_dss(void *chunk)
 {
 	bool ret;
@@ -155,7 +155,7 @@ chunk_in_dss(void *chunk)
 	return (ret);
 }
 
-bool
+NO_SB_CC bool
 chunk_dss_boot(void)
 {
 
@@ -170,7 +170,7 @@ chunk_dss_boot(void)
 	return (false);
 }
 
-void
+NO_SB_CC void
 chunk_dss_prefork(void)
 {
 
@@ -178,7 +178,7 @@ chunk_dss_prefork(void)
 		malloc_mutex_prefork(&dss_mtx);
 }
 
-void
+NO_SB_CC void
 chunk_dss_postfork_parent(void)
 {
 
@@ -186,7 +186,7 @@ chunk_dss_postfork_parent(void)
 		malloc_mutex_postfork_parent(&dss_mtx);
 }
 
-void
+NO_SB_CC void
 chunk_dss_postfork_child(void)
 {
 

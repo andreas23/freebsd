@@ -19,11 +19,11 @@ static extent_node_t	*base_nodes;
 /******************************************************************************/
 /* Function prototypes for non-inline static functions. */
 
-static bool	base_pages_alloc(size_t minsize);
+NO_SB_CC static bool	base_pages_alloc(size_t minsize);
 
 /******************************************************************************/
 
-static bool
+NO_SB_CC static bool
 base_pages_alloc(size_t minsize)
 {
 	size_t csize;
@@ -42,7 +42,7 @@ base_pages_alloc(size_t minsize)
 	return (false);
 }
 
-void *
+NO_SB_CC void *
 base_alloc(size_t size)
 {
 	void *ret;
@@ -68,7 +68,7 @@ base_alloc(size_t size)
 	return (ret);
 }
 
-void *
+NO_SB_CC void *
 base_calloc(size_t number, size_t size)
 {
 	void *ret = base_alloc(number * size);
@@ -79,7 +79,7 @@ base_calloc(size_t number, size_t size)
 	return (ret);
 }
 
-extent_node_t *
+NO_SB_CC extent_node_t *
 base_node_alloc(void)
 {
 	extent_node_t *ret;
@@ -98,7 +98,7 @@ base_node_alloc(void)
 	return (ret);
 }
 
-void
+NO_SB_CC void
 base_node_dealloc(extent_node_t *node)
 {
 
@@ -109,7 +109,7 @@ base_node_dealloc(extent_node_t *node)
 	malloc_mutex_unlock(&base_mtx);
 }
 
-bool
+NO_SB_CC bool
 base_boot(void)
 {
 
@@ -120,21 +120,21 @@ base_boot(void)
 	return (false);
 }
 
-void
+NO_SB_CC void
 base_prefork(void)
 {
 
 	malloc_mutex_prefork(&base_mtx);
 }
 
-void
+NO_SB_CC void
 base_postfork_parent(void)
 {
 
 	malloc_mutex_postfork_parent(&base_mtx);
 }
 
-void
+NO_SB_CC void
 base_postfork_child(void)
 {
 

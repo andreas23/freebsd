@@ -19,41 +19,41 @@
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-void	hash(const void *key, size_t len, const uint32_t seed,
+NO_SB_CC void	hash(const void *key, size_t len, const uint32_t seed,
     size_t r_hash[2]);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_HASH_C_))
 /******************************************************************************/
 /* Internal implementation. */
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 hash_rotl_32(uint32_t x, int8_t r)
 {
 
 	return (x << r) | (x >> (32 - r));
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 hash_rotl_64(uint64_t x, int8_t r)
 {
 	return (x << r) | (x >> (64 - r));
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 hash_get_block_32(const uint32_t *p, int i)
 {
 
 	return p[i];
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 hash_get_block_64(const uint64_t *p, int i)
 {
 
 	return p[i];
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 hash_fmix_32(uint32_t h)
 {
 
@@ -66,7 +66,7 @@ hash_fmix_32(uint32_t h)
 	return h;
 }
 
-JEMALLOC_INLINE uint64_t
+NO_SB_CC JEMALLOC_INLINE uint64_t
 hash_fmix_64(uint64_t k)
 {
 
@@ -79,7 +79,7 @@ hash_fmix_64(uint64_t k)
 	return k;
 }
 
-JEMALLOC_INLINE uint32_t
+NO_SB_CC JEMALLOC_INLINE uint32_t
 hash_x86_32(const void *key, int len, uint32_t seed)
 {
 	const uint8_t *data = (const uint8_t *) key;
@@ -130,7 +130,7 @@ hash_x86_32(const void *key, int len, uint32_t seed)
 	return h1;
 }
 
-UNUSED JEMALLOC_INLINE void
+NO_SB_CC UNUSED JEMALLOC_INLINE void
 hash_x86_128(const void *key, const int len, uint32_t seed,
   uint64_t r_out[2])
 {
@@ -232,7 +232,7 @@ hash_x86_128(const void *key, const int len, uint32_t seed,
 	r_out[1] = (((uint64_t) h4) << 32) | h3;
 }
 
-UNUSED JEMALLOC_INLINE void
+NO_SB_CC UNUSED JEMALLOC_INLINE void
 hash_x64_128(const void *key, const int len, const uint32_t seed,
   uint64_t r_out[2])
 {
@@ -313,7 +313,7 @@ hash_x64_128(const void *key, const int len, const uint32_t seed,
 
 /******************************************************************************/
 /* API. */
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 hash(const void *key, size_t len, const uint32_t seed, size_t r_hash[2])
 {
 #if (LG_SIZEOF_PTR == 3)

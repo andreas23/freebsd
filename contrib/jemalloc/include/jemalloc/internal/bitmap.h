@@ -46,25 +46,25 @@ struct bitmap_info_s {
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-void	bitmap_info_init(bitmap_info_t *binfo, size_t nbits);
-size_t	bitmap_info_ngroups(const bitmap_info_t *binfo);
-size_t	bitmap_size(size_t nbits);
-void	bitmap_init(bitmap_t *bitmap, const bitmap_info_t *binfo);
+NO_SB_CC void	bitmap_info_init(bitmap_info_t *binfo, size_t nbits);
+NO_SB_CC size_t	bitmap_info_ngroups(const bitmap_info_t *binfo);
+NO_SB_CC size_t	bitmap_size(size_t nbits);
+NO_SB_CC void	bitmap_init(bitmap_t *bitmap, const bitmap_info_t *binfo);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-bool	bitmap_full(bitmap_t *bitmap, const bitmap_info_t *binfo);
-bool	bitmap_get(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit);
-void	bitmap_set(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit);
-size_t	bitmap_sfu(bitmap_t *bitmap, const bitmap_info_t *binfo);
-void	bitmap_unset(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit);
+NO_SB_CC bool	bitmap_full(bitmap_t *bitmap, const bitmap_info_t *binfo);
+NO_SB_CC bool	bitmap_get(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit);
+NO_SB_CC void	bitmap_set(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit);
+NO_SB_CC size_t	bitmap_sfu(bitmap_t *bitmap, const bitmap_info_t *binfo);
+NO_SB_CC void	bitmap_unset(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_BITMAP_C_))
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 bitmap_full(bitmap_t *bitmap, const bitmap_info_t *binfo)
 {
 	unsigned rgoff = binfo->levels[binfo->nlevels].group_offset - 1;
@@ -73,7 +73,7 @@ bitmap_full(bitmap_t *bitmap, const bitmap_info_t *binfo)
 	return (rg == 0);
 }
 
-JEMALLOC_INLINE bool
+NO_SB_CC JEMALLOC_INLINE bool
 bitmap_get(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit)
 {
 	size_t goff;
@@ -85,7 +85,7 @@ bitmap_get(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit)
 	return (!(g & (1LU << (bit & BITMAP_GROUP_NBITS_MASK))));
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 bitmap_set(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit)
 {
 	size_t goff;
@@ -119,7 +119,7 @@ bitmap_set(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit)
 }
 
 /* sfu: set first unset. */
-JEMALLOC_INLINE size_t
+NO_SB_CC JEMALLOC_INLINE size_t
 bitmap_sfu(bitmap_t *bitmap, const bitmap_info_t *binfo)
 {
 	size_t bit;
@@ -141,7 +141,7 @@ bitmap_sfu(bitmap_t *bitmap, const bitmap_info_t *binfo)
 	return (bit);
 }
 
-JEMALLOC_INLINE void
+NO_SB_CC JEMALLOC_INLINE void
 bitmap_unset(bitmap_t *bitmap, const bitmap_info_t *binfo, size_t bit)
 {
 	size_t goff;

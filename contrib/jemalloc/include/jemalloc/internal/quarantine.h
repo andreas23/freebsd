@@ -29,27 +29,27 @@ struct quarantine_s {
 /******************************************************************************/
 #ifdef JEMALLOC_H_EXTERNS
 
-quarantine_t	*quarantine_init(size_t lg_maxobjs);
-void	quarantine(void *ptr);
-void	quarantine_cleanup(void *arg);
-bool	quarantine_boot(void);
+NO_SB_CC quarantine_t	*quarantine_init(size_t lg_maxobjs);
+NO_SB_CC void	quarantine(void *ptr);
+NO_SB_CC void	quarantine_cleanup(void *arg);
+NO_SB_CC bool	quarantine_boot(void);
 
 #endif /* JEMALLOC_H_EXTERNS */
 /******************************************************************************/
 #ifdef JEMALLOC_H_INLINES
 
 #ifndef JEMALLOC_ENABLE_INLINE
-malloc_tsd_protos(JEMALLOC_ATTR(unused), quarantine, quarantine_t *)
+malloc_tsd_protos(NO_SB_CC JEMALLOC_ATTR(unused), quarantine, quarantine_t *)
 
-void	quarantine_alloc_hook(void);
+NO_SB_CC void	quarantine_alloc_hook(void);
 #endif
 
 #if (defined(JEMALLOC_ENABLE_INLINE) || defined(JEMALLOC_QUARANTINE_C_))
 malloc_tsd_externs(quarantine, quarantine_t *)
-malloc_tsd_funcs(JEMALLOC_ALWAYS_INLINE, quarantine, quarantine_t *, NULL,
+malloc_tsd_funcs(NO_SB_CC JEMALLOC_ALWAYS_INLINE, quarantine, quarantine_t *, NULL,
     quarantine_cleanup)
 
-JEMALLOC_ALWAYS_INLINE void
+NO_SB_CC JEMALLOC_ALWAYS_INLINE void
 quarantine_alloc_hook(void)
 {
 	quarantine_t *quarantine;
