@@ -30,6 +30,7 @@ __FBSDID("$FreeBSD$");
 #include <sys/limits.h>
 #include <sys/types.h>
 #include <string.h>
+#include <softbound.h>
 
 /*
  * Portable strlen() for 32-bit and 64-bit systems.
@@ -79,8 +80,8 @@ static const unsigned long mask80 = 0x8080808080808080;
 		    return (p - str + x);	\
 	} while (0)
 
-size_t
-strlen(const char *str)
+NO_SB_CC size_t
+__softbound_strlen(const char *str)
 {
 	const char *p;
 	const unsigned long *lp;
@@ -127,4 +128,25 @@ strlen(const char *str)
 
 	/* NOTREACHED */
 	return (0);
+}
+
+NO_SB_IB size_t
+strlen(const char *str)
+{  
+  char* base = (char*)__softboundcets_load_base_shadow_stack(1);
+  char* bound = (char*)__softboundcets_load_bound_shadow_stack(1);
+  size_t key = __softboundcets_load_key_shadow_stack(1);
+  void* lock = __softboundcets_load_lock_shadow_stack(1);
+  size_t rc;
+  char* str_end;
+
+  __softboundcets_spatial_load_dereference_check(base, bound, str, sizeof(*str));
+  __softboundcets_temporal_load_dereference_check(base, bound, str, sizeof(*str));
+
+  // Cheating here: instead of doing the check inside the loop, we check afterwards
+  // if the end of the string is still inside the bounds. This may lead to access
+  // of unmapped memory. However, neither data is leaked, nor is this exploitable.
+  rc = __softbound_strlen(str);
+
+  __softboundcets_spatial_load_dereference_check(base, bound, str + rc, sizeof(*str));
 }

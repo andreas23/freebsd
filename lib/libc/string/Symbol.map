@@ -102,4 +102,5 @@ FBSD_1.3 {
 
 FBSDprivate_1.0 {
 	__strtok_r;
+	__softbound_strlen;
 };
