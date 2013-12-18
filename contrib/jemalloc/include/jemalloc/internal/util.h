@@ -139,7 +139,7 @@ set_errno(int errnum)
 #ifdef _WIN32
 	SetLastError(errnum);
 #else
-	errno = errnum;
+	(* __softbound_error()) = errnum;
 #endif
 }
 
@@ -151,7 +151,7 @@ get_errno(void)
 #ifdef _WIN32
 	return (GetLastError());
 #else
-	return (errno);
+	return (* __softbound_error());
 #endif
 }
 #endif
