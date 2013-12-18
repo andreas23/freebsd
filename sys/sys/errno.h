@@ -42,6 +42,7 @@
 #include <sys/cdefs.h>
 __BEGIN_DECLS
 int *	__error(void);
+NO_SB_CC int *	__softbound_error(void);
 __END_DECLS
 #define	errno		(* __error())
 #endif

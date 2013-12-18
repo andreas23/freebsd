@@ -37,6 +37,13 @@ extern int errno;
  * with libpthread.
  */
 __weak_reference(__error_unthreaded, __error);
+__weak_reference(__softbound_error_unthreaded, __softbound_error);
+
+NO_SB_CC int *
+__softbound_error_unthreaded(void)
+{
+	return(&errno);
+}
 
 int *
 __error_unthreaded(void)

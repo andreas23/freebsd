@@ -90,13 +90,13 @@ typedef struct {
 #ifdef JEMALLOC_UTRACE
 #  define UTRACE(a, b, c) do {						\
 	if (opt_utrace) {						\
-		int utrace_serrno = errno;				\
+          int utrace_serrno = * __softbound_error();                 \
 		malloc_utrace_t ut;					\
 		ut.p = (a);						\
 		ut.s = (b);						\
 		ut.r = (c);						\
 		utrace(&ut, sizeof(ut));				\
-		errno = utrace_serrno;					\
+		(* __softbound_error()) = utrace_serrno;                \
 	}								\
 } while (0)
 #else
@@ -442,6 +442,7 @@ malloc_conf_init(void)
 		case 1: {
 #ifndef _WIN32
 			int linklen;
+			int saved_errno = * __softbound_error();
 			const char *linkname =
 #  ifdef JEMALLOC_PREFIX
 			    "/etc/"JEMALLOC_PREFIX"malloc.conf"

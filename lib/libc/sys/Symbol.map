@@ -320,6 +320,7 @@ FBSD_1.0 {
 	writev;
 
 	__error;
+	__softbound_error;
 	ftruncate;
 	lseek;
 	mmap;
