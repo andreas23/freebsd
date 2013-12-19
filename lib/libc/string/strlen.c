@@ -138,15 +138,16 @@ strlen(const char *str)
   size_t key = __softboundcets_load_key_shadow_stack(1);
   void* lock = __softboundcets_load_lock_shadow_stack(1);
   size_t rc;
-  char* str_end;
 
-  __softboundcets_spatial_load_dereference_check(base, bound, str, sizeof(*str));
-  __softboundcets_temporal_load_dereference_check(base, bound, str, sizeof(*str));
+  __softboundcets_spatial_load_dereference_check(base, bound, (void*)str, sizeof(*str));
+  __softboundcets_temporal_load_dereference_check(key, lock, base, bound);
 
   // Cheating here: instead of doing the check inside the loop, we check afterwards
   // if the end of the string is still inside the bounds. This may lead to access
   // of unmapped memory. However, neither data is leaked, nor is this exploitable.
   rc = __softbound_strlen(str);
 
-  __softboundcets_spatial_load_dereference_check(base, bound, str + rc, sizeof(*str));
+  __softboundcets_spatial_load_dereference_check(base, bound, (void*)(str + rc), sizeof(*str));
+
+  return rc;
 }
