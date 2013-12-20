@@ -260,7 +260,7 @@ extern void __cxa_finalize (void *) TARGET_ATTRIBUTE_WEAK;
    the list we left off processing, and we resume at that point,
    should we be re-invoked.  */
 
-static void __attribute__((used))
+NO_SB_CC static void __attribute__((used))
 __do_global_dtors_aux (void)
 {
 #ifndef FINI_ARRAY_SECTION_ASM_OP
@@ -395,7 +395,7 @@ __do_global_ctors_aux (void)	/* prologue goes in .init section */
 
 #elif defined(HAS_INIT_SECTION) /* ! INIT_SECTION_ASM_OP */
 
-extern void __do_global_dtors (void);
+NO_SB_CC extern void __do_global_dtors (void);
 
 /* This case is used by the Irix 6 port, which supports named sections but
    not an SVR4-style .fini section.  __do_global_dtors can be non-static
@@ -551,7 +551,7 @@ __do_global_ctors_aux (void)	/* prologue goes in .text section */
 {
   asm (INIT_SECTION_ASM_OP);
   DO_GLOBAL_CTORS_BODY;
-  atexit (__do_global_dtors);
+  __softbound_atexit (__do_global_dtors);
 }				/* epilogue and body go in .init section */
 
 FORCE_CODE_SECTION_ALIGN

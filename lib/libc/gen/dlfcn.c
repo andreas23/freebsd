@@ -218,7 +218,7 @@ _rtld_atfork_post(int *locks)
 }
 
 #pragma weak _rtld_addr_phdr
-int
+NO_SB_CC int
 _rtld_addr_phdr(const void *addr, struct dl_phdr_info *phdr_info)
 {
 

@@ -55,7 +55,7 @@ int	__isthreaded	= 0;
 /*
  * Exit, flushing stdio buffers if necessary.
  */
-void
+NO_SB_CC void
 exit(status)
 	int status;
 {
