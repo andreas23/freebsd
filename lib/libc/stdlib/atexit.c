@@ -207,7 +207,7 @@ void __pthread_cxa_finalize(const struct dl_phdr_info *);
  * object owning 'dso'.  Note: if 'dso' is NULL, then all remaining
  * handlers are called.
  */
-void
+NO_SB_CC void
 __cxa_finalize(void *dso)
 {
 	struct dl_phdr_info phdr_info;
