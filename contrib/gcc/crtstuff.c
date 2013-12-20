@@ -513,7 +513,7 @@ STATIC void *__JCR_END__[1]
 #elif defined(INIT_SECTION_ASM_OP)
 
 #ifdef OBJECT_FORMAT_ELF
-static void __attribute__((used))
+NO_SB_CC static void __attribute__((used))
 __do_global_ctors_aux (void)
 {
   func_ptr *p;
@@ -546,7 +546,7 @@ CRT_CALL_STATIC_FUNCTION (INIT_SECTION_ASM_OP, __do_global_ctors_aux)
    the state of the floating-point coprocessor, etc.) which should be done
    before we start to execute any of the user's code.  */
 
-static void
+NO_SB_CC static void
 __do_global_ctors_aux (void)	/* prologue goes in .text section */
 {
   asm (INIT_SECTION_ASM_OP);
