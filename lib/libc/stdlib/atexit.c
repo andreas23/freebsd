@@ -111,6 +111,39 @@ atexit_register(struct atexit_fn *fptr)
 	return 0;
 }
 
+NO_SB_CC static int
+__softbound_atexit_register(struct atexit_fn *fptr)
+{
+	static struct atexit __atexit0;	/* one guaranteed table */
+	struct atexit *p;
+
+	_MUTEX_LOCK(&atexit_mutex);
+	if ((p = __atexit) == NULL)
+		__atexit = p = &__atexit0;
+	else while (p->ind >= ATEXIT_SIZE) {
+		struct atexit *old__atexit;
+		old__atexit = __atexit;
+	        _MUTEX_UNLOCK(&atexit_mutex);
+		if ((p = (struct atexit *)__malloc(sizeof(*p))) == NULL)
+			return (-1);
+		_MUTEX_LOCK(&atexit_mutex);
+		if (old__atexit != __atexit) {
+			/* Lost race, retry operation */
+			_MUTEX_UNLOCK(&atexit_mutex);
+			free(p);
+			_MUTEX_LOCK(&atexit_mutex);
+			p = __atexit;
+			continue;
+		}
+		p->ind = 0;
+		p->next = __atexit;
+		__atexit = p;
+	}
+	p->fns[p->ind++] = *fptr;
+	_MUTEX_UNLOCK(&atexit_mutex);
+	return 0;
+}
+
 /*
  * Register a function to be performed at exit.
  */
@@ -126,6 +159,24 @@ atexit(void (*func)(void))
 	fn.fn_dso = NULL;
 
  	error = atexit_register(&fn);	
+	return (error);
+}
+
+/*
+ * Register a function to be performed at exit.
+ */
+NO_SB_CC int
+__softbound_atexit(void (*func)(void))
+{
+	struct atexit_fn fn;
+	int error;
+
+	fn.fn_type = ATEXIT_FN_STD;
+	fn.fn_ptr.std_func = func;
+	fn.fn_arg = NULL;
+	fn.fn_dso = NULL;
+
+ 	error = __softbound_atexit_register(&fn);	
 	return (error);
 }
 

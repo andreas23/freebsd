@@ -30,7 +30,7 @@
 #include <stdint.h>
 #include <machine/sysarch.h>
 
-void
+NO_SB_CC void
 _set_tp(void *tp)
 {
 

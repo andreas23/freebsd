@@ -71,7 +71,7 @@ handle_static_init(int argc, char **argv, char **env)
 	if (&_DYNAMIC != NULL)
 		return;
 
-	atexit(finalizer);
+	__softbound_atexit(finalizer);
 
 	array_size = __preinit_array_end - __preinit_array_start;
 	for (n = 0; n < array_size; n++) {

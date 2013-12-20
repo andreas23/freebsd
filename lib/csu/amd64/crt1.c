@@ -71,6 +71,14 @@ _start(char **ap, void (*cleanup)(void))
   size_t argv_key;
   void* argv_loc;
 
+
+	if (&_DYNAMIC != NULL)
+		__softbound_atexit(cleanup);
+	else
+		_init_tls();
+
+	handle_static_init(argc, argv, env);
+
   int* temp = __malloc(1);
   __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
   __softboundcets_stack_memory_allocation(&argv_loc, &argv_key);
@@ -98,18 +106,12 @@ _start(char **ap, void (*cleanup)(void))
   __softboundcets_store_lock_shadow_stack(argv_loc, 1);
 
 
-	if (&_DYNAMIC != NULL)
-		atexit(cleanup);
-	else
-		_init_tls();
 
 #ifdef GCRT
 	atexit(_mcleanup);
 	monstartup(&eprol, &etext);
 __asm__("eprol:");
 #endif
-
-	handle_static_init(argc, argv, env);
 
         return_value = main(argc, new_argv, env);
   __softboundcets_deallocate_shadow_stack_space();

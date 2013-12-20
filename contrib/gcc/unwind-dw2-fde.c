@@ -74,7 +74,7 @@ init_object_mutex_once (void)
 
 /* Called from crtbegin.o to register the unwind info for an object.  */
 
-void
+NO_SB_CC void
 __register_frame_info_bases (const void *begin, struct object *ob,
 			     void *tbase, void *dbase)
 {
@@ -101,7 +101,7 @@ __register_frame_info_bases (const void *begin, struct object *ob,
   __gthread_mutex_unlock (&object_mutex);
 }
 
-void
+NO_SB_CC void
 __register_frame_info (const void *begin, struct object *ob)
 {
   __register_frame_info_bases (begin, ob, 0, 0);
@@ -170,7 +170,7 @@ __register_frame_table (void *begin)
    exact same thing, but will resolve to the same library as
    implements __register_frame_info_bases.  */
 
-void *
+NO_SB_CC void *
 __deregister_frame_info_bases (const void *begin)
 {
   struct object **p;

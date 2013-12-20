@@ -317,7 +317,7 @@ static func_ptr __do_global_dtors_aux_fini_array_entry[]
    reason calls with no arguments work more reliably in .init, so stick the
    call in another function.  */
 
-static void __attribute__((used))
+NO_SB_CC static void __attribute__((used))
 frame_dummy (void)
 {
 #ifdef USE_EH_FRAME_REGISTRY
@@ -362,8 +362,8 @@ static func_ptr __frame_dummy_init_array_entry[]
    INVOKE__main is defined.  This has the additional effect of forcing cc1
    to switch to the .text section.  */
 
-static void __do_global_ctors_aux (void);
-void
+NO_SB_CC static void __do_global_ctors_aux (void);
+NO_SB_CC void
 __do_global_ctors (void)
 {
 #ifdef INVOKE__main
@@ -382,13 +382,13 @@ asm (INIT_SECTION_ASM_OP);	/* cc1 doesn't know that we are switching! */
    such a thing) so that we can properly perform the construction of
    file-scope static-storage C++ objects within shared libraries.  */
 
-static void __attribute__((used))
+NO_SB_CC static void __attribute__((used))
 __do_global_ctors_aux (void)	/* prologue goes in .init section */
 {
   FORCE_CODE_SECTION_ALIGN	/* explicit align before switch to .text */
   asm (TEXT_SECTION_ASM_OP);	/* don't put epilogue and body in .init */
   DO_GLOBAL_CTORS_BODY;
-  atexit (__do_global_dtors);
+  __softbound_atexit (__do_global_dtors);
 }
 
 #endif /* OBJECT_FORMAT_ELF */
@@ -401,7 +401,7 @@ extern void __do_global_dtors (void);
    not an SVR4-style .fini section.  __do_global_dtors can be non-static
    in this case because we protect it with -hidden_symbol.  */
 
-void
+NO_SB_CC void
 __do_global_dtors (void)
 {
   func_ptr *p, f;

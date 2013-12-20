@@ -116,9 +116,9 @@ int i386_set_watch(int, unsigned int, int, int, struct dbreg *);
 int i386_clr_watch(int, struct dbreg *);
 int amd64_get_fsbase(void **);
 int amd64_get_gsbase(void **);
-int amd64_set_fsbase(void *);
+NO_SB_CC int amd64_set_fsbase(void *);
 int amd64_set_gsbase(void *);
-int sysarch(int, void *);
+NO_SB_CC int sysarch(int, void *);
 __END_DECLS
 #else
 struct thread;

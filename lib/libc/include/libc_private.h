@@ -195,7 +195,7 @@ NO_SB_CC int __softbound_once(pthread_once_t *, void (*)(void));
 /*
  * Set the TLS thread pointer
  */
-void _set_tp(void *tp);
+NO_SB_CC void _set_tp(void *tp);
 
 /*
  * This is a pointer in the C run-time startup code. It is used
