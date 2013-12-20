@@ -45,11 +45,11 @@ __FBSDID("$FreeBSD$");
 	 * programs and the initial threaded in threaded programs,
 	 * it returns a pointer to the global errno variable.
 	 */
-	.globl	CNAME(__error)
-	.type	CNAME(__error),@function
+	.globl	CNAME(__softbound_error)
+	.type	CNAME(__softbound_error),@function
 HIDENAME(cerror):
 	pushq	%rax
-	call	PIC_PLT(CNAME(__error))
+	call	PIC_PLT(CNAME(__softbound_error))
 	popq	%rcx
 	movl	%ecx,(%rax)
 	movq	$-1,%rax
