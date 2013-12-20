@@ -57,9 +57,9 @@ __attribute__((__regparm__(1))) void * ___libc_tls_get_addr(void *);
 void * __libc_tls_get_addr(void *);
 __weak_reference(__libc_tls_get_addr, __tls_get_addr);
 
-void *_rtld_allocate_tls(void *oldtls, size_t tcbsize, size_t tcbalign);
+NO_SB_CC void *_rtld_allocate_tls(void *oldtls, size_t tcbsize, size_t tcbalign);
 void _rtld_free_tls(void *tls, size_t tcbsize, size_t tcbalign);
-void *__libc_allocate_tls(void *oldtls, size_t tcbsize, size_t tcbalign);
+NO_SB_CC void *__libc_allocate_tls(void *oldtls, size_t tcbsize, size_t tcbalign);
 void __libc_free_tls(void *tls, size_t tcbsize, size_t tcbalign);
 
 #if defined(__ia64__) || defined(__amd64__)
@@ -132,7 +132,7 @@ __libc_free_tls(void *tcb, size_t tcbsize, size_t tcbalign __unused)
 /*
  * Allocate Static TLS using the Variant I method.
  */
-void *
+NO_SB_CC void *
 __libc_allocate_tls(void *oldtcb, size_t tcbsize, size_t tcbalign __unused)
 {
 	Elf_Addr *dtv;
@@ -269,7 +269,7 @@ __libc_free_tls(void *tcb __unused, size_t tcbsize __unused,
 
 extern char **environ;
 
-void
+NO_SB_CC void
 _init_tls()
 {
 #ifndef PIC

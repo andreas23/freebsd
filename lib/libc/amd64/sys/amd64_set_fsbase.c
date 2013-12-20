@@ -29,7 +29,7 @@ __FBSDID("$FreeBSD$");
 
 #include <machine/sysarch.h>
 
-int
+NO_SB_CC int
 amd64_set_fsbase(void *addr)
 {
 

@@ -82,6 +82,7 @@ extern int ___mb_cur_max(void);
 _Noreturn void	 abort(void);
 int	 abs(int) __pure2;
 int	 atexit(void (*)(void));
+NO_SB_CC int	 __softbound_atexit(void (*)(void));
 double	 atof(const char *);
 int	 atoi(const char *);
 long	 atol(const char *);
