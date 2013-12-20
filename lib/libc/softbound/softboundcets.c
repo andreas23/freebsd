@@ -145,11 +145,6 @@ NO_SB_CC void __softboundcets_init( int is_trie)
     __softboundcets_printf("Running __softboundcets_init for module\n");
   }
   
-  if (is_trie != __SOFTBOUNDCETS_TRIE) {
-    __softboundcets_printf("Softboundcets: Inconsistent specification of metadata encoding\n");
-    abort();
-  }
-
   if (softboundcets_initialized != 0) {
     return;  // already initialized, do nothing
   }
