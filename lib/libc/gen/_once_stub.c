@@ -34,6 +34,17 @@ __FBSDID("$FreeBSD$");
 #include "libc_private.h"
 
 /* This implements pthread_once() for the single-threaded case. */
+NO_SB_CC static int
+__softbound_libc_once(pthread_once_t *once_control, void (*init_routine)(void))
+{
+
+	if (once_control->state == PTHREAD_DONE_INIT)
+		return (0);
+	init_routine();
+	once_control->state = PTHREAD_DONE_INIT;
+	return (0);
+}
+
 static int
 _libc_once(pthread_once_t *once_control, void (*init_routine)(void))
 {
@@ -61,4 +72,13 @@ _once(pthread_once_t *once_control, void (*init_routine)(void))
 	if (__isthreaded)
 		return (_pthread_once(once_control, init_routine));
 	return (_libc_once(once_control, init_routine));
+}
+
+NO_SB_CC int
+__softbound_once(pthread_once_t *once_control, void (*init_routine)(void))
+{
+
+	if (__isthreaded)
+		return (_pthread_once(once_control, init_routine));
+	return (__softbound_libc_once(once_control, init_routine));
 }

@@ -43,7 +43,7 @@ extern int _DYNAMIC;
 void *__elf_aux_vector;
 static pthread_once_t aux_vector_once = PTHREAD_ONCE_INIT;
 
-static void
+NO_SB_CC static void
 init_aux_vector_once(void)
 {
 	Elf_Addr *sp;
@@ -54,13 +54,13 @@ init_aux_vector_once(void)
 	__elf_aux_vector = (Elf_Auxinfo *)sp;
 }
 
-void
+NO_SB_CC void
 __init_elf_aux_vector(void)
 {
 
 	if (&_DYNAMIC != NULL)
 		return;
-	_once(&aux_vector_once, init_aux_vector_once);
+	__softbound_once(&aux_vector_once, init_aux_vector_once);
 }
 
 static pthread_once_t aux_once = PTHREAD_ONCE_INIT;
@@ -68,7 +68,7 @@ static int pagesize, osreldate, canary_len, ncpus, pagesizes_len;
 static char *canary, *pagesizes;
 static void *timekeep;
 
-static void
+NO_SB_CC static void
 init_aux(void)
 {
 	Elf_Auxinfo *aux;
@@ -110,7 +110,7 @@ init_aux(void)
 	}
 }
 
-int
+NO_SB_CC int
 _elf_aux_info(int aux, void *buf, int buflen)
 {
 	int res;
@@ -118,7 +118,7 @@ _elf_aux_info(int aux, void *buf, int buflen)
 	__init_elf_aux_vector();
 	if (__elf_aux_vector == NULL)
 		return (ENOSYS);
-	_once(&aux_once, init_aux);
+	__softbound_once(&aux_once, init_aux);
 
 	switch (aux) {
 	case AT_CANARY:

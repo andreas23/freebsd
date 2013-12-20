@@ -39,6 +39,27 @@ __FBSDID("$FreeBSD$");
 #include <stdlib.h>
 #include <unistd.h>
 
+NO_SB_CC int
+__softbound_getosreldate(void)
+{
+	int mib[2];
+	size_t size;
+	int value;
+	char *temp;
+
+	if ((temp = __softbound_getenv("OSVERSION"))) {
+		value = atoi(temp);
+		return (value);
+	}
+
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_OSRELDATE;
+	size = sizeof value;
+	if (__softbound_sysctl(mib, 2, &value, &size, NULL, 0) == -1)
+		return (-1);
+	return (value);
+}
+
 int
 getosreldate(void)
 {

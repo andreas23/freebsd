@@ -689,3 +689,118 @@ unsetenv(const char *name)
 
 	return (0);
 }
+
+/*
+ * Inline strlen() for performance.  Also, perform check for an equals sign.
+ * Cheaper here than peforming a strchr() later.
+ */
+NO_SB_CC static inline size_t
+__softbound_strleneq(const char *str)
+{
+	const char *s;
+
+	for (s = str; *s != '\0'; ++s)
+		if (*s == '=')
+			return (0);
+
+	return (s - str);
+}
+
+
+/*
+ * Comparison of an environment name=value to a name.
+ */
+NO_SB_CC static inline bool
+__softbound_strncmpeq(const char *nameValue, const char *name, size_t nameLen)
+{
+	if (__softbound_strncmp(nameValue, name, nameLen) == 0 && nameValue[nameLen] == '=')
+		return (true);
+
+	return (false);
+}
+
+
+/*
+ * Using environment, returns pointer to value associated with name, if any,
+ * else NULL.  If the onlyActive flag is set to true, only variables that are
+ * active are returned else all are.
+ */
+NO_SB_CC static inline char *
+__softbound_findenv(const char *name, size_t nameLen, int *envNdx, bool onlyActive)
+{
+	int ndx;
+
+	/*
+	 * Find environment variable from end of array (more likely to be
+	 * active).  A variable created by putenv is always active, or it is not
+	 * tracked in the array.
+	 */
+	for (ndx = *envNdx; ndx >= 0; ndx--)
+		if (envVars[ndx].putenv) {
+			if (__softbound_strncmpeq(envVars[ndx].name, name, nameLen)) {
+				*envNdx = ndx;
+				return (envVars[ndx].name + nameLen +
+				    sizeof ("=") - 1);
+			}
+		} else if ((!onlyActive || envVars[ndx].active) &&
+		    (envVars[ndx].nameLen == nameLen &&
+		    __softbound_strncmpeq(envVars[ndx].name, name, nameLen))) {
+			*envNdx = ndx;
+			return (envVars[ndx].value);
+		}
+
+	return (NULL);
+}
+
+
+/*
+ * Using environ, returns pointer to value associated with name, if any, else
+ * NULL.  Used on the original environ passed into the program.
+ */
+NO_SB_CC static char *
+__softbound_findenv_environ(const char *name, size_t nameLen)
+{
+	int envNdx;
+
+	/* Find variable within environ. */
+	for (envNdx = 0; environ[envNdx] != NULL; envNdx++)
+		if (__softbound_strncmpeq(environ[envNdx], name, nameLen))
+			return (&(environ[envNdx][nameLen + sizeof("=") - 1]));
+
+	return (NULL);
+}
+
+/*
+ * Returns the value of a variable or NULL if none are found.
+ */
+char *
+__softbound_getenv(const char *name)
+{
+	int envNdx;
+	size_t nameLen;
+
+	/* Check for malformed name. */
+	if (name == NULL || (nameLen = __softbound_strleneq(name)) == 0) {
+		errno = EINVAL;
+		return (NULL);
+	}
+
+	/*
+	 * Variable search order:
+	 * 1. Check for an empty environ.  This allows an application to clear
+	 *    the environment.
+	 * 2. Search the external environ array.
+	 * 3. Search the internal environment.
+	 *
+	 * Since malloc() depends upon getenv(), getenv() must never cause the
+	 * internal environment storage to be generated.
+	 */
+	if (environ == NULL || environ[0] == NULL)
+		return (NULL);
+	else if (envVars == NULL || environ != intEnviron)
+		return (__softbound_findenv_environ(name, nameLen));
+	else {
+		envNdx = envVarsTotal - 1;
+		return (__softbound_findenv(name, nameLen, &envNdx, true));
+	}
+}

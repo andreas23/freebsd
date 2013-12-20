@@ -190,6 +190,7 @@ void _init_tls(void);
  * and multi-threaded applications.
  */
 int _once(pthread_once_t *, void (*)(void));
+NO_SB_CC int __softbound_once(pthread_once_t *, void (*)(void));
 
 /*
  * Set the TLS thread pointer
@@ -255,7 +256,7 @@ int	__sys_clock_gettime(__clockid_t, struct timespec *ts);
 /* execve() with PATH processing to implement posix_spawnp() */
 int _execvpe(const char *, char * const *, char * const *);
 
-int _elf_aux_info(int aux, void *buf, int buflen);
+NO_SB_CC int _elf_aux_info(int aux, void *buf, int buflen);
 struct dl_phdr_info;
 int __elf_phdr_match_addr(struct dl_phdr_info *, void *);
 void __init_elf_aux_vector(void);

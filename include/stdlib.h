@@ -91,6 +91,7 @@ void	*calloc(size_t, size_t) __malloc_like;
 div_t	 div(int, int) __pure2;
 _Noreturn void	 exit(int);
 void	 free(void *);
+NO_SB_CC char	*__softbound_getenv(const char *);
 char	*getenv(const char *);
 long	 labs(long) __pure2;
 ldiv_t	 ldiv(long, long) __pure2;
