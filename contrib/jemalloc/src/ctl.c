@@ -740,7 +740,7 @@ ctl_lookup(const char *name, ctl_node_t const **nodesp, size_t *mibp,
 				const ctl_named_node_t *child =
 				    ctl_named_children(node, j);
 				if (strlen(child->name) == elen &&
-				    strncmp(elm, child->name, elen) == 0) {
+				    __softbound_strncmp(elm, child->name, elen) == 0) {
 					node = child;
 					if (nodesp != NULL)
 						nodesp[i] =

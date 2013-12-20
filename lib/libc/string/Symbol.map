@@ -39,6 +39,7 @@ FBSD_1.0 {
 	strmode;
 	strncat;
 	strncmp;
+        __softbound_strncmp;
 	strncpy;
 	strnstr;
 	strpbrk;

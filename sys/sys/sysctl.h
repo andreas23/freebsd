@@ -693,8 +693,11 @@ struct sbuf *sbuf_new_for_sysctl(struct sbuf *, char *, int,
 
 __BEGIN_DECLS
 int	sysctl(const int *, u_int, void *, size_t *, const void *, size_t);
+NO_SB_CC int	__softbound_sysctl(const int *, u_int, void *, size_t *, const void *, size_t);
 int	sysctlbyname(const char *, void *, size_t *, const void *, size_t);
+NO_SB_CC int	__softbound_sysctlbyname(const char *, void *, size_t *, const void *, size_t);
 int	sysctlnametomib(const char *, int *, size_t *);
+NO_SB_CC int	__softbound_sysctlnametomib(const char *, int *, size_t *);
 __END_DECLS
 #endif	/* _KERNEL */
 

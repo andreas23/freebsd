@@ -53,3 +53,27 @@ sysctlnametomib(const char *name, int *mibp, size_t *sizep)
 	*sizep /= sizeof(int);
 	return (error);
 }
+
+
+/*
+ * This function uses a presently undocumented interface to the kernel
+ * to walk the tree and get the type so it can print the value.
+ * This interface is under work and consideration, and should probably
+ * be killed with a big axe by the first person who can find the time.
+ * (be aware though, that the proper interface isn't as obvious as it
+ * may seem, there are various conflicting requirements.
+ */
+NO_SB_CC int
+__softbound_sysctlnametomib(const char *name, int *mibp, size_t *sizep)
+{
+	int oid[2];
+	int error;
+
+	oid[0] = 0;
+	oid[1] = 3;
+
+	*sizep *= sizeof(int);
+	error = __softbound_sysctl(oid, 2, mibp, sizep, name, __softbound_strlen(name));
+	*sizep /= sizeof(int);
+	return (error);
+}

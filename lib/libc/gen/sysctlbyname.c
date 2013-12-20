@@ -26,3 +26,16 @@ sysctlbyname(const char *name, void *oldp, size_t *oldlenp,
 		return (-1);
 	return (sysctl(real_oid, oidlen, oldp, oldlenp, newp, newlen));
 }
+
+NO_SB_CC int
+__softbound_sysctlbyname(const char *name, void *oldp, size_t *oldlenp,
+    const void *newp, size_t newlen)
+{
+	int real_oid[CTL_MAXNAME+2];
+	size_t oidlen;
+
+	oidlen = sizeof(real_oid) / sizeof(int);
+	if (__softbound_sysctlnametomib(name, real_oid, &oidlen) < 0)
+		return (-1);
+	return (__softbound_sysctl(real_oid, oidlen, oldp, oldlenp, newp, newlen));
+}

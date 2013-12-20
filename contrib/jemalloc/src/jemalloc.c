@@ -264,7 +264,7 @@ malloc_ncpus(void)
 	GetSystemInfo(&si);
 	result = si.dwNumberOfProcessors;
 #else
-	result = sysconf(_SC_NPROCESSORS_ONLN);
+	result = __softbound_sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 	if (result == -1) {
 		/* Error. */
@@ -476,7 +476,7 @@ malloc_conf_init(void)
 #endif
 			    ;
 
-			if (issetugid() == 0 && (opts = getenv(envname)) !=
+			if (issetugid() == 0 && (opts = __softbound_getenv(envname)) !=
 			    NULL) {
 				/*
 				 * Do nothing; opts is already initialized to
@@ -499,12 +499,12 @@ malloc_conf_init(void)
 		while (*opts != '\0' && malloc_conf_next(&opts, &k, &klen, &v,
 		    &vlen) == false) {
 #define	CONF_HANDLE_BOOL(o, n)						\
-			if (sizeof(n)-1 == klen && strncmp(n, k,	\
+			if (sizeof(n)-1 == klen && __softbound_strncmp(n, k,	\
 			    klen) == 0) {				\
-				if (strncmp("true", v, vlen) == 0 &&	\
+				if (__softbound_strncmp("true", v, vlen) == 0 &&	\
 				    vlen == sizeof("true")-1)		\
 					o = true;			\
-				else if (strncmp("false", v, vlen) ==	\
+				else if (__softbound_strncmp("false", v, vlen) ==	\
 				    0 && vlen == sizeof("false")-1)	\
 					o = false;			\
 				else {					\
@@ -515,7 +515,7 @@ malloc_conf_init(void)
 				continue;				\
 			}
 #define	CONF_HANDLE_SIZE_T(o, n, min, max, clip)			\
-			if (sizeof(n)-1 == klen && strncmp(n, k,	\
+			if (sizeof(n)-1 == klen && __softbound_strncmp(n, k,	\
 			    klen) == 0) {				\
 				uintmax_t um;				\
 				char *end;				\
@@ -546,7 +546,7 @@ malloc_conf_init(void)
 				continue;				\
 			}
 #define	CONF_HANDLE_SSIZE_T(o, n, min, max)				\
-			if (sizeof(n)-1 == klen && strncmp(n, k,	\
+			if (sizeof(n)-1 == klen && __softbound_strncmp(n, k,	\
 			    klen) == 0) {				\
 				long l;					\
 				char *end;				\
@@ -568,7 +568,7 @@ malloc_conf_init(void)
 				continue;				\
 			}
 #define	CONF_HANDLE_CHAR_P(o, n, d)					\
-			if (sizeof(n)-1 == klen && strncmp(n, k,	\
+			if (sizeof(n)-1 == klen && __softbound_strncmp(n, k,	\
 			    klen) == 0) {				\
 				size_t cpylen = (vlen <=		\
 				    sizeof(o)-1) ? vlen :		\
@@ -589,11 +589,11 @@ malloc_conf_init(void)
 			CONF_HANDLE_SIZE_T(opt_lg_chunk, "lg_chunk", LG_PAGE +
 			    (config_fill ? 2 : 1), (sizeof(size_t) << 3) - 1,
 			    true)
-			if (strncmp("dss", k, klen) == 0) {
+			if (__softbound_strncmp("dss", k, klen) == 0) {
 				int i;
 				bool match = false;
 				for (i = 0; i < dss_prec_limit; i++) {
-					if (strncmp(dss_prec_names[i], v, vlen)
+					if (__softbound_strncmp(dss_prec_names[i], v, vlen)
 					    == 0) {
 						if (chunk_dss_prec_set(i)) {
 							malloc_conf_error(

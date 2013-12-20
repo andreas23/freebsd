@@ -175,7 +175,9 @@ FBSD_1.0 {
 	endnetgrent;
 	innetgr;
 	getosreldate;
+        __softbound_getosreldate;
 	getpagesize;
+	__softbound_getpagesize;
 	getpeereid;
 	_getprogname;
 	getprogname;
@@ -265,9 +267,13 @@ FBSD_1.0 {
 	fflagstostr;
 	strtofflags;
 	sysconf;
+        __softbound_sysconf;
 	sysctl;
+        __softbound_sysctl;
 	sysctlbyname;
+	__softbound_sysctlbyname;
 	sysctlnametomib;
+	__softbound_sysctlnametomib;
 	syslog;
 	vsyslog;
 	openlog;

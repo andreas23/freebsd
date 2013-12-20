@@ -93,11 +93,13 @@ size_t	 strlcat(char * __restrict, const char * __restrict, size_t);
 size_t	 strlcpy(char * __restrict, const char * __restrict, size_t);
 #endif
 size_t	 strlen(const char *) __pure;
+NO_SB_CC size_t	 __softbound_strlen(const char *) __pure;
 #if __BSD_VISIBLE
 void	 strmode(int, char *);
 #endif
 char	*strncat(char * __restrict, const char * __restrict, size_t);
 int	 strncmp(const char *, const char *, size_t) __pure;
+NO_SB_CC int	 __softbound_strncmp(const char *, const char *, size_t) __pure;
 char	*strncpy(char * __restrict, const char * __restrict, size_t);
 #if __POSIX_VISIBLE >= 200809 || __BSD_VISIBLE
 char	*strndup(const char *, size_t) __malloc_like;

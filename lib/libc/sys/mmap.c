@@ -72,7 +72,7 @@ __softbound_mmap(addr, len, prot, flags, fd, offset)
 	off_t	offset;
 {
 
-	if (__getosreldate() >= 700051)
+	if (__softbound_getosreldate() >= 700051)
 		return (__sys_mmap(addr, len, prot, flags, fd, offset));
 	else
 

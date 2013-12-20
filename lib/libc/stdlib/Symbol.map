@@ -19,6 +19,7 @@ FBSD_1.0 {
 	__isthreaded;
 	exit;
 	getenv;
+        __softbound_getenv;
 	opterr;
 	optind;
 	optopt;
