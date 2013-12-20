@@ -78,6 +78,7 @@ _start(char **ap, void (*cleanup)(void))
 		_init_tls();
 
 	handle_static_init(argc, argv, env);
+        __softboundcets_global_init();
 
   int* temp = __malloc(1);
   __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
@@ -86,7 +87,7 @@ _start(char **ap, void (*cleanup)(void))
   for(i = 0; i < argc; i++) {
     __softboundcets_metadata_store(&new_argv[i],
                                    new_argv[i],
-                                   new_argv[i] + strlen(new_argv[i]) + 1,
+                                   new_argv[i] + __softbound_strlen(new_argv[i]) + 1,
                                    argv_key, argv_loc);
   }
 

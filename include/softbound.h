@@ -209,7 +209,7 @@ NO_SB_CC __WEAK_INLINE void __softboundcets_add_to_free_map(size_t ptr_key, void
 
 /******************************************************************************/
 
-static __attribute__ ((__constructor__, no_softboundcets_calling_convention)) void __softboundcets_global_init();
+NO_SB_CC static void __softboundcets_global_init();
 
 NO_SB_CC void __softboundcets_global_init()
 {
