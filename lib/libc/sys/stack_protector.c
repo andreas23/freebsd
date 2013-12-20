@@ -45,13 +45,13 @@ extern int __sysctl(int *name, u_int namelen, void *oldp, size_t *oldlenp,
     void *newp, size_t newlen);
 
 long __stack_chk_guard[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-static void __guard_setup(void) __attribute__((__constructor__, __used__));
-static void __fail(const char *);
-void __stack_chk_fail(void);
-void __chk_fail(void);
+NO_SB_CC static void __guard_setup(void) __attribute__((__constructor__, __used__));
+NO_SB_CC static void __fail(const char *);
+NO_SB_CC void __stack_chk_fail(void);
+NO_SB_CC void __chk_fail(void);
 
 /*LINTED used*/
-static void
+NO_SB_CC static void
 __guard_setup(void)
 {
 	int mib[2];
@@ -80,7 +80,7 @@ __guard_setup(void)
 }
 
 /*ARGSUSED*/
-static void
+NO_SB_CC static void
 __fail(const char *msg)
 {
 	struct sigaction sa;
@@ -103,13 +103,13 @@ __fail(const char *msg)
 	_exit(127);
 }
 
-void
+NO_SB_CC void
 __stack_chk_fail(void)
 {
 	__fail("stack overflow detected; terminated");
 }
 
-void
+NO_SB_CC void
 __chk_fail(void)
 {
 	__fail("buffer overflow detected; terminated");
