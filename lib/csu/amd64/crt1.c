@@ -78,7 +78,6 @@ _start(char **ap, void (*cleanup)(void))
 		_init_tls();
 
 	handle_static_init(argc, argv, env);
-        __softboundcets_global_init();
 
   int* temp = __malloc(1);
   __softboundcets_allocation_secondary_trie_allocate_range(0, (size_t)temp);
