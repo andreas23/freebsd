@@ -1,5 +1,5 @@
 
-/usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/home/hannes/devel/freebsd/usr.bin/clang/clang/clang -o /tmp/t -nostdlib /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crt1.o /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crti.o /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crtbegin.o /tmp/t.c -fsoftbound /usr/obj/usr/home/hannes/devel/freebsd/lib/libc/libc.a /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crtend.o /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crtn.o
+/usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/home/hannes/devel/freebsd/usr.bin/clang/clang/clang -O2 -g -o /tmp/t -nostdlib /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crt1.o /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crti.o /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crtbegin.o /tmp/t.c -fsoftbound /usr/obj/usr/home/hannes/devel/freebsd/lib/libc/libc.a /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crtend.o /usr/obj/usr/home/hannes/devel/freebsd/tmp/usr/lib/crtn.o
 
 
 extern void bar (char * arg);
