@@ -201,7 +201,10 @@ __softboundcets_store_return_metadata(void* base, void* bound, size_t key,
 
 NO_SB_CC extern void __softboundcets_init(int is_trie);
 NO_SB_CC extern __SOFTBOUNDCETS_NORETURN void __softboundcets_abort();
-NO_SB_CC extern void __softboundcets_printf(const char* str, ...);
+
+extern NO_SB_CC int __jemalloc_malloc_printf (const char* fmt, ...);
+#define __softboundcets_printf __jemalloc_malloc_printf
+
 extern size_t* __softboundcets_global_lock; 
 
 NO_SB_CC __WEAK_INLINE void __softboundcets_allocation_secondary_trie_allocate(void* addr_of_ptr);

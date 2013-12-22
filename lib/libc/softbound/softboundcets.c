@@ -43,9 +43,6 @@
 #include <sys/mman.h>
 #include <softbound.h>
 
-extern NO_SB_CC int __jemalloc_malloc_printf (const char* fmt, ...);
-#define __softboundcets_printf __jemalloc_malloc_printf
-
 __softboundcets_trie_entry_t** __softboundcets_trie_primary_table;
 
 size_t* __softboundcets_free_map_table = NULL;
