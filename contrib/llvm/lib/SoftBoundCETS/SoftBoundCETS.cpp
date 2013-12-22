@@ -624,102 +624,6 @@ SoftBoundCETSPass::addMemoryAllocationCall(Function* func,
   ptr_lock = alloca_lock;
 }
 
-//
-// Method: transformMain()
-//
-// Description:
-//
-// This method renames the function "main" in the module as
-// pseudo_main. The C-handler has the main function which calls
-// pseudo_main. Actually transformation of the main takes places in
-// two steps.  Step1: change the name to pseudo_main and Step2:
-// Function renaming to append the function name with softboundcets_
-//
-// Inputs:
-// module: Input module with the function main
-//
-// Outputs:
-//
-// Changed module with any function named "main" is changed to
-// "pseudo_main"
-//
-// Comments:
-//
-// This function is doing redundant work. We should probably use
-// renameFunction to accomplish the task. The key difference is that
-// transform renames it the function as either pseudo_main or
-// softboundcets_pseudo_main which is subsequently renamed to
-// softboundcets_pseudo_main in the first case by renameFunction
-//
-
-void SoftBoundCETSPass::transformMain(Module& module) {
-    
-  Function* main_func = module.getFunction("main");
-
-  // 
-  // If the program doesn't have main then don't do anything
-  //
-  if (!main_func) return;
-
-  Type* ret_type = main_func->getReturnType();
-  const FunctionType* fty = main_func->getFunctionType();
-  std::vector<Type*> params;
-
-  SmallVector<AttributeSet, 8> param_attrs_vec;
-  const AttributeSet& pal = main_func->getAttributes();
-
-  //
-  // Get the attributes of the return value
-  //
-  param_attrs_vec.push_back(AttributeSet::get(main_func->getContext(), pal.getRetAttributes()));
-
-  // Get the attributes of the arguments 
-  int arg_index = 1;
-  for(Function::arg_iterator i = main_func->arg_begin(), 
-        e = main_func->arg_end();
-      i != e; ++i, arg_index++) {
-    params.push_back(i->getType());
-    param_attrs_vec.push_back(AttributeSet::get(main_func->getContext(), pal.getParamAttributes(arg_index)));
-  }
-
-  FunctionType* nfty = FunctionType::get(ret_type, params, fty->isVarArg());
-  Function* new_func = NULL;
-
-  // create the new function
-  new_func = Function::Create(nfty, main_func->getLinkage(),
-                              "softboundcets_pseudo_main");
-
-  // set the new function attributes 
-  new_func->copyAttributesFrom(main_func);
-  new_func->setAttributes(AttributeSet::get(main_func->getContext(), ArrayRef<AttributeSet>(param_attrs_vec)));
-  new_func->addFnAttr(llvm::Attribute::SoftboundCETSInstrumentBody);
-  new_func->addFnAttr(llvm::Attribute::SoftboundCETSCallingConvention);
-
-  main_func->getParent()->getFunctionList().insert(main_func, new_func);
-  main_func->replaceAllUsesWith(new_func);
-
-  // 
-  // Splice the instructions from the old function into the new
-  // function and set the arguments appropriately
-  // 
-  new_func->getBasicBlockList().splice(new_func->begin(), 
-                                       main_func->getBasicBlockList());
-  Function::arg_iterator arg_i2 = new_func->arg_begin();
-  for(Function::arg_iterator arg_i = main_func->arg_begin(), 
-        arg_e = main_func->arg_end(); 
-      arg_i != arg_e; ++arg_i) {      
-    arg_i->replaceAllUsesWith(arg_i2);
-    arg_i2->takeName(arg_i);
-    ++arg_i2;
-    arg_index++;
-  }  
-  //
-  // Remove the old function from the module
-  //
-  main_func->eraseFromParent();
-}
-
-
 bool SoftBoundCETSPass::isFuncSoftBoundCallingConvention (Function* func) {
   if (func->getAttributes().hasAttribute(AttributeSet::FunctionIndex,
                                          Attribute::SoftboundCETSCallingConvention)) {
@@ -4263,7 +4167,6 @@ bool SoftBoundCETSPass::runOnModule(Module& module) {
   }
   
   initializeSoftBoundVariables(module);
-  transformMain(module);
 
   identifyInitialGlobals(module);
   addBaseBoundGlobals(module);
