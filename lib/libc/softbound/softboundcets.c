@@ -43,6 +43,9 @@
 #include <sys/mman.h>
 #include <softbound.h>
 
+extern NO_SB_CC int __jemalloc_malloc_printf (const char* fmt, ...);
+#define __softboundcets_printf __jemalloc_malloc_printf
+
 __softboundcets_trie_entry_t** __softboundcets_trie_primary_table;
 
 size_t* __softboundcets_free_map_table = NULL;
@@ -132,8 +135,7 @@ void __sbcets_stats_fini() {
 
 NO_SB_CC __SOFTBOUNDCETS_NORETURN void __softboundcets_abort()
 {
-  fprintf(stderr, "\nSoftboundcets: Memory safety violation detected\n\nBacktrace:\n");
-  fprintf(stderr, "\n\n");
+  __softboundcets_printf("\nSoftboundcets: Memory safety violation detected\n\nBacktrace currently unavailable.\n");
   abort();
 }
 
@@ -227,15 +229,6 @@ NO_SB_CC void __softboundcets_init( int is_trie)
   }
 
 
-}
-
-NO_SB_CC void __softboundcets_printf(const char* str, ...) {
-  /*  va_list args;
-
-  va_start(args, str);
-  vfprintf(stderr, str, args);
-  va_end(args);
-  */
 }
 
 NO_SB_CC __WEAK_INLINE void
