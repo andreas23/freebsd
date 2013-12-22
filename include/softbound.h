@@ -202,7 +202,7 @@ __softboundcets_store_return_metadata(void* base, void* bound, size_t key,
 NO_SB_CC extern void __softboundcets_init(int is_trie);
 NO_SB_CC extern __SOFTBOUNDCETS_NORETURN void __softboundcets_abort();
 
-extern NO_SB_CC int __jemalloc_malloc_printf (const char* fmt, ...);
+extern NO_SB_CC void __jemalloc_malloc_printf (const char* fmt, ...);
 #define __softboundcets_printf __jemalloc_malloc_printf
 
 extern size_t* __softboundcets_global_lock; 
@@ -570,7 +570,7 @@ __softboundcets_spatial_load_dereference_check(void *base, void *bound,
   }
   
   if ((ptr < base) || ((void*)((char*) ptr + size_of_type) > bound)) {
-    __softboundcets_printf("In Load Dereference Check, base=%zx, bound=%zx, ptr=%zx\n", base, bound, ptr);
+    __softboundcets_printf("In Load Dereference Check, base=%zx, bound=%zx, ptr=%zx\n", (size_t)base, (size_t)bound, (size_t)ptr);
     __softboundcets_abort();
   }
 }
