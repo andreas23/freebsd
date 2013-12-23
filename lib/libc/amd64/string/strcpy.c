@@ -28,11 +28,39 @@
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
-char *__stpcpy(char * __restrict, const char * __restrict);
+NO_SB_CC char *__stpcpy(char * __restrict, const char * __restrict);
 
-char *
-strcpy(char * __restrict to, const char * __restrict from)
+NO_SB_CC char *
+__softbound_strcpy(char * __restrict to, const char * __restrict from)
 {
 	__stpcpy(to, from);
 	return(to);
+}
+
+NO_SB_IB char *
+strcpy(char * __restrict to, const char * __restrict from)
+{
+  void*  to_base = __softboundcets_load_base_shadow_stack(1);
+  void*  to_bound = __softboundcets_load_bound_shadow_stack(1);
+  size_t to_key = __softboundcets_load_key_shadow_stack(1);
+  void*  to_lock = __softboundcets_load_lock_shadow_stack(1);
+
+  void*  from_base = __softboundcets_load_base_shadow_stack(2);
+  void*  from_bound = __softboundcets_load_bound_shadow_stack(2);
+  size_t from_key = __softboundcets_load_key_shadow_stack(2);
+  void*  from_lock = __softboundcets_load_lock_shadow_stack(2);
+
+  __softboundcets_spatial_load_dereference_check(from_base, from_bound, (void*)from, sizeof(*from));
+  __softboundcets_temporal_load_dereference_check(from_key, from_lock, from_base, from_bound);
+  
+  size_t size = __softbound_strlen(from) + 1; // trailing zero is the + 1
+
+  __softboundcets_spatial_load_dereference_check(from_base, from_bound, (void*)(from + size), sizeof(*from));
+
+  __softboundcets_spatial_store_dereference_check(to_base, to_bound, (void*)to, size);
+  __softboundcets_temporal_store_dereference_check(to_key, to_lock, to_base, to_bound);
+
+  __stpcpy(to, from);
+  __softboundcets_propagate_metadata_shadow_stack_from(1, 0);
+  return(to);
 }

@@ -147,7 +147,7 @@ strlen(const char *str)
   // of unmapped memory. However, neither data is leaked, nor is this exploitable.
   rc = __softbound_strlen(str);
 
-  __softboundcets_spatial_load_dereference_check(base, bound, (void*)(str + rc), sizeof(*str));
+  __softboundcets_spatial_load_dereference_check(base, bound, (void*)(str + rc + 1), sizeof(*str)); // +1 for trailing zero
 
   return rc;
 }
