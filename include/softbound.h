@@ -471,15 +471,7 @@ NO_SB_CC __METADATA_INLINE void __softboundcets_copy_metadata(void* dest, void* 
       void* dest_entry_ptr = &temp_to_strie[dest_secondary_index];
       void* from_entry_ptr = &temp_from_strie[from_secondary_index];
   
-#ifdef __SOFTBOUNDCETS_SPATIAL
-      memcpy(dest_entry_ptr, from_entry_ptr, 16);
-#elif __SOFTBOUNDCETS_TEMPORAL
-      memcpy(dest_entry_ptr, from_entry_ptr, 16);
-#elif __SOFTBOUNDCETS_SPATIAL_TEMPORAL
       memcpy(dest_entry_ptr, from_entry_ptr, 32);
-#else
-      memcpy(dest_entry_ptr, from_entry_ptr, 32);
-#endif
     }    
     return;
 
