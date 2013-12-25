@@ -28,6 +28,8 @@
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
+#include <softbound.h>
+
 NO_SB_CC char *__stpcpy(char * __restrict, const char * __restrict);
 
 NO_SB_CC char *
