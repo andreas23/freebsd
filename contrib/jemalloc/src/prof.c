@@ -582,7 +582,7 @@ prof_write(bool propagate_err, const char *s)
 	cassert(config_prof);
 
 	i = 0;
-	slen = strlen(s);
+	slen = __softbound_strlen(s);
 	while (i < slen) {
 		/* Flush the buffer if it is full. */
 		if (prof_dump_buf_end == PROF_DUMP_BUFSIZE)

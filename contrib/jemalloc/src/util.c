@@ -50,9 +50,9 @@ wrtmessage(void *cbopaque, const char *s)
 	 * the possibility of memory allocation within libc.  This is necessary
 	 * on FreeBSD; most operating systems do not have this problem though.
 	 */
-	UNUSED int result = syscall(SYS_write, STDERR_FILENO, s, strlen(s));
+	UNUSED int result = syscall(SYS_write, STDERR_FILENO, s, __softbound_strlen(s));
 #else
-	UNUSED int result = write(STDERR_FILENO, s, strlen(s));
+	UNUSED int result = write(STDERR_FILENO, s, __softbound_strlen(s));
 #endif
 }
 
@@ -556,7 +556,7 @@ malloc_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 				assert(len == '?' || len == 'l');
 				assert_not_implemented(len != 'l');
 				s = va_arg(ap, char *);
-				slen = (prec == -1) ? strlen(s) : prec;
+				slen = (prec == -1) ? __softbound_strlen(s) : prec;
 				APPEND_PADDED_S(s, slen, width, left_justify);
 				f++;
 				break;
