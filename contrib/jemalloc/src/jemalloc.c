@@ -1408,11 +1408,7 @@ je_mallctlbymib(const size_t *mib, size_t miblen, void *oldp, size_t *oldlenp,
  */
 #ifdef JEMALLOC_EXPERIMENTAL
 
-<<<<<<< HEAD
-static JEMALLOC_ATTR(always_inline) void *
-=======
-NO_SB_CC JEMALLOC_ALWAYS_INLINE_C void *
->>>>>>> b2455e5... attribute malloc with NO_SB_CC
+NO_SB_CC JEMALLOC_ATTR(always_inline) void *
 iallocm(size_t usize, size_t alignment, bool zero, bool try_tcache,
     arena_t *arena)
 {
