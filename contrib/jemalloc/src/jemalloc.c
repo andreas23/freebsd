@@ -442,7 +442,6 @@ malloc_conf_init(void)
 		case 1: {
 #ifndef _WIN32
 			int linklen;
-			int saved_errno = * __softbound_error();
 			const char *linkname =
 #  ifdef JEMALLOC_PREFIX
 			    "/etc/"JEMALLOC_PREFIX"malloc.conf"

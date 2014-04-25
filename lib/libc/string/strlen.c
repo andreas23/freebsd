@@ -140,7 +140,7 @@ strlen(const char *str)
   size_t rc;
 
   __softboundcets_spatial_load_dereference_check(base, bound, (void*)str, sizeof(*str));
-  __softboundcets_temporal_load_dereference_check(key, lock, base, bound);
+  __softboundcets_temporal_load_dereference_check(lock, key, base, bound);
 
   // Cheating here: instead of doing the check inside the loop, we check afterwards
   // if the end of the string is still inside the bounds. This may lead to access

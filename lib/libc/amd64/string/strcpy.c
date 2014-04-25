@@ -53,14 +53,14 @@ strcpy(char * __restrict to, const char * __restrict from)
   void*  from_lock = __softboundcets_load_lock_shadow_stack(2);
 
   __softboundcets_spatial_load_dereference_check(from_base, from_bound, (void*)from, sizeof(*from));
-  __softboundcets_temporal_load_dereference_check(from_key, from_lock, from_base, from_bound);
+  __softboundcets_temporal_load_dereference_check(from_lock, from_key, from_base, from_bound);
   
   size_t size = __softbound_strlen(from) + 1; // trailing zero is the + 1
 
   __softboundcets_spatial_load_dereference_check(from_base, from_bound, (void*)(from + size), sizeof(*from));
 
   __softboundcets_spatial_store_dereference_check(to_base, to_bound, (void*)to, size);
-  __softboundcets_temporal_store_dereference_check(to_key, to_lock, to_base, to_bound);
+  __softboundcets_temporal_store_dereference_check(to_lock, to_key, to_base, to_bound);
 
   __stpcpy(to, from);
   __softboundcets_propagate_metadata_shadow_stack_from(1, 0);
