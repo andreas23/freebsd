@@ -201,6 +201,10 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     return "returns_twice";
   if (hasAttribute(Attribute::SExt))
     return "signext";
+  if (hasAttribute(Attribute::SoftboundCETSCallingConvention))
+    return "softboundcets_callingconvention";
+  if (hasAttribute(Attribute::SoftboundCETSInstrumentBody))
+    return "softboundcets_instrumentbody";
   if (hasAttribute(Attribute::StackProtect))
     return "ssp";
   if (hasAttribute(Attribute::StackProtectReq))
